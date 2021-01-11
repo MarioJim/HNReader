@@ -1,0 +1,40 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - '*'
+
+jobs:
+  gradle:
+    runs-on: ubuntu-latest
+    if: ${{ !contains(github.event.head_commit.message, 'ci skip') }}
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 8
+
+      - name: Cache Gradle files
+        uses: actions/cache@v1
+        with:
+          path: |
+            ~/.gradle/caches/
+            ~/.gradle/wrapper/
+          key: gradle-${{ hashFiles('**/*.gradle') }}
+          restore-keys: gradle-files
+
+      - name: Run Gradle build
+        run: ./gradlew build
+
+      - name: Show lint result
+        run: cat app/build/reports/lint-results.xml
+
+      - name: Stop Gradle
+        run: ./gradlew --stop
