@@ -15,37 +15,37 @@
 
     <fragment
         android:id="@+id/fragment18"
-        android:name="org.team4.hnreader.BlankFragment"
+        android:name="org.team4.hnreader.CommentFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <fragment
         android:id="@+id/fragment19"
-        android:name="org.team4.hnreader.BlankFragment"
+        android:name="org.team4.hnreader.CommentFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <fragment
         android:id="@+id/fragment20"
-        android:name="org.team4.hnreader.BlankFragment"
+        android:name="org.team4.hnreader.CommentFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <fragment
         android:id="@+id/fragment21"
-        android:name="org.team4.hnreader.BlankFragment"
+        android:name="org.team4.hnreader.CommentFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <fragment
         android:id="@+id/fragment22"
-        android:name="org.team4.hnreader.BlankFragment"
+        android:name="org.team4.hnreader.CommentFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <fragment
         android:id="@+id/fragment17"
-        android:name="org.team4.hnreader.BlankFragment"
+        android:name="org.team4.hnreader.CommentFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

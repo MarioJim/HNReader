@@ -67,7 +67,7 @@ class PostFragment : Fragment() {
         }
 
         saveButton.setOnClickListener {
-            Toast.makeText(this.activity, "Saved item", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this.activity, "Saved item to bookmarks", Toast.LENGTH_SHORT).show()
         }
 
         return view

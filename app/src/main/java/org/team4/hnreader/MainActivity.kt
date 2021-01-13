@@ -12,7 +12,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     public fun openNavDrawer(view: View) {
-        //val intentToNavDrawer = Intent(this, NavDrawerActivity::class.java)
-        //startActivity(intentToNavDrawer)
+        val intentToNavDrawer = Intent(this, BookmarksActivity::class.java)
+        startActivity(intentToNavDrawer)
     }
 }
