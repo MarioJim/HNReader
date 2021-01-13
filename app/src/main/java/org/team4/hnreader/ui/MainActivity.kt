@@ -1,9 +1,10 @@
-package org.team4.hnreader
+package org.team4.hnreader.ui
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import org.team4.hnreader.databinding.ActivityMainBinding
+import org.team4.hnreader.ui.activities.BookmarksActivity
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding

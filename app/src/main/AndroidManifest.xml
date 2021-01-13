@@ -10,9 +10,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.HackerNewsReader">
-        <activity android:name=".BookmarksActivity" />
-        <activity android:name=".CommentsActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".ui.activities.BookmarksActivity" />
+        <activity android:name=".ui.activities.CommentsActivity" />
+        <activity android:name=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

@@ -1,4 +1,4 @@
-package org.team4.hnreader
+package org.team4.hnreader.ui.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater

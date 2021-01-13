@@ -1,4 +1,4 @@
-package org.team4.hnreader
+package org.team4.hnreader.ui.fragments
 
 import android.content.Intent
 import android.net.Uri
@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import org.team4.hnreader.databinding.FragmentPostBinding
+import org.team4.hnreader.ui.activities.CommentsActivity
 
 private const val POST_TITLE = "title"
 private const val POST_URL = "url"

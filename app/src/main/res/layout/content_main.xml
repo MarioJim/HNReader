@@ -15,31 +15,31 @@
 
         <fragment
             android:id="@+id/fragment2"
-            android:name="org.team4.hnreader.PostFragment"
+            android:name="org.team4.hnreader.ui.fragments.PostFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
         <fragment
             android:id="@+id/fragment3"
-            android:name="org.team4.hnreader.PostFragment"
+            android:name="org.team4.hnreader.ui.fragments.PostFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
         <fragment
             android:id="@+id/fragment4"
-            android:name="org.team4.hnreader.PostFragment"
+            android:name="org.team4.hnreader.ui.fragments.PostFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
         <fragment
             android:id="@+id/fragment5"
-            android:name="org.team4.hnreader.PostFragment"
+            android:name="org.team4.hnreader.ui.fragments.PostFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
         <fragment
             android:id="@+id/fragment6"
-            android:name="org.team4.hnreader.PostFragment"
+            android:name="org.team4.hnreader.ui.fragments.PostFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>

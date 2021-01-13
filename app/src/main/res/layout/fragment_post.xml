@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="20dp"
-    tools:context=".PostFragment">
+    tools:context=".ui.fragments.PostFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/urlBtn"
