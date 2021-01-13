@@ -10,16 +10,17 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
-import kotlinx.android.synthetic.main.fragment_post.*
 
-
-private const val POST_TITLE = "Título de post"
-private const val POST_URL = "https://news.ycombinator.com"
-private const val POST_USER = "Usuario"
+private const val POST_TITLE = "title"
+private const val POST_URL = "url"
+private const val POST_USER = "username"
+private const val POST_VOTES = "votes"
+private const val POST_NUM_COMMENTS = "comments"
+private const val POST_DATE = "date"
 
 class PostFragment : Fragment() {
     private var postTitle: String? = null
-    private var postURL: String? = null
+    private var postURL: String? = "https://news.ycombinator.com"
     private var postUser: String? = null
     private var postVotes: Int? = null
     private var postNumComments: Int? = null
@@ -31,14 +32,16 @@ class PostFragment : Fragment() {
             postTitle = it.getString(POST_TITLE)
             postURL = it.getString(POST_URL)
             postUser = it.getString(POST_USER)
-            postVotes = 0
-            postNumComments = 0
-            postDate = 0
+            postVotes = it.getInt(POST_VOTES)
+            postNumComments = it.getInt(POST_NUM_COMMENTS)
+            postDate = it.getInt(POST_DATE)
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val view = inflater.inflate(R.layout.fragment_post, container, false)
         val urlBtn = view.findViewById<ConstraintLayout>(R.id.urlBtn)
         val commentsBtn = view.findViewById<ConstraintLayout>(R.id.commentsBtn)
@@ -46,7 +49,7 @@ class PostFragment : Fragment() {
         val saveButton = view.findViewById<Button>(R.id.saveBtn)
 
         urlBtn.setOnClickListener {
-            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://news.ycombinator.com"))
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(postURL))
             startActivity(browserIntent)
         }
 
@@ -67,7 +70,7 @@ class PostFragment : Fragment() {
         }
 
         saveButton.setOnClickListener {
-            Toast.makeText(this.activity, "Saved item to bookmarks", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this.activity, "Saved item in bookmarks", Toast.LENGTH_SHORT).show()
         }
 
         return view
@@ -75,12 +78,23 @@ class PostFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-                PostFragment().apply {
-                    arguments = Bundle().apply {
-                        putString(POST_TITLE, param1)
-                        putString(POST_URL, param2)
-                    }
+        fun newInstance(
+            title: String,
+            url: String,
+            user: String,
+            votes: Int,
+            numComments: Int,
+            date: Int
+        ) =
+            PostFragment().apply {
+                arguments = Bundle().apply {
+                    putString(POST_TITLE, title)
+                    putString(POST_URL, url)
+                    putString(POST_USER, user)
+                    putInt(POST_VOTES, votes)
+                    putInt(POST_NUM_COMMENTS, numComments)
+                    putInt(POST_DATE, date)
                 }
+            }
     }
 }

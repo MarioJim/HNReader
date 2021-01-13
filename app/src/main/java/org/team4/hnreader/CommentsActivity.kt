@@ -8,6 +8,6 @@ class CommentsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_comments)
 
-        title = "Post comments"
+        title = "Comments"
     }
 }
