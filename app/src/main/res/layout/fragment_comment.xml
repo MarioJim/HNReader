@@ -8,19 +8,18 @@
     tools:context=".ui.activities.CommentsActivity">
 
     <TextView
+        android:id="@+id/tvCommentInfo"
         android:layout_width="0dp"
         android:layout_height="89dp"
         android:layout_marginTop="8dp"
-        android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin laoreet diam eget tellus commodo imperdiet. In vitae augue auctor magna consequat pharetra. Quisque posuere sed neque vitae tempor. Morbi lectus orci, efficitur et libero nec, vestibulum tempor urna."
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+        app:layout_constraintTop_toBottomOf="@+id/tvContent" />
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/tvContent"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Username, 3 hours ago"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"

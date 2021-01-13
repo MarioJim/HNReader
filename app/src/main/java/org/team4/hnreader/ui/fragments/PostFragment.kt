@@ -23,11 +23,11 @@ class PostFragment : Fragment() {
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
 
-    private var postTitle: String? = null
+    private var postTitle: String? = "Post Title"
     private var postURL: String? = "https://news.ycombinator.com"
-    private var postUser: String? = null
-    private var postVotes: Int? = null
-    private var postNumComments: Int? = null
+    private var postUser: String? = "User"
+    private var postVotes: Int = 0
+    private var postNumComments: Int = 0
     private var postDate: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,6 +47,10 @@ class PostFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentPostBinding.inflate(inflater, container, false)
+
+        binding.tvTitle.text = "$postTitle ($postURL)"
+        binding.tvInfo.text = "by $postUser, 3 hours ago"
+        binding.tvVotes.text = "$postVotes points, $postNumComments comments"
 
         binding.urlBtn.setOnClickListener {
             val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(postURL))

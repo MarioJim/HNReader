@@ -16,9 +16,9 @@ class CommentFragment : Fragment() {
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
 
-    private var commentUser: String? = null
-    private var commentContent: String? = null
-    private var commentDate: Int? = 0
+    private var commentUser: String? = "User"
+    private var commentContent: String? = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin laoreet diam eget tellus commodo imperdiet. In vitae augue auctor magna consequat pharetra. Quisque posuere sed neque vitae tempor. Morbi lectus orci, efficitur et libero nec, vestibulum tempor urna."
+    private var commentDate: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +34,10 @@ class CommentFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentCommentBinding.inflate(inflater, container, false)
+
+        binding.tvCommentInfo.text = "$commentUser, 3 hours ago"
+        binding.tvContent.text = commentContent
+
         return binding.root
     }
 
