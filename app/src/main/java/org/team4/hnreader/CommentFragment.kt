@@ -5,12 +5,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import org.team4.hnreader.databinding.FragmentCommentBinding
 
 private const val COMMENT_USER = "username"
 private const val COMMENT_CONTENT = "content"
 private const val COMMENT_DATE = "date"
 
 class CommentFragment : Fragment() {
+    private var _binding: FragmentCommentBinding? = null
+    // This property is only valid between onCreateView and onDestroyView.
+    private val binding get() = _binding!!
+
     private var commentUser: String? = null
     private var commentContent: String? = null
     private var commentDate: Int? = 0
@@ -27,8 +32,14 @@ class CommentFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_comment, container, false)
+    ): View {
+        _binding = FragmentCommentBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     companion object {

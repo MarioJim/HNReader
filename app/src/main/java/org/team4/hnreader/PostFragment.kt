@@ -6,10 +6,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.Toast
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
+import org.team4.hnreader.databinding.FragmentPostBinding
 
 private const val POST_TITLE = "title"
 private const val POST_URL = "url"
@@ -19,6 +18,10 @@ private const val POST_NUM_COMMENTS = "comments"
 private const val POST_DATE = "date"
 
 class PostFragment : Fragment() {
+    private var _binding: FragmentPostBinding? = null
+    // This property is only valid between onCreateView and onDestroyView.
+    private val binding get() = _binding!!
+
     private var postTitle: String? = null
     private var postURL: String? = "https://news.ycombinator.com"
     private var postUser: String? = null
@@ -41,24 +44,20 @@ class PostFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_post, container, false)
-        val urlBtn = view.findViewById<ConstraintLayout>(R.id.urlBtn)
-        val commentsBtn = view.findViewById<ConstraintLayout>(R.id.commentsBtn)
-        val shareButton = view.findViewById<Button>(R.id.shareBtn)
-        val saveButton = view.findViewById<Button>(R.id.saveBtn)
+    ): View {
+        _binding = FragmentPostBinding.inflate(inflater, container, false)
 
-        urlBtn.setOnClickListener {
+        binding.urlBtn.setOnClickListener {
             val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(postURL))
             startActivity(browserIntent)
         }
 
-        commentsBtn.setOnClickListener {
+        binding.commentsBtn.setOnClickListener {
             val intentToComments = Intent(this.activity, CommentsActivity::class.java)
             startActivity(intentToComments)
         }
 
-        shareButton.setOnClickListener {
+        binding.shareBtn.setOnClickListener {
             val sendIntent: Intent = Intent().apply {
                 action = Intent.ACTION_SEND
                 putExtra(Intent.EXTRA_TEXT, postURL)
@@ -69,11 +68,16 @@ class PostFragment : Fragment() {
             startActivity(shareIntent)
         }
 
-        saveButton.setOnClickListener {
+        binding.saveBtn.setOnClickListener {
             Toast.makeText(this.activity, "Saved item in bookmarks", Toast.LENGTH_SHORT).show()
         }
 
-        return view
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     companion object {
