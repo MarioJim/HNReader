@@ -10,6 +10,7 @@
     tools:context=".PostFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/urlBtn"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -39,16 +40,17 @@
 
         <ImageView
             android:id="@+id/linkBtn"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_launcher_background"
             tools:src="@tools:sample/avatars" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/linearLayout"
+        android:id="@+id/commentsBtn"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -56,7 +58,7 @@
             android:id="@+id/postVotes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="120 points, 40 comments"
+            android:text="420 points, 69 comments"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/saveBtn"
             app:layout_constraintHorizontal_bias="0.0"
