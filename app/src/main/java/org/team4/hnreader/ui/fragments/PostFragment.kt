@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import org.team4.hnreader.databinding.FragmentPostBinding
 import org.team4.hnreader.ui.activities.CommentsActivity
+import java.net.URI
 
 private const val POST_TITLE = "title"
 private const val POST_URL = "url"
@@ -48,7 +49,8 @@ class PostFragment : Fragment() {
     ): View {
         _binding = FragmentPostBinding.inflate(inflater, container, false)
 
-        binding.tvTitle.text = "$postTitle ($postURL)"
+        binding.tvTitle.text = "$postTitle"
+        binding.tvUrl.text = getDomainName("$postURL")
         binding.tvInfo.text = "by $postUser, 3 hours ago"
         binding.tvVotes.text = "$postVotes points, $postNumComments comments"
 
@@ -83,6 +85,11 @@ class PostFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun getDomainName(url: String): String? {
+        val domain: String = URI(url).host
+        return if (domain.startsWith("www.")) domain.substring(4) else domain
     }
 
     companion object {
