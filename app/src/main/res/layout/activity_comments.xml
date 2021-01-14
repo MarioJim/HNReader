@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -12,38 +13,38 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/goToAddCommentBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:text="Add a comment"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <fragment
-        android:id="@+id/fragment18"
+        android:id="@+id/fragment"
         android:name="org.team4.hnreader.ui.fragments.CommentFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <fragment
-        android:id="@+id/fragment19"
+        android:id="@+id/fragment12"
         android:name="org.team4.hnreader.ui.fragments.CommentFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <fragment
-        android:id="@+id/fragment20"
-        android:name="org.team4.hnreader.ui.fragments.CommentFragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <fragment
-        android:id="@+id/fragment21"
-        android:name="org.team4.hnreader.ui.fragments.CommentFragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <fragment
-        android:id="@+id/fragment22"
-        android:name="org.team4.hnreader.ui.fragments.CommentFragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <fragment
-        android:id="@+id/fragment17"
+        android:id="@+id/fragment11"
         android:name="org.team4.hnreader.ui.fragments.CommentFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

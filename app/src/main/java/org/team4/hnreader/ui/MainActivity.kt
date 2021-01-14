@@ -15,8 +15,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.bookmarksBtn.setOnClickListener {
-            val intentToNavDrawer = Intent(this, BookmarksActivity::class.java)
-            startActivity(intentToNavDrawer)
+            val intentToBookmarks = Intent(this, BookmarksActivity::class.java)
+            startActivity(intentToBookmarks)
         }
     }
 }
