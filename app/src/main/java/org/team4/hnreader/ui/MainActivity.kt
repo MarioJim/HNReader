@@ -26,6 +26,8 @@ class MainActivity : AppCompatActivity() {
         }
         binding.recyclerviewStories.layoutManager = LinearLayoutManager(this)
         binding.recyclerviewStories.setHasFixedSize(true)
+
+        supportActionBar?.hide()
     }
 
     override fun onResume() {
