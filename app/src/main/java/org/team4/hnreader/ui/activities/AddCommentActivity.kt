@@ -10,8 +10,8 @@ import kotlin.random.Random
 
 class AddCommentActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAddCommentBinding
-
     private lateinit var dbHelper: DBHelper
+    private var parentID: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,32 +19,31 @@ class AddCommentActivity : AppCompatActivity() {
         setContentView(binding.root)
         title = "Add a comment"
 
-        binding.cancelAddCommentBtn.setOnClickListener {
+        parentID = intent.getIntExtra("parent_id", -1)
+        if (parentID == -1) {
             finish()
         }
 
-        binding.addCommentBtn.setOnClickListener {
-            addComment()
+        binding.cancelAddCommentBtn.setOnClickListener {
+            finish()
         }
+        binding.addCommentBtn.setOnClickListener {
+            val newComment = binding.teComment.text.toString()
 
-        dbHelper = DBHelper(this)
-    }
-
-    private fun addComment() {
-        val newComment = binding.teComment.text.toString()
-
-        if (newComment.isNotEmpty()) {
-            dbHelper.addComment(
-                1, Comment(
-                    "UwU",
+            if (newComment.isNotEmpty()) {
+                val comment = Comment(
+                    "Kevin",
                     Random.nextInt(),
                     newComment,
                     Random.nextInt()
                 )
-            )
-            finish()
-        } else {
-            Toast.makeText(this, "Comments can not be empty", Toast.LENGTH_SHORT).show()
+                dbHelper.addComment(parentID, comment)
+                finish()
+            } else {
+                Toast.makeText(this, "Comments can not be empty", Toast.LENGTH_SHORT).show()
+            }
         }
+
+        dbHelper = DBHelper(this)
     }
 }

@@ -49,10 +49,10 @@ class PostFragment : Fragment() {
     ): View {
         _binding = FragmentPostBinding.inflate(inflater, container, false)
 
-        binding.tvTitle.text = "$postTitle"
-        binding.tvUrl.text = getDomainName("$postURL")
+        binding.tvTitle.text = postTitle
+        binding.tvUrl.text = postURL?.let { getDomainName(it) }
         binding.tvInfo.text = "by $postUser, 3 hours ago"
-        binding.tvVotes.text = "$postVotes points, $postNumComments comments"
+        refreshInfo(postNumComments)
 
         binding.urlBtn.setOnClickListener {
             val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(postURL))
@@ -67,7 +67,7 @@ class PostFragment : Fragment() {
         binding.shareBtn.setOnClickListener {
             val sendIntent: Intent = Intent().apply {
                 action = Intent.ACTION_SEND
-                putExtra(Intent.EXTRA_TEXT, postURL)
+                putExtra(Intent.EXTRA_TEXT, "Check this Hacker News post: $postURL")
                 type = "text/plain"
             }
 
@@ -90,6 +90,11 @@ class PostFragment : Fragment() {
     private fun getDomainName(url: String): String {
         val domain: String = URI(url).host
         return if (domain.startsWith("www.")) domain.substring(4) else domain
+    }
+
+    fun refreshInfo(numComments: Int) {
+        postNumComments = numComments
+        binding.tvVotes.text = "$postVotes points, $postNumComments comments"
     }
 
     companion object {

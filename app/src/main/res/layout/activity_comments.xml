@@ -7,11 +7,12 @@
     android:orientation="vertical"
     tools:context=".ui.activities.CommentsActivity">
 
-    <fragment
-        android:id="@+id/fragment7"
-        android:name="org.team4.hnreader.ui.fragments.PostFragment"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content">
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
