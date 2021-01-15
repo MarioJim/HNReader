@@ -31,22 +31,10 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <fragment
-        android:id="@+id/fragment"
-        android:name="org.team4.hnreader.ui.fragments.CommentFragment"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerviewComments"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <fragment
-        android:id="@+id/fragment12"
-        android:name="org.team4.hnreader.ui.fragments.CommentFragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <fragment
-        android:id="@+id/fragment11"
-        android:name="org.team4.hnreader.ui.fragments.CommentFragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent"
+        tools:listitem="@layout/fragment_comment" />
 
 </LinearLayout>

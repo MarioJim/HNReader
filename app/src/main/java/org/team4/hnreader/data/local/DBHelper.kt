@@ -27,19 +27,19 @@ private const val FIELD_KID_ID = "kid"
 
 // TODO: Remove queries to insert fake data
 private const val FAKE_POPULATE_ITEMS = """
-    INSERT INTO $TABLE_ITEMS ($FIELD_BY, $FIELD_ID, $FIELD_TEXT, $FIELD_TIME)
-    VALUES ("Mario", 123, "Chido tu post", 1610679580),
-           ("Kevin", 234, "Chale con tu post", 1610679682),
-           ("José", 345, "Épico tu post", 1610679592),
-           ("Memo", 456, "No se agüite", 1610679632)
+    INSERT INTO $TABLE_ITEMS ($FIELD_BY, $FIELD_ID, $FIELD_TEXT, $FIELD_TIME, $FIELD_TYPE)
+    VALUES ("Mario", 123, "Chido tu post", 1610679580, "$COMMENT_TYPE"),
+           ("Kevin", 234, "Chale con tu post", 1610679682, "$COMMENT_TYPE"),
+           ("José", 345, "Épico tu post", 1610679592, "$COMMENT_TYPE"),
+           ("Memo", 456, "No se agüite", 1610679632, "$COMMENT_TYPE")
 """
 
 private const val FAKE_POPULATE_KIDS = """
-    INSERT INTO $TABLE_ITEMS ($FIELD_PARENT_ID, $FIELD_KID_ID)
+    INSERT INTO $TABLE_KIDS ($FIELD_PARENT_ID, $FIELD_KID_ID)
     VALUES (1, 123), (1, 234), (1, 345), (1, 456)
 """
 
-class DBHelper(ctx: Context) : SQLiteOpenHelper(ctx, DB_FILE, null, 1) {
+class DBHelper(ctx: Context) : SQLiteOpenHelper(ctx, DB_FILE, null, 2) {
     override fun onCreate(db: SQLiteDatabase?) {
         val createItemsTable = "CREATE TABLE $TABLE_ITEMS (" +
                 "$FIELD_BY TEXT," +
@@ -80,6 +80,7 @@ class DBHelper(ctx: Context) : SQLiteOpenHelper(ctx, DB_FILE, null, 1) {
             put(FIELD_ID, comment.id)
             put(FIELD_TEXT, comment.text)
             put(FIELD_TIME, comment.time)
+            put(FIELD_TYPE, comment.type)
         }
 
         val valuesKids = ContentValues().apply {

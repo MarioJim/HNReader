@@ -87,7 +87,7 @@ class PostFragment : Fragment() {
         _binding = null
     }
 
-    private fun getDomainName(url: String): String? {
+    private fun getDomainName(url: String): String {
         val domain: String = URI(url).host
         return if (domain.startsWith("www.")) domain.substring(4) else domain
     }
