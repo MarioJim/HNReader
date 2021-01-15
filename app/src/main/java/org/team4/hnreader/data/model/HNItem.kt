@@ -7,4 +7,4 @@ abstract class HNItem(
     open val id: Int,
     open val time: Int,
     open val type: String,
-): Serializable
+) : Serializable

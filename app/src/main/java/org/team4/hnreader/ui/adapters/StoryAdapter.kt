@@ -8,13 +8,13 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import org.team4.hnreader.data.model.Story
-import org.team4.hnreader.databinding.FragmentPostBinding
+import org.team4.hnreader.databinding.FragmentStoryBinding
 import org.team4.hnreader.ui.activities.CommentsActivity
 import java.net.URI
 
 class StoryAdapter(private val dataSet: List<Story>) :
     RecyclerView.Adapter<StoryAdapter.StoryViewHolder>() {
-    class StoryViewHolder(binding: FragmentPostBinding) :
+    class StoryViewHolder(binding: FragmentStoryBinding) :
         RecyclerView.ViewHolder(binding.root) {
         val tvTitle = binding.tvTitle
         val tvInfo = binding.tvInfo
@@ -28,9 +28,10 @@ class StoryAdapter(private val dataSet: List<Story>) :
                 startActivity(binding.root.context, browserIntent, null)
             }
             binding.commentsBtn.setOnClickListener {
-                val intentToComments = Intent(binding.root.context, CommentsActivity::class.java).apply {
-                    putExtra("story", story)
-                }
+                val intentToComments =
+                    Intent(binding.root.context, CommentsActivity::class.java).apply {
+                        putExtra("story", story)
+                    }
                 startActivity(binding.root.context, intentToComments, null)
             }
             binding.shareBtn.setOnClickListener {
@@ -43,14 +44,15 @@ class StoryAdapter(private val dataSet: List<Story>) :
                 startActivity(binding.root.context, shareIntent, null)
             }
             binding.saveBtn.setOnClickListener {
-                Toast.makeText(binding.root.context, "Saved item in bookmarks", Toast.LENGTH_SHORT).show()
+                Toast.makeText(binding.root.context, "Saved item in bookmarks", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): StoryViewHolder {
         val binding =
-            FragmentPostBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false)
+            FragmentStoryBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false)
         return StoryViewHolder(binding)
     }
 
@@ -61,7 +63,8 @@ class StoryAdapter(private val dataSet: List<Story>) :
         viewHolder.tvTitle.text = dataSet[position].title
         viewHolder.tvUrl.text = domain
         viewHolder.tvInfo.text = "by ${dataSet[position].by}, 3 hours ago"
-        viewHolder.tvVotes.text = "${dataSet[position].score} points, ${dataSet[position].numComments} comments"
+        viewHolder.tvVotes.text =
+            "${dataSet[position].score} points, ${dataSet[position].numComments} comments"
         viewHolder.story = dataSet[position]
     }
 

@@ -7,7 +7,7 @@ const val STORY_TYPE = "story"
 data class Story(
     override val by: String,
     override val id: Int,
-    val numComments: Int,
+    var numComments: Int,
     override val score: Int,
     override val time: Int,
     override val title: String,

@@ -1,7 +1,7 @@
 package org.team4.hnreader.ui.activities
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import org.team4.hnreader.databinding.ActivityBookmarksBinding
 
 class BookmarksActivity : AppCompatActivity() {

@@ -12,4 +12,4 @@ data class Poll(
     val text: String?,
     override val time: Int,
     override val title: String,
-) : Post(by, id, score, time, title,"poll"), Serializable
+) : Post(by, id, score, time, title, "poll"), Serializable

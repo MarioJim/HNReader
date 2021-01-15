@@ -14,19 +14,19 @@
 
         <fragment
             android:id="@+id/fragment8"
-            android:name="org.team4.hnreader.ui.fragments.PostFragment"
+            android:name="org.team4.hnreader.ui.fragments.StoryFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
         <fragment
             android:id="@+id/fragment9"
-            android:name="org.team4.hnreader.ui.fragments.PostFragment"
+            android:name="org.team4.hnreader.ui.fragments.StoryFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
         <fragment
             android:id="@+id/fragment10"
-            android:name="org.team4.hnreader.ui.fragments.PostFragment"
+            android:name="org.team4.hnreader.ui.fragments.StoryFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

@@ -9,4 +9,4 @@ data class Comment(
     override val id: Int,
     val text: String,
     override val time: Int,
-) : HNItem(by, id, time,  COMMENT_TYPE), Serializable
+) : HNItem(by, id, time, COMMENT_TYPE), Serializable

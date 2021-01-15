@@ -1,11 +1,11 @@
 package org.team4.hnreader.ui.activities
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
-import org.team4.hnreader.databinding.ActivityAddCommentBinding
+import androidx.appcompat.app.AppCompatActivity
 import org.team4.hnreader.data.local.DBHelper
 import org.team4.hnreader.data.model.Comment
+import org.team4.hnreader.databinding.ActivityAddCommentBinding
 import kotlin.random.Random
 
 class AddCommentActivity : AppCompatActivity() {

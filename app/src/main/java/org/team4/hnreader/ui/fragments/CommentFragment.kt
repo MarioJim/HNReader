@@ -13,11 +13,13 @@ private const val COMMENT_DATE = "date"
 
 class CommentFragment : Fragment() {
     private var _binding: FragmentCommentBinding? = null
+
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
 
     private var commentUser: String? = "User"
-    private var commentContent: String? = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin laoreet diam eget tellus commodo imperdiet. In vitae augue auctor magna consequat pharetra. Quisque posuere sed neque vitae tempor. Morbi lectus orci, efficitur et libero nec, vestibulum tempor urna."
+    private var commentContent: String? =
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin laoreet diam eget tellus commodo imperdiet. In vitae augue auctor magna consequat pharetra. Quisque posuere sed neque vitae tempor. Morbi lectus orci, efficitur et libero nec, vestibulum tempor urna."
     private var commentDate: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
