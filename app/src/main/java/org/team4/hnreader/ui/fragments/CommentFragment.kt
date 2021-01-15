@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import org.team4.hnreader.databinding.FragmentCommentBinding
+import org.team4.hnreader.utils.DateTimeConversions
 
 private const val COMMENT_USER = "username"
 private const val COMMENT_CONTENT = "content"
@@ -37,7 +38,8 @@ class CommentFragment : Fragment() {
     ): View {
         _binding = FragmentCommentBinding.inflate(inflater, container, false)
 
-        binding.tvCommentInfo.text = "$commentUser, 3 hours ago"
+        val timeAgo = DateTimeConversions.timeAgo(commentDate)
+        binding.tvCommentInfo.text = "$commentUser, $timeAgo"
         binding.tvContent.text = commentContent
 
         return binding.root

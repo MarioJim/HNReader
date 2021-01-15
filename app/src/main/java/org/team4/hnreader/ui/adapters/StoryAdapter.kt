@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import org.team4.hnreader.data.model.Story
 import org.team4.hnreader.databinding.FragmentStoryBinding
 import org.team4.hnreader.ui.activities.CommentsActivity
+import org.team4.hnreader.utils.DateTimeConversions
 import java.net.URI
 
 class StoryAdapter(private val dataSet: List<Story>) :
@@ -62,7 +63,8 @@ class StoryAdapter(private val dataSet: List<Story>) :
 
         viewHolder.tvTitle.text = dataSet[position].title
         viewHolder.tvUrl.text = domain
-        viewHolder.tvInfo.text = "by ${dataSet[position].by}, 3 hours ago"
+        val timeAgo = DateTimeConversions.timeAgo(dataSet[position].time)
+        viewHolder.tvInfo.text = "by ${dataSet[position].by}, $timeAgo"
         viewHolder.tvVotes.text =
             "${dataSet[position].score} points, ${dataSet[position].numComments} comments"
         viewHolder.story = dataSet[position]

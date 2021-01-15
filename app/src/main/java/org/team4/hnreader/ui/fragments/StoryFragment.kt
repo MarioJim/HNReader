@@ -10,7 +10,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import org.team4.hnreader.data.model.Story
 import org.team4.hnreader.databinding.FragmentStoryBinding
-import org.team4.hnreader.ui.activities.CommentsActivity
+import org.team4.hnreader.utils.DateTimeConversions
 import java.net.URI
 
 private const val ARG_STORY = "story"
@@ -38,17 +38,13 @@ class StoryFragment : Fragment() {
 
         binding.tvTitle.text = story?.title
         binding.tvUrl.text = story?.url?.let { getDomainName(it) }
-        binding.tvInfo.text = "by ${story?.by}, 3 hours ago"
+        val timeAgo = story?.time?.let { DateTimeConversions.timeAgo(it) }
+        binding.tvInfo.text = "by ${story?.by}, $timeAgo"
         story?.numComments?.let { refreshInfo(it) }
 
         binding.urlBtn.setOnClickListener {
             val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(story?.url))
             startActivity(browserIntent)
-        }
-
-        binding.commentsBtn.setOnClickListener {
-            val intentToComments = Intent(this.activity, CommentsActivity::class.java)
-            startActivity(intentToComments)
         }
 
         binding.shareBtn.setOnClickListener {

@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity
 import org.team4.hnreader.data.local.DBHelper
 import org.team4.hnreader.data.model.Comment
 import org.team4.hnreader.databinding.ActivityAddCommentBinding
+import java.util.*
+import kotlin.math.abs
 import kotlin.random.Random
 
 class AddCommentActivity : AppCompatActivity() {
@@ -31,11 +33,12 @@ class AddCommentActivity : AppCompatActivity() {
             val newComment = binding.teComment.text.toString()
 
             if (newComment.isNotEmpty()) {
+                val id = abs(Random.nextInt())
                 val comment = Comment(
                     "Kevin",
-                    Random.nextInt(),
+                    id,
                     newComment,
-                    Random.nextInt()
+                    (Date().time / 1000).toInt()
                 )
                 dbHelper.addComment(parentID, comment)
                 finish()
