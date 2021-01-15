@@ -47,7 +47,7 @@ private const val FAKE_POPULATE_KIDS = """
            (444, 123), (444, 234), (444, 345), (444, 456)
 """
 
-class DBHelper(ctx: Context) : SQLiteOpenHelper(ctx, DB_FILE, null, 4) {
+class DBHelper(ctx: Context) : SQLiteOpenHelper(ctx, DB_FILE, null, 5) {
     override fun onCreate(db: SQLiteDatabase?) {
         val createItemsTable = "CREATE TABLE $TABLE_ITEMS (" +
                 "$FIELD_BY TEXT," +
