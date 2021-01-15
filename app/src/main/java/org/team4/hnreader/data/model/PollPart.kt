@@ -1,4 +1,6 @@
-package org.team4.hnreader.model
+package org.team4.hnreader.data.model
+
+const val POLL_PART_TYPE = "pollopt"
 
 data class PollPart(
     override val by: String,
@@ -7,4 +9,4 @@ data class PollPart(
     val score: Int,
     val text: String,
     override val time: Int,
-) : HNItem(by, id, ArrayList(), time, "pollopt")
+) : HNItem(by, id, time, POLL_PART_TYPE)
