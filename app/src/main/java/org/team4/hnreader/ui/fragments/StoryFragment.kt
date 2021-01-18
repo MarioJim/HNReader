@@ -21,7 +21,7 @@ class StoryFragment : Fragment() {
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
 
-    private var story: Story? = null
+    private var story: Story? = Story("User", -1, 123, 321, 1610744647, "Post Title", "https://news.ycombinator.com/")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
