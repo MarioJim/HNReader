@@ -22,8 +22,8 @@ class CommentAdapter(private val dataSet: List<Comment>) :
     }
 
     override fun onBindViewHolder(viewHolder: CommentViewHolder, position: Int) {
-        val timeAgo = DateTimeConversions.timeAgo(dataSet[position].time)
-        viewHolder.tvCommentInfo.text = "${dataSet[position].by}, $timeAgo"
+        val timeAgo = DateTimeConversions.timeAgo(dataSet[position].created_at)
+        viewHolder.tvCommentInfo.text = "${dataSet[position].author}, $timeAgo"
         viewHolder.tvContent.text = dataSet[position].text
     }
 
