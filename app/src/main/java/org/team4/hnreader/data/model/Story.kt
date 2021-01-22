@@ -8,8 +8,8 @@ data class Story(
     override val by: String,
     override val id: Int,
     var numComments: Int,
-    override val score: Int,
+    val score: Int,
     override val time: Int,
-    override val title: String,
+    val title: String,
     val url: String,
-) : Post(by, id, score, time, title, STORY_TYPE), Serializable
+) : HNItem(by, id,  time, STORY_TYPE), Serializable

@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">Hacker News Reader</string>
-    <string name="post_img_description">View post</string>
+    <string name="story_img_description">View post</string>
 </resources>
