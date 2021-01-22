@@ -63,10 +63,10 @@ class StoryAdapter(private val dataSet: List<Story>) :
 
         viewHolder.tvTitle.text = dataSet[position].title
         viewHolder.tvUrl.text = domain
-        val timeAgo = DateTimeConversions.timeAgo(dataSet[position].time)
-        viewHolder.tvInfo.text = "by ${dataSet[position].by}, $timeAgo"
+        val timeAgo = DateTimeConversions.timeAgo(dataSet[position].created_at)
+        viewHolder.tvInfo.text = "by ${dataSet[position].author}, $timeAgo"
         viewHolder.tvVotes.text =
-            "${dataSet[position].score} points, ${dataSet[position].numComments} comments"
+            "${dataSet[position].points} points, ${dataSet[position].numComments} comments"
         viewHolder.story = dataSet[position]
     }
 

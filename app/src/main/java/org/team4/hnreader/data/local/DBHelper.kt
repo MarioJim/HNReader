@@ -82,17 +82,17 @@ class DBHelper(ctx: Context) : SQLiteOpenHelper(ctx, DB_FILE, null, 5) {
         onCreate(db)
     }
 
-    fun addComment(parentID: Int, comment: Comment) {
+    fun addComment(comment: Comment) {
         val valuesItems = ContentValues().apply {
-            put(FIELD_BY, comment.by)
+            put(FIELD_BY, comment.author)
             put(FIELD_ID, comment.id)
             put(FIELD_TEXT, comment.text)
-            put(FIELD_TIME, comment.time)
+            put(FIELD_TIME, comment.created_at)
             put(FIELD_TYPE, comment.type)
         }
 
         val valuesKids = ContentValues().apply {
-            put(FIELD_PARENT_ID, parentID)
+            put(FIELD_PARENT_ID, comment.parentId)
             put(FIELD_KID_ID, comment.id)
         }
 
@@ -132,9 +132,10 @@ class DBHelper(ctx: Context) : SQLiteOpenHelper(ctx, DB_FILE, null, 5) {
             if (found) {
                 val comment = Comment(
                     cursor2.getString(0),
+                    cursor2.getInt(2),
                     kidID,
-                    cursor2.getString(1),
-                    cursor2.getInt(2)
+                    parentID,
+                    cursor2.getString(1)
                 )
                 result.add(comment)
             } else {
@@ -174,10 +175,11 @@ class DBHelper(ctx: Context) : SQLiteOpenHelper(ctx, DB_FILE, null, 5) {
 
                 return@map Story(
                     cursor.getString(0),
+                    cursor.getInt(3),
                     id,
                     numComments,
                     cursor.getInt(2),
-                    cursor.getInt(3),
+                    "",
                     cursor.getString(4),
                     cursor.getString(5)
                 )

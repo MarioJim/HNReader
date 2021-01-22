@@ -20,7 +20,7 @@ class StoryFragment : Fragment() {
     private val binding get() = _binding!!
 
     private var story: Story =
-        Story("User", -1, 123, 321, 1610744647, "Post Title", "https://news.ycombinator.com/")
+        Story("User", 1610744647, -1, 123, 321, "", "Post Title", "https://news.ycombinator.com/")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,8 +37,8 @@ class StoryFragment : Fragment() {
 
         binding.tvTitle.text = story.title
         binding.tvUrl.text = getDomainName(story.url)
-        val timeAgo = DateTimeConversions.timeAgo(story.time)
-        binding.tvInfo.text = "by ${story.by}, $timeAgo"
+        val timeAgo = DateTimeConversions.timeAgo(story.created_at)
+        binding.tvInfo.text = "by ${story.author}, $timeAgo"
         refreshInfo(story.numComments)
 
         binding.urlBtn.setOnClickListener {
@@ -75,7 +75,7 @@ class StoryFragment : Fragment() {
 
     fun refreshInfo(numComments: Int) {
         story.numComments = numComments
-        binding.tvVotes.text = "${story.score} points, $numComments comments"
+        binding.tvVotes.text = "${story.points} points, $numComments comments"
     }
 
     companion object {
