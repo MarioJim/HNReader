@@ -1,12 +1,13 @@
 package org.team4.hnreader.ui.activities
 
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import org.team4.hnreader.data.local.DBHelper
-import org.team4.hnreader.data.remote.HackerNewsApi
+import org.team4.hnreader.data.model.Comment
 import org.team4.hnreader.databinding.ActivityAddCommentBinding
+import java.util.*
+import kotlin.random.Random
 
 class AddCommentActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAddCommentBinding
@@ -31,19 +32,11 @@ class AddCommentActivity : AppCompatActivity() {
             val newComment = binding.teComment.text.toString()
 
             if (newComment.isNotEmpty()) {
-//                val id = abs(Random.nextInt())
-//                val comment = Comment(
-//                    "Kevin",
-//                    (Date().time / 1000).toInt(),
-//                    id,
-//                    parentID,
-//                    newComment
-//                )
-//                dbHelper.addComment(comment)
-//                finish()
-                HackerNewsApi.getInstance().fetchFrontPage(0,
-                    { it.forEach { st -> Log.e("front_page_req", st.title) } },
-                    { Log.e("front_page_req", it.message, it.cause) })
+                val createdAt = (Date().time / 1000).toInt()
+                val id = kotlin.math.abs(Random.nextInt())
+                val comment = Comment("Kevin", createdAt, id, parentID, newComment)
+                dbHelper.addComment(comment)
+                finish()
             } else {
                 Toast.makeText(this, "Comments can not be empty", Toast.LENGTH_SHORT).show()
             }
