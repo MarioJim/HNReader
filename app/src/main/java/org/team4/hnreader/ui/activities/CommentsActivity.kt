@@ -2,11 +2,13 @@ package org.team4.hnreader.ui.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.team4.hnreader.R
 import org.team4.hnreader.data.local.DBHelper
 import org.team4.hnreader.data.model.Story
+import org.team4.hnreader.data.remote.HackerNewsApi
 import org.team4.hnreader.databinding.ActivityCommentsBinding
 import org.team4.hnreader.ui.adapters.CommentAdapter
 import org.team4.hnreader.ui.fragments.StoryFragment
@@ -48,5 +50,8 @@ class CommentsActivity : AppCompatActivity() {
         super.onResume()
         val comments = dbHelper.getComments(story.id)
         binding.recyclerviewComments.adapter = CommentAdapter(comments)
+        HackerNewsApi.getInstance().fetchStoryComments(story.id, 0,
+            { binding.recyclerviewComments.adapter = CommentAdapter(it) },
+            { Toast.makeText(this, "Error: " + it.message, Toast.LENGTH_LONG).show() })
     }
 }
