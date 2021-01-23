@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.team4.hnreader.data.model.Comment
 import org.team4.hnreader.databinding.FragmentCommentBinding
-import org.team4.hnreader.utils.DateTimeConversions
+import org.team4.hnreader.utils.DateTimeUtils
 
 class CommentAdapter(private val dataSet: List<Comment>) :
     RecyclerView.Adapter<CommentAdapter.CommentViewHolder>() {
@@ -22,7 +22,7 @@ class CommentAdapter(private val dataSet: List<Comment>) :
     }
 
     override fun onBindViewHolder(viewHolder: CommentViewHolder, position: Int) {
-        val timeAgo = DateTimeConversions.timeAgo(dataSet[position].created_at)
+        val timeAgo = DateTimeUtils.timeAgo(dataSet[position].created_at)
         viewHolder.tvCommentInfo.text = "${dataSet[position].author}, $timeAgo"
         viewHolder.tvContent.text = dataSet[position].text
     }

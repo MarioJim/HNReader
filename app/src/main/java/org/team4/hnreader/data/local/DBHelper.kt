@@ -1,112 +1,54 @@
 package org.team4.hnreader.data.local
 
-import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import androidx.core.database.sqlite.transaction
-import org.team4.hnreader.data.model.COMMENT_TYPE
 import org.team4.hnreader.data.model.Comment
-import org.team4.hnreader.data.model.STORY_TYPE
+import org.team4.hnreader.data.model.Comment.Companion.COMMENT_TYPE
 import org.team4.hnreader.data.model.Story
+import org.team4.hnreader.data.model.Story.Companion.STORY_TYPE
+import org.team4.hnreader.data.model.StoryWithText
+import org.team4.hnreader.data.model.StoryWithURL
 
-private const val DB_FILE = "cache.sqlite"
+class DBHelper(ctx: Context) : SQLiteOpenHelper(ctx, DB_FILE, null, 6) {
+    companion object {
+        private const val DB_FILE = "cache.sqlite"
+    }
 
-private const val TABLE_ITEMS = "items"
-private const val FIELD_BY = "user"
-private const val FIELD_ID = "id"
-private const val FIELD_SCORE = "score"
-private const val FIELD_TEXT = "content"
-private const val FIELD_TIME = "time"
-private const val FIELD_TITLE = "title"
-private const val FIELD_TYPE = "type"
-private const val FIELD_URL = "url"
-
-private const val TABLE_KIDS = "kids"
-private const val FIELD_PARENT_ID = "parent"
-private const val FIELD_KID_ID = "kid"
-
-// TODO: Remove queries to insert fake data
-private const val FAKE_POPULATE_ITEMS = """
-    INSERT INTO $TABLE_ITEMS ($FIELD_BY, $FIELD_ID, $FIELD_SCORE, $FIELD_TEXT, $FIELD_TIME, $FIELD_TITLE, $FIELD_TYPE, $FIELD_URL)
-    VALUES ("Mario", 123, null, "Chido tu post", 1610679580, null, "$COMMENT_TYPE", null),
-           ("Kevin", 234, null, "Chale con tu post", 1610679682, null, "$COMMENT_TYPE", null),
-           ("Fausto", 345, null, "Nos quedó rifada la app", 1610679592, null, "$COMMENT_TYPE", null),
-           ("Memo", 456, null, "Se merecen un 100, no se agüiten", 1610679632, null, "$COMMENT_TYPE", null),
-           ("Mario", 111, 9000, null, 1610678632, "Arch Linux", "$STORY_TYPE", "https://wiki.archlinux.org/"),
-           ("Kevin", 222, 420, null, 1610678632, "Mac OS", "$STORY_TYPE", "https://www.apple.com/macos/big-sur/"),
-           ("Fausto", 333, 69, null, 1610678632, "Windows", "$STORY_TYPE", "https://www.microsoft.com/en-us/windows"),
-           ("Memo", 444, 1337, null, 1610678632, "Pop! OS", "$STORY_TYPE", "https://pop.system76.com/")
-"""
-
-private const val FAKE_POPULATE_KIDS = """
-    INSERT INTO $TABLE_KIDS ($FIELD_PARENT_ID, $FIELD_KID_ID)
-    VALUES (111, 123), (111, 234), (111, 345), (111, 456),
-           (222, 123), (222, 234), (222, 345), (222, 456),
-           (333, 123), (333, 234), (333, 345), (333, 456),
-           (444, 123), (444, 234), (444, 345), (444, 456)
-"""
-
-class DBHelper(ctx: Context) : SQLiteOpenHelper(ctx, DB_FILE, null, 5) {
     override fun onCreate(db: SQLiteDatabase?) {
-        val createItemsTable = "CREATE TABLE $TABLE_ITEMS (" +
-                "$FIELD_BY TEXT," +
-                "$FIELD_ID INTEGER PRIMARY KEY," +
-                "$FIELD_SCORE INTEGER," +
-                "$FIELD_TEXT TEXT, " +
-                "$FIELD_TIME INTEGER," +
-                "$FIELD_TITLE TEXT," +
-                "$FIELD_TYPE TEXT," +
-                "$FIELD_URL TEXT )"
-        val createKidsTable = "CREATE TABLE $TABLE_KIDS (" +
-                "$FIELD_PARENT_ID INTEGER," +
-                "$FIELD_KID_ID INTEGER )"
-
         db?.run {
-            execSQL(createItemsTable)
-            execSQL(createKidsTable)
-
-            // TODO: Remove inserting fake data
-            execSQL(FAKE_POPULATE_ITEMS)
-            execSQL(FAKE_POPULATE_KIDS)
+            execSQL(ItemsTable.createTableStatement)
+            execSQL(KidsTable.createTableStatement)
         }
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        val dropItemsTable = "DROP TABLE IF EXISTS $TABLE_ITEMS"
-        val dropKidsTable = "DROP TABLE IF EXISTS $TABLE_KIDS"
         db?.run {
-            execSQL(dropItemsTable)
-            execSQL(dropKidsTable)
+            execSQL(ItemsTable.dropTableStatement)
+            execSQL(KidsTable.dropTableStatement)
         }
         onCreate(db)
     }
 
     fun addComment(comment: Comment) {
-        val valuesItems = ContentValues().apply {
-            put(FIELD_BY, comment.author)
-            put(FIELD_ID, comment.id)
-            put(FIELD_TEXT, comment.text)
-            put(FIELD_TIME, comment.created_at)
-            put(FIELD_TYPE, comment.type)
-        }
-
-        val valuesKids = ContentValues().apply {
-            put(FIELD_PARENT_ID, comment.parentId)
-            put(FIELD_KID_ID, comment.id)
-        }
-
         writableDatabase.transaction {
-            writableDatabase.insert(TABLE_ITEMS, null, valuesItems)
-            writableDatabase.insert(TABLE_KIDS, null, valuesKids)
+            writableDatabase.insert(
+                ItemsTable.TABLE_NAME,
+                null,
+                comment.toItemsContentValues())
+            writableDatabase.insert(
+                KidsTable.TABLE_NAME,
+                null,
+                comment.toKidsContentValues())
         }
     }
 
     fun getComments(parentID: Int): List<Comment> {
         val cursor = readableDatabase.query(
-            TABLE_KIDS,
+            KidsTable.TABLE_NAME,
             null,
-            "$FIELD_PARENT_ID = $parentID",
+            "${KidsTable.FIELD_PARENT_ID} = $parentID",
             null,
             null,
             null,
@@ -120,9 +62,9 @@ class DBHelper(ctx: Context) : SQLiteOpenHelper(ctx, DB_FILE, null, 5) {
         val result = ArrayList<Comment>()
         kids.forEach { kidID ->
             val cursor2 = readableDatabase.query(
-                TABLE_ITEMS,
-                arrayOf(FIELD_BY, FIELD_TEXT, FIELD_TIME),
-                "$FIELD_ID = $kidID AND $FIELD_TYPE = \"$COMMENT_TYPE\"",
+                ItemsTable.TABLE_NAME,
+                arrayOf(ItemsTable.FIELD_AUTHOR, ItemsTable.FIELD_TEXT, ItemsTable.FIELD_CREATED_AT),
+                "${ItemsTable.FIELD_ID} = $kidID AND ${ItemsTable.FIELD_TYPE} = \"$COMMENT_TYPE\"",
                 null,
                 null,
                 null,
@@ -149,9 +91,18 @@ class DBHelper(ctx: Context) : SQLiteOpenHelper(ctx, DB_FILE, null, 5) {
 
     fun getStories(): List<Story> {
         val cursor = readableDatabase.query(
-            TABLE_ITEMS,
-            arrayOf(FIELD_BY, FIELD_ID, FIELD_SCORE, FIELD_TIME, FIELD_TITLE, FIELD_URL),
-            "$FIELD_TYPE = \"$STORY_TYPE\"",
+            ItemsTable.TABLE_NAME,
+            arrayOf(
+                ItemsTable.FIELD_AUTHOR,
+                ItemsTable.FIELD_CREATED_AT,
+                ItemsTable.FIELD_ID,
+                ItemsTable.FIELD_NUM_COMMENTS,
+                ItemsTable.FIELD_POINTS,
+                ItemsTable.FIELD_TEXT,
+                ItemsTable.FIELD_TITLE,
+                ItemsTable.FIELD_URL
+            ),
+            "${ItemsTable.FIELD_TYPE} = \"$STORY_TYPE\"",
             null,
             null,
             null,
@@ -159,30 +110,28 @@ class DBHelper(ctx: Context) : SQLiteOpenHelper(ctx, DB_FILE, null, 5) {
         )
         val result = generateSequence { if (cursor.moveToNext()) cursor else null }
             .map {
-                val id = cursor.getInt(1)
-                val cursor2 = readableDatabase.query(
-                    TABLE_KIDS,
-                    arrayOf(FIELD_PARENT_ID, "COUNT(*) AS C"),
-                    "$FIELD_PARENT_ID = $id",
-                    null,
-                    FIELD_PARENT_ID,
-                    null,
-                    null
-                )
-                cursor2.moveToFirst()
-                val numComments = cursor2.getInt(1)
-                cursor2.close()
-
-                return@map Story(
-                    cursor.getString(0),
-                    cursor.getInt(3),
-                    id,
-                    numComments,
-                    cursor.getInt(2),
-                    "",
-                    cursor.getString(4),
-                    cursor.getString(5)
-                )
+                val url = cursor.getString(7)
+                if (url == null) {
+                    StoryWithText(
+                        cursor.getString(0),
+                        cursor.getInt(1),
+                        cursor.getInt(2),
+                        cursor.getInt(3),
+                        cursor.getInt(4),
+                        cursor.getString(5) ?: "",
+                        cursor.getString(6)
+                    )
+                } else {
+                    StoryWithURL(
+                        cursor.getString(0),
+                        cursor.getInt(1),
+                        cursor.getInt(2),
+                        cursor.getInt(3),
+                        cursor.getInt(4),
+                        cursor.getString(6),
+                        url,
+                    )
+                }
             }
             .toList()
         cursor.close()

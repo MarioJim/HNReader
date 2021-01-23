@@ -9,9 +9,9 @@ data class StoryWithText(
     override val id: Int,
     override var numComments: Int,
     override val points: Int,
-    override val text: String,
+    val text: String,
     override val title: String,
-) : Story(author, created_at, id, numComments, points, text, title, ""), Serializable {
+) : Story(author, created_at, id, numComments, points, title), Serializable {
     companion object {
         fun fromJSONObject(jsonObject: JSONObject) = StoryWithText(
             jsonObject.getString("author"),
