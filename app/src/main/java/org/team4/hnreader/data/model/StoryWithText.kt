@@ -7,7 +7,7 @@ data class StoryWithText(
     override val author: String,
     override val created_at: Int,
     override val id: Int,
-    override var numComments: Int,
+    override val numComments: Int,
     override val points: Int,
     val text: String,
     override val title: String,

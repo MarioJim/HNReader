@@ -2,9 +2,11 @@ package org.team4.hnreader.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.team4.hnreader.data.local.DBHelper
+import org.team4.hnreader.data.remote.HackerNewsApi
 import org.team4.hnreader.databinding.ActivityMainBinding
 import org.team4.hnreader.ui.activities.BookmarksActivity
 import org.team4.hnreader.ui.adapters.StoryAdapter
@@ -34,5 +36,8 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         val storiesList = dbHelper.getStories()
         binding.recyclerviewStories.adapter = StoryAdapter(storiesList)
+        HackerNewsApi.getInstance().fetchFrontPage(0,
+            { binding.recyclerviewStories.adapter = StoryAdapter(it) },
+            { Toast.makeText(this, "Error: " + it.message, Toast.LENGTH_LONG).show() })
     }
 }

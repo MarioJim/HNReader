@@ -48,6 +48,5 @@ class CommentsActivity : AppCompatActivity() {
         super.onResume()
         val comments = dbHelper.getComments(story.id)
         binding.recyclerviewComments.adapter = CommentAdapter(comments)
-        storyFragment.refreshInfo(comments.size)
     }
 }

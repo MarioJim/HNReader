@@ -7,7 +7,7 @@ open class Story(
     override val author: String,
     override val created_at: Int,
     override val id: Int,
-    open var numComments: Int,
+    open val numComments: Int,
     open val points: Int,
     open val title: String,
 ) : HNItem(author, created_at, id, STORY_TYPE), Serializable {

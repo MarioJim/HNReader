@@ -25,10 +25,10 @@ class StoryAdapter(private val dataSet: List<Story>) :
         var story: Story? = null
 
         init {
-            if (story is StoryWithURL) {
-                binding.urlBtn.setOnClickListener {
-                    val browserIntent =
-                        Intent(Intent.ACTION_VIEW, Uri.parse((story as StoryWithURL).url))
+            binding.urlBtn.setOnClickListener {
+                if (story is StoryWithURL) {
+                    val url = (story as StoryWithURL).url
+                    val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                     startActivity(binding.root.context, browserIntent, null)
                 }
             }
