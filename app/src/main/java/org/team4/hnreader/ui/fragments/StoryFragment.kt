@@ -39,10 +39,10 @@ class StoryFragment : Fragment() {
             binding.tvUrl.text = URLUtils.getDomain((story as StoryWithURL).url)
         val timeAgo = DateTimeUtils.timeAgo(story.created_at)
         binding.tvInfo.text = "by ${story.author}, $timeAgo"
-        refreshInfo(story.numComments)
+        binding.tvVotes.text = "${story.points} points, ${story.numComments} comments"
 
-        if (story is StoryWithURL) {
-            binding.urlBtn.setOnClickListener {
+        binding.urlBtn.setOnClickListener {
+            if (story is StoryWithURL) {
                 val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse((story as StoryWithURL).url))
                 startActivity(browserIntent)
             }
@@ -73,11 +73,6 @@ class StoryFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    fun refreshInfo(numComments: Int) {
-        story.numComments = numComments
-        binding.tvVotes.text = "${story.points} points, $numComments comments"
     }
 
     companion object {

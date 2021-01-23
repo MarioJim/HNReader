@@ -7,7 +7,7 @@ data class StoryWithURL(
     override val author: String,
     override val created_at: Int,
     override val id: Int,
-    override var numComments: Int,
+    override val numComments: Int,
     override val points: Int,
     override val title: String,
     val url: String,
