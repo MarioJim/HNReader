@@ -1,5 +1,6 @@
 package org.team4.hnreader.data.model
 
+import android.content.ContentValues
 import java.io.Serializable
 
 abstract class HNItem(
@@ -7,4 +8,6 @@ abstract class HNItem(
     open val created_at: Int,
     open val id: Int,
     open val type: String,
-) : Serializable
+) : Serializable {
+    abstract fun toItemsContentValues(): ContentValues
+}

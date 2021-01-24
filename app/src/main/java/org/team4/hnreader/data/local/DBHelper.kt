@@ -5,11 +5,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import androidx.core.database.sqlite.transaction
 import org.team4.hnreader.data.model.Comment
-import org.team4.hnreader.data.model.Comment.Companion.COMMENT_TYPE
 import org.team4.hnreader.data.model.Story
-import org.team4.hnreader.data.model.Story.Companion.STORY_TYPE
-import org.team4.hnreader.data.model.StoryWithText
-import org.team4.hnreader.data.model.StoryWithURL
 
 class DBHelper(ctx: Context) : SQLiteOpenHelper(ctx, DB_FILE, null, 6) {
     companion object {
@@ -64,7 +60,7 @@ class DBHelper(ctx: Context) : SQLiteOpenHelper(ctx, DB_FILE, null, 6) {
             val cursor2 = readableDatabase.query(
                 ItemsTable.TABLE_NAME,
                 arrayOf(ItemsTable.FIELD_AUTHOR, ItemsTable.FIELD_TEXT, ItemsTable.FIELD_CREATED_AT),
-                "${ItemsTable.FIELD_ID} = $kidID AND ${ItemsTable.FIELD_TYPE} = \"$COMMENT_TYPE\"",
+                "${ItemsTable.FIELD_ID} = $kidID AND ${ItemsTable.FIELD_TYPE} = \"${Comment.TYPE}\"",
                 null,
                 null,
                 null,
@@ -89,52 +85,29 @@ class DBHelper(ctx: Context) : SQLiteOpenHelper(ctx, DB_FILE, null, 6) {
         return result
     }
 
-    fun getStories(): List<Story> {
+    fun getStory(id: Int): Story? {
         val cursor = readableDatabase.query(
             ItemsTable.TABLE_NAME,
-            arrayOf(
-                ItemsTable.FIELD_AUTHOR,
-                ItemsTable.FIELD_CREATED_AT,
-                ItemsTable.FIELD_ID,
-                ItemsTable.FIELD_NUM_COMMENTS,
-                ItemsTable.FIELD_POINTS,
-                ItemsTable.FIELD_TEXT,
-                ItemsTable.FIELD_TITLE,
-                ItemsTable.FIELD_URL
-            ),
-            "${ItemsTable.FIELD_TYPE} = \"$STORY_TYPE\"",
+            ItemsTable.fieldsForStory,
+            "${ItemsTable.FIELD_ID} = $id",
             null,
             null,
             null,
             null
         )
-        val result = generateSequence { if (cursor.moveToNext()) cursor else null }
-            .map {
-                val url = cursor.getString(7)
-                if (url == null) {
-                    StoryWithText(
-                        cursor.getString(0),
-                        cursor.getInt(1),
-                        cursor.getInt(2),
-                        cursor.getInt(3),
-                        cursor.getInt(4),
-                        cursor.getString(5) ?: "",
-                        cursor.getString(6)
-                    )
-                } else {
-                    StoryWithURL(
-                        cursor.getString(0),
-                        cursor.getInt(1),
-                        cursor.getInt(2),
-                        cursor.getInt(3),
-                        cursor.getInt(4),
-                        cursor.getString(6),
-                        url,
-                    )
-                }
-            }
-            .toList()
-        cursor.close()
-        return result
+        return if (cursor.moveToFirst()) {
+            val story = ItemsTable.parseStory(cursor)
+            cursor.close()
+            story
+        } else { null }
+    }
+
+    fun insertOrUpdateStory(story: Story) {
+        writableDatabase.insertWithOnConflict(
+            ItemsTable.TABLE_NAME,
+            null,
+            story.toItemsContentValues(),
+            SQLiteDatabase.CONFLICT_REPLACE
+        )
     }
 }

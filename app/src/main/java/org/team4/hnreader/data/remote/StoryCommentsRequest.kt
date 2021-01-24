@@ -16,7 +16,7 @@ class StoryCommentsRequest(
     private val headers: MutableMap<String, String>?,
     private val listener: Response.Listener<List<Comment>>,
     errorListener: Response.ErrorListener
-) : Request<List<Comment>>(Method.GET, HackerNewsApi.getCommentsURL(storyID, page), errorListener) {
+) : Request<List<Comment>>(Method.GET, ApiRequestQueue.getCommentsURL(storyID, page), errorListener) {
 
     override fun getHeaders(): MutableMap<String, String> = headers ?: super.getHeaders()
 

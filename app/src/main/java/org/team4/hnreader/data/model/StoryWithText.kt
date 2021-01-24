@@ -1,6 +1,8 @@
 package org.team4.hnreader.data.model
 
+import android.content.ContentValues
 import org.json.JSONObject
+import org.team4.hnreader.data.local.ItemsTable
 import java.io.Serializable
 
 data class StoryWithText(
@@ -14,13 +16,23 @@ data class StoryWithText(
 ) : Story(author, created_at, id, numComments, points, title), Serializable {
     companion object {
         fun fromJSONObject(jsonObject: JSONObject) = StoryWithText(
-            jsonObject.getString("author"),
-            jsonObject.getInt("created_at_i"),
-            Integer.parseInt(jsonObject.getString("objectID")),
-            jsonObject.getInt("num_comments"),
-            jsonObject.getInt("points"),
-            jsonObject.getString("story_text"),
+            jsonObject.getString("by"),
+            jsonObject.getInt("time"),
+            jsonObject.getInt("id"),
+            jsonObject.getInt("descendants"),
+            jsonObject.getInt("score"),
+            jsonObject.getString("text"),
             jsonObject.getString("title")
         )
+    }
+
+    override fun toItemsContentValues() = ContentValues().apply {
+        put(ItemsTable.FIELD_AUTHOR, author)
+        put(ItemsTable.FIELD_CREATED_AT, created_at)
+        put(ItemsTable.FIELD_ID, id)
+        put(ItemsTable.FIELD_NUM_COMMENTS, numComments)
+        put(ItemsTable.FIELD_POINTS, points)
+        put(ItemsTable.FIELD_TEXT, text)
+        put(ItemsTable.FIELD_TITLE, title)
     }
 }
