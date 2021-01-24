@@ -12,24 +12,24 @@ data class Comment(
     override val id: Int,
     val parentId: Int,
     val text: String,
-) : HNItem(author, created_at, id, COMMENT_TYPE), Serializable {
+) : HNItem(author, created_at, id, TYPE), Serializable {
     companion object {
-        const val COMMENT_TYPE = "comment"
+        const val TYPE = "comment"
 
         fun fromJSONObject(jsonObject: JSONObject) = Comment(
-            jsonObject.getString("author"),
-            jsonObject.getInt("created_at_i"),
-            Integer.parseInt(jsonObject.getString("objectID")),
-            jsonObject.getInt("parent_id"),
-            jsonObject.getString("comment_text")
+            jsonObject.getString("by"),
+            jsonObject.getInt("time"),
+            jsonObject.getInt("id"),
+            jsonObject.getInt("parent"),
+            jsonObject.getString("text")
         )
     }
 
-    fun toItemsContentValues() = ContentValues().apply {
+    override fun toItemsContentValues() = ContentValues().apply {
         put(ItemsTable.FIELD_AUTHOR, author)
+        put(ItemsTable.FIELD_CREATED_AT, created_at)
         put(ItemsTable.FIELD_ID, id)
         put(ItemsTable.FIELD_TEXT, text)
-        put(ItemsTable.FIELD_CREATED_AT, created_at)
         put(ItemsTable.FIELD_TYPE, type)
     }
 

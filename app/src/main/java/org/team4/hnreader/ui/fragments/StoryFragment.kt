@@ -18,8 +18,15 @@ class StoryFragment : Fragment() {
     private var _binding: FragmentStoryBinding? = null
     private val binding get() = _binding!!
 
-    private var story: Story =
-        Story("User", 1610744647, -1, 123, 321, "Post Title")
+    private var story: Story = StoryWithURL(
+        "User",
+        1610744647,
+        -1,
+        123,
+        321,
+        "Post Title",
+        "https://news.ycombinator.com/"
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

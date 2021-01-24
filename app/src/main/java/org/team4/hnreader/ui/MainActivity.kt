@@ -7,19 +7,21 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import org.team4.hnreader.data.local.DBHelper
+import com.android.volley.VolleyError
+import org.team4.hnreader.data.ItemFinder
 import org.team4.hnreader.data.model.Story
-import org.team4.hnreader.data.remote.HackerNewsApi
+import org.team4.hnreader.data.remote.ApiRequestQueue
 import org.team4.hnreader.databinding.ActivityMainBinding
 import org.team4.hnreader.ui.activities.BookmarksActivity
 import org.team4.hnreader.ui.adapters.StoryAdapter
+import java.util.concurrent.atomic.AtomicInteger
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private lateinit var dbHelper: DBHelper
     private lateinit var storyAdapter: StoryAdapter
+    private var storiesIds: ArrayList<Int> = ArrayList()
     private var storiesList: ArrayList<Story> = ArrayList()
-    private var pagesLoaded: Int = 0
+    // Don't load stories until storiesIds is filled
     private var isLoading: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,8 +29,6 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         supportActionBar?.hide()
-
-        dbHelper = DBHelper(this)
 
         binding.bookmarksBtn.setOnClickListener {
             val intentToBookmarks = Intent(this, BookmarksActivity::class.java)
@@ -43,33 +43,56 @@ class MainActivity : AppCompatActivity() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val lastViewedItem = linearLayoutManager.findLastCompletelyVisibleItemPosition()
-                if (!isLoading && lastViewedItem + 5 >= storiesList.size) {
-                    loadMoreStories()
+                if (!isLoading && lastViewedItem + 7 >= storiesList.size) {
+                    loadMoreStories(storiesList.size)
                     isLoading = true
                 }
             }
         })
 
-        // Load first page
-        HackerNewsApi.getInstance().fetchFrontPage(0,
+        // Load story ids
+        ApiRequestQueue.getInstance().fetchTopStoriesIds(
             {
-                storiesList.plusAssign(it)
-                storyAdapter.notifyDataSetChanged()
-                isLoading = false
+                storiesIds.plusAssign(it)
+                loadMoreStories(0)
             },
-            { Toast.makeText(this, "Error: " + it.message, Toast.LENGTH_LONG).show() })
+            { displayError(it) })
     }
 
-    private fun loadMoreStories() {
-        pagesLoaded++
-        Log.e("loading", "Cargando página $pagesLoaded")
-        HackerNewsApi.getInstance().fetchFrontPage(pagesLoaded,
-            {
-                storiesList.addAll(it)
-                storyAdapter.notifyDataSetChanged()
-                isLoading = false
-                Log.e("loading", "Cargó página $pagesLoaded, ${storiesList.size} stories cargadas")
-            },
-            { Toast.makeText(this, "Error: " + it.message, Toast.LENGTH_LONG).show() })
+    private fun loadMoreStories(startingIndex: Int) {
+        val indexesRange = IntRange(startingIndex, startingIndex + NUM_ITEMS_PER_LOADING_EVENT - 1)
+        val storiesToAdd = arrayOfNulls<Story>(NUM_ITEMS_PER_LOADING_EVENT)
+        val numStoriesToAdd = AtomicInteger(NUM_ITEMS_PER_LOADING_EVENT)
+        for (i in indexesRange) {
+            ItemFinder.getInstance(this).getStory(
+                storiesIds[i],
+                true,
+                { story ->
+                    storiesToAdd[i - startingIndex] = story
+                    if (numStoriesToAdd.decrementAndGet() == 0) {
+                        storiesList.addAll(storiesToAdd.filterNotNull().toTypedArray())
+                        storyAdapter.notifyDataSetChanged()
+                        isLoading = false
+                    }
+                },
+                {
+                    displayError(it)
+                    if (numStoriesToAdd.decrementAndGet() == 0) {
+                        storiesList.addAll(storiesToAdd.filterNotNull().toTypedArray())
+                        storyAdapter.notifyDataSetChanged()
+                        isLoading = false
+                    }
+                }
+            )
+        }
+    }
+
+    private fun displayError(error: VolleyError) {
+        Log.e("volley error", error.message, error.cause)
+        Toast.makeText(this, "Error: " + error.message, Toast.LENGTH_LONG).show()
+    }
+
+    companion object {
+        private const val NUM_ITEMS_PER_LOADING_EVENT = 20
     }
 }
