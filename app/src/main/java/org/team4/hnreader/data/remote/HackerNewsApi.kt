@@ -17,10 +17,10 @@ class HackerNewsApi {
                 instance ?: HackerNewsApi().also { instance = it }
             }
 
-        private const val BASE_URL = "https://hn.algolia.com/api/v1/search"
-
-        fun getFrontPageURL(page: Int) = "$BASE_URL?tags=front_page,story&page=$page"
-        fun getCommentsURL(storyID: Int, page: Int) = "$BASE_URL?tags=comment,story_$storyID&page=$page"
+        private const val ALGOLIA_URL = "https://hn.algolia.com/api/v1/search"
+        fun getFrontPageURL(page: Int) = "$ALGOLIA_URL?tags=front_page,story&page=$page"
+        fun getCommentsURL(storyID: Int, page: Int) =
+            "$ALGOLIA_URL?tags=comment,story_$storyID&page=$page"
     }
 
     private val requestQueue: RequestQueue by lazy {

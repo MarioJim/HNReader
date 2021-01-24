@@ -1,5 +1,6 @@
 package org.team4.hnreader.data.remote
 
+import android.util.Log
 import com.android.volley.NetworkResponse
 import com.android.volley.ParseError
 import com.android.volley.Request
@@ -11,7 +12,7 @@ import org.team4.hnreader.data.model.Story
 import java.nio.charset.Charset
 
 class FrontPageRequest(
-    page: Int,
+    val page: Int,
     private val headers: MutableMap<String, String>?,
     private val listener: Response.Listener<List<Story>>,
     errorListener: Response.ErrorListener
@@ -31,6 +32,7 @@ class FrontPageRequest(
             val storyList = List(jsonArray.length()) { i ->
                 Story.fromJSONObject(jsonArray.getJSONObject(i))
             }
+            Log.e("request", "Página $page, size ${storyList.size}")
             Response.success(storyList, HttpHeaderParser.parseCacheHeaders(response))
         } catch (e: JSONException) {
             Response.error(ParseError(e))
