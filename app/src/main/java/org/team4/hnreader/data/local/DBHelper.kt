@@ -45,8 +45,6 @@ class DBHelper(ctx: Context) : SQLiteOpenHelper(ctx, DB_FILE, null, 7) {
         }
     }
 
-    fun getComments(parentID: Int) = getKids(parentID).mapNotNull { getComment(it) }
-
     fun getComment(id: Int): Comment? {
         val cursor = readableDatabase.query(
             ItemsTable.TABLE_NAME,
@@ -119,7 +117,7 @@ class DBHelper(ctx: Context) : SQLiteOpenHelper(ctx, DB_FILE, null, 7) {
     }
 
     private fun getKids(id: Int): List<Int> {
-        val kidsCursor = readableDatabase.query(
+        val cursor = readableDatabase.query(
             KidsTable.TABLE_NAME,
             arrayOf(KidsTable.FIELD_KID_ID),
             "${KidsTable.FIELD_PARENT_ID} = $id",
@@ -128,10 +126,10 @@ class DBHelper(ctx: Context) : SQLiteOpenHelper(ctx, DB_FILE, null, 7) {
             null,
             null
         )
-        val kids = generateSequence { if (kidsCursor.moveToNext()) kidsCursor else null }
-            .map { kidsCursor.getInt(0) }
+        val kids = generateSequence { if (cursor.moveToNext()) cursor else null }
+            .map { cursor.getInt(0) }
             .toList()
-        kidsCursor.close()
+        cursor.close()
         return kids
     }
 }
