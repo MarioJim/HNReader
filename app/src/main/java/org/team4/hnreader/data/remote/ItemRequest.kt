@@ -8,22 +8,22 @@ import com.android.volley.toolbox.HttpHeaderParser
 import org.json.JSONException
 import org.json.JSONObject
 import org.team4.hnreader.data.model.Comment
-import org.team4.hnreader.data.model.HNItem
+import org.team4.hnreader.data.model.Item
 import org.team4.hnreader.data.model.Story
 import java.nio.charset.Charset
 
 class ItemRequest(
     id: Int,
     private val customPriority: Priority,
-    private val listener: Response.Listener<HNItem>,
+    private val listener: Response.Listener<Item>,
     errorListener: Response.ErrorListener
-) : Request<HNItem>(Method.GET, getItemURL(id), errorListener) {
+) : Request<Item>(Method.GET, getItemURL(id), errorListener) {
 
     override fun getPriority() = customPriority
 
-    override fun deliverResponse(response: HNItem) = listener.onResponse(response)
+    override fun deliverResponse(response: Item) = listener.onResponse(response)
 
-    override fun parseNetworkResponse(response: NetworkResponse?): Response<HNItem> {
+    override fun parseNetworkResponse(response: NetworkResponse?): Response<Item> {
         return try {
             val jsonStr = String(
                 response?.data ?: ByteArray(0),

@@ -5,7 +5,7 @@ import org.json.JSONObject
 import org.team4.hnreader.data.local.KidsTable
 import java.io.Serializable
 
-abstract class HNItem(
+abstract class Item(
     open val author: String,
     open val created_at: Int,
     open val id: Int,

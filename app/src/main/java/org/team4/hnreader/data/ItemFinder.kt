@@ -5,6 +5,7 @@ import android.util.Log
 import com.android.volley.Request
 import com.android.volley.Response
 import org.team4.hnreader.data.local.DBHelper
+import org.team4.hnreader.data.model.Comment
 import org.team4.hnreader.data.model.Story
 import org.team4.hnreader.data.remote.ApiRequestQueue
 
@@ -31,7 +32,7 @@ class ItemFinder(ctx: Context) {
             if (storyFromCache == null) {
                 getStoryFromApi(id, listener, errorListener)
             } else {
-                ApiRequestQueue.getInstance().fetchStory(
+                ApiRequestQueue.getInstance().fetchItem<Story>(
                     id,
                     Request.Priority.LOW,
                     { dbHelper.insertOrUpdateItem(it) },
@@ -48,9 +49,41 @@ class ItemFinder(ctx: Context) {
         id: Int,
         listener: Response.Listener<Story>,
         errorListener: Response.ErrorListener
-    ) = ApiRequestQueue.getInstance().fetchStory(
+    ) = ApiRequestQueue.getInstance().fetchItem<Story>(
         id,
         Request.Priority.HIGH,
+        {
+            dbHelper.insertOrUpdateItem(it)
+            listener.onResponse(it)
+        },
+        errorListener
+    )
+
+    fun getComment(
+        id: Int,
+        fromCache: Boolean,
+        listener: Response.Listener<Comment>,
+        errorListener: Response.ErrorListener
+    ) {
+        if (fromCache) {
+            val commentFromCache = dbHelper.getComment(id)
+            if (commentFromCache == null) {
+                getCommentFromApi(id, listener, errorListener)
+            } else {
+                listener.onResponse(commentFromCache)
+            }
+        } else {
+            getCommentFromApi(id, listener, errorListener)
+        }
+    }
+
+    private fun getCommentFromApi(
+        id: Int,
+        listener: Response.Listener<Comment>,
+        errorListener: Response.ErrorListener
+    ) = ApiRequestQueue.getInstance().fetchItem<Comment>(
+        id,
+        Request.Priority.NORMAL,
         {
             dbHelper.insertOrUpdateItem(it)
             listener.onResponse(it)

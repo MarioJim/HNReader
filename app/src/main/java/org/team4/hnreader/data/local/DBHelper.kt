@@ -26,7 +26,7 @@ class DBHelper(ctx: Context) : SQLiteOpenHelper(ctx, DB_FILE, null, 7) {
         onCreate(db)
     }
 
-    fun insertOrUpdateItem(item: HNItem) {
+    fun insertOrUpdateItem(item: Item) {
         writableDatabase.transaction {
             writableDatabase.insertWithOnConflict(
                 ItemsTable.TABLE_NAME,
@@ -47,7 +47,7 @@ class DBHelper(ctx: Context) : SQLiteOpenHelper(ctx, DB_FILE, null, 7) {
 
     fun getComments(parentID: Int) = getKids(parentID).mapNotNull { getComment(it) }
 
-    private fun getComment(id: Int): Comment? {
+    fun getComment(id: Int): Comment? {
         val cursor = readableDatabase.query(
             ItemsTable.TABLE_NAME,
             arrayOf(ItemsTable.FIELD_AUTHOR, ItemsTable.FIELD_CREATED_AT, ItemsTable.FIELD_TEXT),

@@ -6,8 +6,7 @@ import com.android.volley.Response
 import com.android.volley.toolbox.BasicNetwork
 import com.android.volley.toolbox.HurlStack
 import com.android.volley.toolbox.NoCache
-import org.team4.hnreader.data.model.Comment
-import org.team4.hnreader.data.model.Story
+import org.team4.hnreader.data.model.Item
 
 class ApiRequestQueue {
     companion object {
@@ -28,62 +27,44 @@ class ApiRequestQueue {
     fun fetchTopStoriesIds(
         listener: Response.Listener<List<Int>>,
         errorListener: Response.ErrorListener
-    ) {
+    ): Request<List<Int>> =
         requestQueue.add(StoriesIdsRequest("$BASE_URL/topstories.json", listener, errorListener))
-    }
 
     fun fetchNewStoriesIds(
         listener: Response.Listener<List<Int>>,
         errorListener: Response.ErrorListener
-    ) {
+    ): Request<List<Int>> =
         requestQueue.add(StoriesIdsRequest("$BASE_URL/newstories.json", listener, errorListener))
-    }
 
     fun fetchBestStoriesIds(
         listener: Response.Listener<List<Int>>,
         errorListener: Response.ErrorListener
-    ) {
+    ): Request<List<Int>> =
         requestQueue.add(StoriesIdsRequest("$BASE_URL/beststories.json", listener, errorListener))
-    }
 
     fun fetchAskStoriesIds(
         listener: Response.Listener<List<Int>>,
         errorListener: Response.ErrorListener
-    ) {
+    ): Request<List<Int>> =
         requestQueue.add(StoriesIdsRequest("$BASE_URL/askstories.json", listener, errorListener))
-    }
 
     fun fetchShowStoriesIds(
         listener: Response.Listener<List<Int>>,
         errorListener: Response.ErrorListener
-    ) {
+    ): Request<List<Int>> =
         requestQueue.add(StoriesIdsRequest("$BASE_URL/showstories.json", listener, errorListener))
-    }
 
-    fun fetchStory(
+    fun <T : Item> fetchItem(
         id: Int,
         priority: Request.Priority,
-        listener: Response.Listener<Story>,
+        listener: Response.Listener<T>,
         errorListener: Response.ErrorListener
-    ) {
-        requestQueue.add(ItemRequest(
+    ): Request<Item> = requestQueue.add(
+        ItemRequest(
             id,
             priority,
-            { listener.onResponse(it as Story) },
+            { listener.onResponse(it as T) },
             errorListener
-        ))
-    }
-
-    fun fetchComment(
-        id: Int,
-        listener: Response.Listener<Comment>,
-        errorListener: Response.ErrorListener
-    ) {
-        requestQueue.add(ItemRequest(
-            id,
-            Request.Priority.NORMAL,
-            { listener.onResponse(it as Comment) },
-            errorListener
-        ))
-    }
+        )
+    )
 }
