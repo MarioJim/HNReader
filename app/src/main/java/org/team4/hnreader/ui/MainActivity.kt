@@ -60,9 +60,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun loadMoreStories(startingIndex: Int) {
-        val indexesRange = IntRange(startingIndex, startingIndex + NUM_ITEMS_PER_LOADING_EVENT - 1)
-        val storiesToAdd = arrayOfNulls<Story>(NUM_ITEMS_PER_LOADING_EVENT)
-        val numStoriesToAdd = AtomicInteger(NUM_ITEMS_PER_LOADING_EVENT)
+        val indexesRange = IntRange(startingIndex, startingIndex + NUM_STORIES_PER_LOADING_EVENT - 1)
+        val storiesToAdd = arrayOfNulls<Story>(NUM_STORIES_PER_LOADING_EVENT)
+        val numStoriesToAdd = AtomicInteger(NUM_STORIES_PER_LOADING_EVENT)
         for (i in indexesRange) {
             ItemFinder.getInstance(this).getStory(
                 storiesIds[i],
@@ -89,10 +89,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun displayError(error: VolleyError) {
         Log.e("volley error", error.message, error.cause)
-        Toast.makeText(this, "Error: " + error.message, Toast.LENGTH_LONG).show()
+        Toast.makeText(this, "Error: " + error.message, Toast.LENGTH_SHORT).show()
     }
 
     companion object {
-        private const val NUM_ITEMS_PER_LOADING_EVENT = 20
+        private const val NUM_STORIES_PER_LOADING_EVENT = 20
     }
 }

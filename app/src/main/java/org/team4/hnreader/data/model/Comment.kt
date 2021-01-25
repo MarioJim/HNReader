@@ -31,5 +31,4 @@ data class Comment(
         put(ItemsTable.FIELD_TEXT, text)
         put(ItemsTable.FIELD_TYPE, type)
     }
-
 }

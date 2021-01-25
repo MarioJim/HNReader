@@ -30,19 +30,24 @@ class ItemRequest(
                 Charset.forName(HttpHeaderParser.parseCharset(response?.headers))
             )
             val jsonObject = JSONObject(jsonStr)
+            if (jsonObject.has("deleted") && jsonObject.getBoolean("deleted")) {
+                throw DeletedItemException(jsonObject)
+            }
             val item = when (jsonObject.getString("type")) {
                 "story" -> Story.fromJSONObject(jsonObject)
                 "comment" -> Comment.fromJSONObject(jsonObject)
                 else -> {
                     val type = jsonObject.getString("type")
                     val id = jsonObject.getInt("id")
-                    throw UnsupportedOperationException("Item type \"$type\" not implemented (id $id)")
+                    throw ItemTypeNotImplementedException(type, id)
                 }
             }
             Response.success(item, HttpHeaderParser.parseCacheHeaders(response))
         } catch (e: JSONException) {
             Response.error(ParseError(e))
-        } catch (e: UnsupportedOperationException) {
+        } catch (e: DeletedItemException) {
+            Response.error(ParseError(e))
+        } catch (e: ItemTypeNotImplementedException) {
             Response.error(ParseError(e))
         }
     }

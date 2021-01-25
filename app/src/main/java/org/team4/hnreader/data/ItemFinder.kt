@@ -6,8 +6,10 @@ import com.android.volley.Request
 import com.android.volley.Response
 import org.team4.hnreader.data.local.DBHelper
 import org.team4.hnreader.data.model.Comment
+import org.team4.hnreader.data.model.FlattenedComment
 import org.team4.hnreader.data.model.Story
 import org.team4.hnreader.data.remote.ApiRequestQueue
+import java.util.concurrent.atomic.AtomicInteger
 
 class ItemFinder(ctx: Context) {
     companion object {
@@ -59,7 +61,55 @@ class ItemFinder(ctx: Context) {
         errorListener
     )
 
-    fun getComment(
+    fun getCommentTree(
+        parentID: Int,
+        depth: Int,
+        fromCache: Boolean,
+        listener: Response.Listener<List<FlattenedComment>>,
+        errorListener: Response.ErrorListener
+    ) {
+        getComment(
+            parentID,
+            fromCache,
+            { parentComment ->
+                val flattenedComment = FlattenedComment.fromComment(parentComment, depth)
+                if (parentComment.kids.isEmpty()) {
+                    listener.onResponse(listOf(flattenedComment))
+                } else {
+                    val flattenedComments =
+                        arrayOfNulls<List<FlattenedComment>>(parentComment.kids.size + 1)
+                    flattenedComments[0] = listOf(flattenedComment)
+                    val commentTreesLeft = AtomicInteger(parentComment.kids.size)
+                    for (kidIdx in parentComment.kids.indices) {
+                        getCommentTree(
+                            parentComment.kids[kidIdx],
+                            depth + 1,
+                            fromCache,
+                            { childFlattenedCommentTree ->
+                                flattenedComments[kidIdx + 1] = childFlattenedCommentTree
+                                if (commentTreesLeft.decrementAndGet() == 0) {
+                                    listener.onResponse(
+                                        flattenedComments.filterNotNull()
+                                            .flatMap { it.asSequence() })
+                                }
+                            },
+                            { error ->
+                                errorListener.onErrorResponse(error)
+                                if (commentTreesLeft.decrementAndGet() == 0) {
+                                    listener.onResponse(
+                                        flattenedComments.filterNotNull()
+                                            .flatMap { it.asSequence() })
+                                }
+                            }
+                        )
+                    }
+                }
+            },
+            errorListener
+        )
+    }
+
+    private fun getComment(
         id: Int,
         fromCache: Boolean,
         listener: Response.Listener<Comment>,

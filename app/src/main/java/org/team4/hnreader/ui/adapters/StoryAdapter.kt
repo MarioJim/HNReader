@@ -80,6 +80,4 @@ class StoryAdapter(private val dataSet: List<Story>) :
     }
 
     override fun getItemCount() = dataSet.size
-
-
 }

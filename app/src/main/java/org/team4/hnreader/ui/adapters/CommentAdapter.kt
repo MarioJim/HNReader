@@ -3,11 +3,11 @@ package org.team4.hnreader.ui.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import org.team4.hnreader.data.model.Comment
+import org.team4.hnreader.data.model.FlattenedComment
 import org.team4.hnreader.databinding.FragmentCommentBinding
 import org.team4.hnreader.utils.DateTimeUtils
 
-class CommentAdapter(private val dataSet: List<Comment>) :
+class CommentAdapter(private val dataSet: List<FlattenedComment>) :
     RecyclerView.Adapter<CommentAdapter.CommentViewHolder>() {
     class CommentViewHolder(binding: FragmentCommentBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -23,7 +23,7 @@ class CommentAdapter(private val dataSet: List<Comment>) :
 
     override fun onBindViewHolder(viewHolder: CommentViewHolder, position: Int) {
         val timeAgo = DateTimeUtils.timeAgo(dataSet[position].created_at)
-        viewHolder.tvCommentInfo.text = "${dataSet[position].author}, $timeAgo"
+        viewHolder.tvCommentInfo.text = "${dataSet[position].author}, $timeAgo, depth ${dataSet[position].depth}"
         viewHolder.tvContent.text = dataSet[position].text
     }
 
