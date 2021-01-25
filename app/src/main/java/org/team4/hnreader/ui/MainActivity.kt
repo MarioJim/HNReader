@@ -15,6 +15,7 @@ import org.team4.hnreader.databinding.ActivityMainBinding
 import org.team4.hnreader.ui.activities.BookmarksActivity
 import org.team4.hnreader.ui.adapters.StoryAdapter
 import java.util.concurrent.atomic.AtomicInteger
+import kotlin.math.min
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -60,24 +61,26 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun loadMoreStories() {
-        val storiesToAdd = arrayOfNulls<Story>(NUM_STORIES_PER_LOADING_EVENT)
-        val numStoriesToAdd = AtomicInteger(NUM_STORIES_PER_LOADING_EVENT)
+        val numStoriesToAdd = min(NUM_STORIES_PER_LOADING_EVENT, storiesIds.size - storiesList.size)
+        if (numStoriesToAdd == 0) return
+        val storiesToAdd = arrayOfNulls<Story>(numStoriesToAdd)
+        val storiesToAddCounter = AtomicInteger(numStoriesToAdd)
         val finishedFetching = {
             storiesList.addAll(storiesToAdd.filterNotNull().toTypedArray())
             storyAdapter.notifyDataSetChanged()
             isLoading = false
         }
-        for (i in storiesList.size until storiesList.size + NUM_STORIES_PER_LOADING_EVENT) {
+        for (i in storiesList.size until storiesList.size + numStoriesToAdd) {
             ItemFinder.getInstance(this).getStory(
                 storiesIds[i],
                 true,
                 { story ->
                     storiesToAdd[i - storiesList.size] = story
-                    if (numStoriesToAdd.decrementAndGet() == 0) finishedFetching()
+                    if (storiesToAddCounter.decrementAndGet() == 0) finishedFetching()
                 },
                 {
                     displayError(it)
-                    if (numStoriesToAdd.decrementAndGet() == 0) finishedFetching()
+                    if (storiesToAddCounter.decrementAndGet() == 0) finishedFetching()
                 }
             )
         }

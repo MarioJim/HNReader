@@ -61,48 +61,65 @@ class ItemFinder(ctx: Context) {
         errorListener
     )
 
-    fun getCommentTree(
+    fun fetchCommentsFromIdsList(
+        idList: List<Int>,
+        depth: Int,
+        fromCache: Boolean,
+        listener: Response.Listener<List<FlattenedComment>>,
+        errorListener: Response.ErrorListener
+    ) {
+        val flattenedComments = arrayOfNulls<List<FlattenedComment>>(idList.size)
+        val commentTreesLeft = AtomicInteger(idList.size)
+        val finishedFetching = {
+            listener.onResponse(
+                flattenedComments.filterNotNull().flatMap { it.asSequence() }
+            )
+        }
+        for (kidIdx in idList.indices) {
+            // Fetch every kid comment tree as a list of flattened comments
+            getCommentTree(
+                idList[kidIdx],
+                depth,
+                fromCache,
+                { childFlattenedCommentTree ->
+                    flattenedComments[kidIdx] = childFlattenedCommentTree
+                    if (commentTreesLeft.decrementAndGet() == 0) finishedFetching()
+                },
+                { error ->
+                    errorListener.onErrorResponse(error)
+                    if (commentTreesLeft.decrementAndGet() == 0) finishedFetching()
+                }
+            )
+        }
+    }
+
+    private fun getCommentTree(
         parentID: Int,
         depth: Int,
         fromCache: Boolean,
         listener: Response.Listener<List<FlattenedComment>>,
         errorListener: Response.ErrorListener
     ) {
+        // Fetch parent comment
         getComment(
             parentID,
             fromCache,
-            { parentComment ->
-                val flattenedComment = FlattenedComment.fromComment(parentComment, depth)
+            fun(parentComment: Comment) {
+                // Transform it into a FlattenedComment
+                val flatParentComment = FlattenedComment.fromComment(parentComment, depth)
+                val result = listOf(flatParentComment)
                 if (parentComment.kids.isEmpty()) {
-                    listener.onResponse(listOf(flattenedComment))
+                    // If it has no kids, return it
+                    listener.onResponse(result)
                 } else {
-                    val flattenedComments =
-                        arrayOfNulls<List<FlattenedComment>>(parentComment.kids.size + 1)
-                    flattenedComments[0] = listOf(flattenedComment)
-                    val commentTreesLeft = AtomicInteger(parentComment.kids.size)
-                    for (kidIdx in parentComment.kids.indices) {
-                        getCommentTree(
-                            parentComment.kids[kidIdx],
-                            depth + 1,
-                            fromCache,
-                            { childFlattenedCommentTree ->
-                                flattenedComments[kidIdx + 1] = childFlattenedCommentTree
-                                if (commentTreesLeft.decrementAndGet() == 0) {
-                                    listener.onResponse(
-                                        flattenedComments.filterNotNull()
-                                            .flatMap { it.asSequence() })
-                                }
-                            },
-                            { error ->
-                                errorListener.onErrorResponse(error)
-                                if (commentTreesLeft.decrementAndGet() == 0) {
-                                    listener.onResponse(
-                                        flattenedComments.filterNotNull()
-                                            .flatMap { it.asSequence() })
-                                }
-                            }
-                        )
-                    }
+                    // Else, fetch comments for every id
+                    fetchCommentsFromIdsList(
+                        parentComment.kids,
+                        depth + 1,
+                        fromCache,
+                        { listener.onResponse(result + it) },
+                        errorListener
+                    )
                 }
             },
             errorListener

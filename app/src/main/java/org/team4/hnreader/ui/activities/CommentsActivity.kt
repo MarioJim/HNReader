@@ -15,7 +15,6 @@ import org.team4.hnreader.data.model.Story
 import org.team4.hnreader.databinding.ActivityCommentsBinding
 import org.team4.hnreader.ui.adapters.CommentAdapter
 import org.team4.hnreader.ui.fragments.StoryFragment
-import java.util.concurrent.atomic.AtomicInteger
 import kotlin.math.min
 
 class CommentsActivity : AppCompatActivity() {
@@ -74,29 +73,20 @@ class CommentsActivity : AppCompatActivity() {
         var numCommentsToAdd =
             if (initialLoad) NUM_STARTING_COMMENTS else NUM_COMMENTS_PER_LOAD_EVENT
         numCommentsToAdd = min(numCommentsToAdd, story.kids.size - lastLoadedTree)
-        val commentsToAdd = arrayOfNulls<List<FlattenedComment>>(numCommentsToAdd)
-        val commentTreesLeft = AtomicInteger(numCommentsToAdd)
-        val finishedFetching = {
-            commentsList.addAll(commentsToAdd.filterNotNull().flatten())
-            commentsAdapter.notifyDataSetChanged()
-            lastLoadedTree += numCommentsToAdd
-            isLoading = false
-        }
-        for (commentTreeIdx in 0 until numCommentsToAdd) {
-            ItemFinder.getInstance(this).getCommentTree(
-                story.kids[lastLoadedTree + commentTreeIdx],
-                0,
-                true,
-                { childFlattenedCommentTree ->
-                    commentsToAdd[commentTreeIdx] = childFlattenedCommentTree
-                    if (commentTreesLeft.decrementAndGet() == 0) finishedFetching()
-                },
-                { error ->
-                    displayError(error)
-                    if (commentTreesLeft.decrementAndGet() == 0) finishedFetching()
-                }
-            )
-        }
+        if (numCommentsToAdd == 0) return
+        val commentIdsToFetch = story.kids.subList(lastLoadedTree, lastLoadedTree + numCommentsToAdd)
+        ItemFinder.getInstance(this).fetchCommentsFromIdsList(
+            commentIdsToFetch,
+            0,
+            true,
+            { fetchedCommentList ->
+                commentsList.addAll(fetchedCommentList)
+                commentsAdapter.notifyDataSetChanged()
+                lastLoadedTree += numCommentsToAdd
+                isLoading = false
+            },
+            { displayError(it) }
+        )
     }
 
     private fun displayError(error: VolleyError) {
