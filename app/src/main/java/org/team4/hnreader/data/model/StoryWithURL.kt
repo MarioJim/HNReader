@@ -9,16 +9,18 @@ data class StoryWithURL(
     override val author: String,
     override val created_at: Int,
     override val id: Int,
+    override val kids: List<Int>,
     override val numComments: Int,
     override val points: Int,
     override val title: String,
     val url: String,
-) : Story(author, created_at, id, numComments, points, title), Serializable {
+) : Story(author, created_at, id, kids, numComments, points, title), Serializable {
     companion object {
         fun fromJSONObject(jsonObject: JSONObject) = StoryWithURL(
             jsonObject.getString("by"),
             jsonObject.getInt("time"),
             jsonObject.getInt("id"),
+            kidsFromJSONObject(jsonObject),
             jsonObject.getInt("descendants"),
             jsonObject.getInt("score"),
             jsonObject.getString("title"),

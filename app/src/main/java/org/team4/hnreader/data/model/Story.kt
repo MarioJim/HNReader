@@ -7,10 +7,11 @@ abstract class Story(
     override val author: String,
     override val created_at: Int,
     override val id: Int,
+    override val kids: List<Int>,
     open val numComments: Int,
     open val points: Int,
     open val title: String,
-) : HNItem(author, created_at, id, TYPE), Serializable {
+) : HNItem(author, created_at, id, kids, TYPE), Serializable {
     companion object {
         const val TYPE = "story"
 

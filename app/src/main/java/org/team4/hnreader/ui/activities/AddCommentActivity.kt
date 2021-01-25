@@ -34,8 +34,8 @@ class AddCommentActivity : AppCompatActivity() {
             if (newComment.isNotEmpty()) {
                 val createdAt = (Date().time / 1000).toInt()
                 val id = kotlin.math.abs(Random.nextInt())
-                val comment = Comment("Kevin", createdAt, id, parentID, newComment)
-                dbHelper.addComment(comment)
+                val comment = Comment("Kevin", createdAt, id, emptyList(), newComment)
+                dbHelper.insertOrUpdateItem(comment)
                 finish()
             } else {
                 Toast.makeText(this, "Comments can not be empty", Toast.LENGTH_SHORT).show()

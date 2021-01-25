@@ -3,16 +3,15 @@ package org.team4.hnreader.data.model
 import android.content.ContentValues
 import org.json.JSONObject
 import org.team4.hnreader.data.local.ItemsTable
-import org.team4.hnreader.data.local.KidsTable
 import java.io.Serializable
 
 data class Comment(
     override val author: String,
     override val created_at: Int,
     override val id: Int,
-    val parentId: Int,
+    override val kids: List<Int>,
     val text: String,
-) : HNItem(author, created_at, id, TYPE), Serializable {
+) : HNItem(author, created_at, id, kids, TYPE), Serializable {
     companion object {
         const val TYPE = "comment"
 
@@ -20,7 +19,7 @@ data class Comment(
             jsonObject.getString("by"),
             jsonObject.getInt("time"),
             jsonObject.getInt("id"),
-            jsonObject.getInt("parent"),
+            kidsFromJSONObject(jsonObject),
             jsonObject.getString("text")
         )
     }
@@ -33,8 +32,4 @@ data class Comment(
         put(ItemsTable.FIELD_TYPE, type)
     }
 
-    fun toKidsContentValues() = ContentValues().apply {
-        put(KidsTable.FIELD_PARENT_ID, parentId)
-        put(KidsTable.FIELD_KID_ID, id)
-    }
 }
