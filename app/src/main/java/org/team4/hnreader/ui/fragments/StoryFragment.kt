@@ -38,7 +38,7 @@ class StoryFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentStoryBinding.inflate(inflater, container, false)
 
@@ -51,7 +51,8 @@ class StoryFragment : Fragment() {
 
         binding.urlBtn.setOnClickListener {
             if (story is StoryWithURL) {
-                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse((story as StoryWithURL).url))
+                val browserIntent =
+                    Intent(Intent.ACTION_VIEW, Uri.parse((story as StoryWithURL).url))
                 startActivity(browserIntent)
             }
         }

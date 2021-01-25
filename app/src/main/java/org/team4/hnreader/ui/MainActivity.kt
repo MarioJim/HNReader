@@ -22,6 +22,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var storyAdapter: StoryAdapter
     private var storiesIds: ArrayList<Int> = ArrayList()
     private var storiesList: ArrayList<Story> = ArrayList()
+
     // Don't load stories until storiesIds is filled
     private var isLoading: Boolean = true
 

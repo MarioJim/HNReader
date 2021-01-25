@@ -25,6 +25,7 @@ class CommentsActivity : AppCompatActivity() {
     private lateinit var storyFragment: StoryFragment
     private var commentsList: ArrayList<FlattenedComment> = ArrayList()
     private var lastLoadedTree: Int = 0
+
     // Start as true for the initial comment loading
     private var isLoading: Boolean = true
 
@@ -74,7 +75,8 @@ class CommentsActivity : AppCompatActivity() {
             if (initialLoad) NUM_STARTING_COMMENTS else NUM_COMMENTS_PER_LOAD_EVENT
         numCommentsToAdd = min(numCommentsToAdd, story.kids.size - lastLoadedTree)
         if (numCommentsToAdd == 0) return
-        val commentIdsToFetch = story.kids.subList(lastLoadedTree, lastLoadedTree + numCommentsToAdd)
+        val commentIdsToFetch =
+            story.kids.subList(lastLoadedTree, lastLoadedTree + numCommentsToAdd)
         ItemFinder.getInstance(this).fetchCommentsFromIdsList(
             commentIdsToFetch,
             0,

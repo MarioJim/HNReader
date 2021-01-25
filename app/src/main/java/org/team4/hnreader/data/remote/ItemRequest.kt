@@ -16,7 +16,7 @@ class ItemRequest(
     id: Int,
     private val customPriority: Priority,
     private val listener: Response.Listener<Item>,
-    errorListener: Response.ErrorListener
+    errorListener: Response.ErrorListener,
 ) : Request<Item>(Method.GET, getItemURL(id), errorListener) {
 
     override fun getPriority() = customPriority

@@ -12,7 +12,7 @@ import java.nio.charset.Charset
 class StoriesIdsRequest(
     url: String,
     private val listener: Response.Listener<List<Int>>,
-    errorListener: Response.ErrorListener
+    errorListener: Response.ErrorListener,
 ) : Request<List<Int>>(Method.GET, url, errorListener) {
 
     override fun getPriority() = Priority.IMMEDIATE

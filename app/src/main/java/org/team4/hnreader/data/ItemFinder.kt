@@ -27,7 +27,7 @@ class ItemFinder(ctx: Context) {
         id: Int,
         fromCache: Boolean,
         listener: Response.Listener<Story>,
-        errorListener: Response.ErrorListener
+        errorListener: Response.ErrorListener,
     ) {
         if (fromCache) {
             val storyFromCache = dbHelper.getStory(id)
@@ -50,7 +50,7 @@ class ItemFinder(ctx: Context) {
     private fun getStoryFromApi(
         id: Int,
         listener: Response.Listener<Story>,
-        errorListener: Response.ErrorListener
+        errorListener: Response.ErrorListener,
     ) = ApiRequestQueue.getInstance().fetchItem<Story>(
         id,
         Request.Priority.HIGH,
@@ -66,7 +66,7 @@ class ItemFinder(ctx: Context) {
         depth: Int,
         fromCache: Boolean,
         listener: Response.Listener<List<FlattenedComment>>,
-        errorListener: Response.ErrorListener
+        errorListener: Response.ErrorListener,
     ) {
         val flattenedComments = arrayOfNulls<List<FlattenedComment>>(idList.size)
         val commentTreesLeft = AtomicInteger(idList.size)
@@ -98,7 +98,7 @@ class ItemFinder(ctx: Context) {
         depth: Int,
         fromCache: Boolean,
         listener: Response.Listener<List<FlattenedComment>>,
-        errorListener: Response.ErrorListener
+        errorListener: Response.ErrorListener,
     ) {
         // Fetch parent comment
         getComment(
@@ -130,7 +130,7 @@ class ItemFinder(ctx: Context) {
         id: Int,
         fromCache: Boolean,
         listener: Response.Listener<Comment>,
-        errorListener: Response.ErrorListener
+        errorListener: Response.ErrorListener,
     ) {
         if (fromCache) {
             val commentFromCache = dbHelper.getComment(id)
@@ -147,7 +147,7 @@ class ItemFinder(ctx: Context) {
     private fun getCommentFromApi(
         id: Int,
         listener: Response.Listener<Comment>,
-        errorListener: Response.ErrorListener
+        errorListener: Response.ErrorListener,
     ) = ApiRequestQueue.getInstance().fetchItem<Comment>(
         id,
         Request.Priority.NORMAL,

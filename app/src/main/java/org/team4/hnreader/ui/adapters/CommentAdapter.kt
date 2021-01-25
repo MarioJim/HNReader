@@ -24,7 +24,8 @@ class CommentAdapter(private val dataSet: List<FlattenedComment>) :
 
     override fun onBindViewHolder(viewHolder: CommentViewHolder, position: Int) {
         val timeAgo = DateTimeUtils.timeAgo(dataSet[position].created_at)
-        viewHolder.tvCommentInfo.text = "${dataSet[position].author}, $timeAgo, depth ${dataSet[position].depth}"
+        viewHolder.tvCommentInfo.text =
+            "${dataSet[position].author}, $timeAgo, depth ${dataSet[position].depth}"
         viewHolder.tvContent.text = TextUtils.fromHTML(dataSet[position].text)
     }
 

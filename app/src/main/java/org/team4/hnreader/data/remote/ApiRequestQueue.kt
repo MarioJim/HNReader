@@ -26,31 +26,31 @@ class ApiRequestQueue {
 
     fun fetchTopStoriesIds(
         listener: Response.Listener<List<Int>>,
-        errorListener: Response.ErrorListener
+        errorListener: Response.ErrorListener,
     ): Request<List<Int>> =
         requestQueue.add(StoriesIdsRequest("$BASE_URL/topstories.json", listener, errorListener))
 
     fun fetchNewStoriesIds(
         listener: Response.Listener<List<Int>>,
-        errorListener: Response.ErrorListener
+        errorListener: Response.ErrorListener,
     ): Request<List<Int>> =
         requestQueue.add(StoriesIdsRequest("$BASE_URL/newstories.json", listener, errorListener))
 
     fun fetchBestStoriesIds(
         listener: Response.Listener<List<Int>>,
-        errorListener: Response.ErrorListener
+        errorListener: Response.ErrorListener,
     ): Request<List<Int>> =
         requestQueue.add(StoriesIdsRequest("$BASE_URL/beststories.json", listener, errorListener))
 
     fun fetchAskStoriesIds(
         listener: Response.Listener<List<Int>>,
-        errorListener: Response.ErrorListener
+        errorListener: Response.ErrorListener,
     ): Request<List<Int>> =
         requestQueue.add(StoriesIdsRequest("$BASE_URL/askstories.json", listener, errorListener))
 
     fun fetchShowStoriesIds(
         listener: Response.Listener<List<Int>>,
-        errorListener: Response.ErrorListener
+        errorListener: Response.ErrorListener,
     ): Request<List<Int>> =
         requestQueue.add(StoriesIdsRequest("$BASE_URL/showstories.json", listener, errorListener))
 
@@ -59,7 +59,7 @@ class ApiRequestQueue {
         id: Int,
         priority: Request.Priority,
         listener: Response.Listener<T>,
-        errorListener: Response.ErrorListener
+        errorListener: Response.ErrorListener,
     ): Request<Item> = requestQueue.add(
         ItemRequest(
             id,

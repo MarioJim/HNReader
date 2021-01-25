@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper
 import androidx.core.database.sqlite.transaction
 import org.team4.hnreader.data.model.*
 
-class DBHelper(ctx: Context) : SQLiteOpenHelper(ctx, DB_FILE, null, 7) {
+class DBHelper(ctx: Context) : SQLiteOpenHelper(ctx, DB_FILE, null, 8) {
     companion object {
         private const val DB_FILE = "cache.sqlite"
     }
@@ -63,7 +63,9 @@ class DBHelper(ctx: Context) : SQLiteOpenHelper(ctx, DB_FILE, null, 7) {
                 getKids(id),
                 cursor.getString(2)
             )
-        } else { null }
+        } else {
+            null
+        }
         cursor.close()
         return comment
     }
@@ -111,7 +113,9 @@ class DBHelper(ctx: Context) : SQLiteOpenHelper(ctx, DB_FILE, null, 7) {
                     url,
                 )
             }
-        } else { null }
+        } else {
+            null
+        }
         cursor.close()
         return story
     }
