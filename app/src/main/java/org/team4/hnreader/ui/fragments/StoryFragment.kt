@@ -22,6 +22,7 @@ class StoryFragment : Fragment() {
         "User",
         1610744647,
         -1,
+        emptyList(),
         123,
         321,
         "Post Title",

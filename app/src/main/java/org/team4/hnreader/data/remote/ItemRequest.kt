@@ -48,6 +48,6 @@ class ItemRequest(
     }
 
     companion object {
-        fun getItemURL(id: Int) = "${ApiRequestQueue.FIREBASE_URL}/item/$id.json"
+        fun getItemURL(id: Int) = "${ApiRequestQueue.BASE_URL}/item/$id.json"
     }
 }

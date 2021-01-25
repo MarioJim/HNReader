@@ -1,10 +1,5 @@
 package org.team4.hnreader.data.local
 
-import android.database.Cursor
-import org.team4.hnreader.data.model.Story
-import org.team4.hnreader.data.model.StoryWithText
-import org.team4.hnreader.data.model.StoryWithURL
-
 class ItemsTable {
     companion object {
         const val TABLE_NAME = "items"
@@ -32,41 +27,5 @@ class ItemsTable {
 
         val dropTableStatement: String
             get() = "DROP TABLE IF EXISTS $TABLE_NAME"
-
-        val fieldsForStory = arrayOf(
-            FIELD_AUTHOR,
-            FIELD_CREATED_AT,
-            FIELD_ID,
-            FIELD_NUM_COMMENTS,
-            FIELD_POINTS,
-            FIELD_TEXT,
-            FIELD_TITLE,
-            FIELD_URL
-        )
-
-        fun parseStory(cursor: Cursor): Story {
-            val url = cursor.getString(7)
-            return if (url == null) {
-                StoryWithText(
-                    cursor.getString(0),
-                    cursor.getInt(1),
-                    cursor.getInt(2),
-                    cursor.getInt(3),
-                    cursor.getInt(4),
-                    cursor.getString(5) ?: "",
-                    cursor.getString(6)
-                )
-            } else {
-                StoryWithURL(
-                    cursor.getString(0),
-                    cursor.getInt(1),
-                    cursor.getInt(2),
-                    cursor.getInt(3),
-                    cursor.getInt(4),
-                    cursor.getString(6),
-                    url,
-                )
-            }
-        }
     }
 }

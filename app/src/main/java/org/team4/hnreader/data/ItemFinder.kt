@@ -34,7 +34,7 @@ class ItemFinder(ctx: Context) {
                 ApiRequestQueue.getInstance().fetchStory(
                     id,
                     Request.Priority.LOW,
-                    { dbHelper.insertOrUpdateStory(it) },
+                    { dbHelper.insertOrUpdateItem(it) },
                     { Log.w("cache refresh", "Story with id $id couldn't be refreshed") }
                 )
                 listener.onResponse(storyFromCache)
@@ -52,10 +52,9 @@ class ItemFinder(ctx: Context) {
         id,
         Request.Priority.HIGH,
         {
-            dbHelper.insertOrUpdateStory(it)
+            dbHelper.insertOrUpdateItem(it)
             listener.onResponse(it)
         },
         errorListener
     )
-
 }
