@@ -54,6 +54,7 @@ class ApiRequestQueue {
     ): Request<List<Int>> =
         requestQueue.add(StoriesIdsRequest("$BASE_URL/showstories.json", listener, errorListener))
 
+    @Suppress("UNCHECKED_CAST")
     fun <T : Item> fetchItem(
         id: Int,
         priority: Request.Priority,

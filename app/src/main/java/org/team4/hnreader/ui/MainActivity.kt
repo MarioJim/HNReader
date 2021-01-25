@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity() {
                 super.onScrolled(recyclerView, dx, dy)
                 val lastViewedItem = linearLayoutManager.findLastCompletelyVisibleItemPosition()
                 if (!isLoading && lastViewedItem + 7 >= storiesList.size) {
-                    loadMoreStories(storiesList.size)
+                    loadMoreStories()
                     isLoading = true
                 }
             }
@@ -54,34 +54,30 @@ class MainActivity : AppCompatActivity() {
         ApiRequestQueue.getInstance().fetchTopStoriesIds(
             {
                 storiesIds.plusAssign(it)
-                loadMoreStories(0)
+                loadMoreStories()
             },
             { displayError(it) })
     }
 
-    private fun loadMoreStories(startingIndex: Int) {
-        val indexesRange = IntRange(startingIndex, startingIndex + NUM_STORIES_PER_LOADING_EVENT - 1)
+    private fun loadMoreStories() {
         val storiesToAdd = arrayOfNulls<Story>(NUM_STORIES_PER_LOADING_EVENT)
         val numStoriesToAdd = AtomicInteger(NUM_STORIES_PER_LOADING_EVENT)
-        for (i in indexesRange) {
+        val finishedFetching = {
+            storiesList.addAll(storiesToAdd.filterNotNull().toTypedArray())
+            storyAdapter.notifyDataSetChanged()
+            isLoading = false
+        }
+        for (i in storiesList.size until storiesList.size + NUM_STORIES_PER_LOADING_EVENT) {
             ItemFinder.getInstance(this).getStory(
                 storiesIds[i],
                 true,
                 { story ->
-                    storiesToAdd[i - startingIndex] = story
-                    if (numStoriesToAdd.decrementAndGet() == 0) {
-                        storiesList.addAll(storiesToAdd.filterNotNull().toTypedArray())
-                        storyAdapter.notifyDataSetChanged()
-                        isLoading = false
-                    }
+                    storiesToAdd[i - storiesList.size] = story
+                    if (numStoriesToAdd.decrementAndGet() == 0) finishedFetching()
                 },
                 {
                     displayError(it)
-                    if (numStoriesToAdd.decrementAndGet() == 0) {
-                        storiesList.addAll(storiesToAdd.filterNotNull().toTypedArray())
-                        storyAdapter.notifyDataSetChanged()
-                        isLoading = false
-                    }
+                    if (numStoriesToAdd.decrementAndGet() == 0) finishedFetching()
                 }
             )
         }
