@@ -11,7 +11,7 @@ data class Comment(
     override val id: Int,
     override val kids: List<Int>,
     val text: String,
-) : HNItem(author, created_at, id, kids, TYPE), Serializable {
+) : Item(author, created_at, id, kids, TYPE), Serializable {
     companion object {
         const val TYPE = "comment"
 

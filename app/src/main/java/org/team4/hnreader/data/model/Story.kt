@@ -11,7 +11,7 @@ abstract class Story(
     open val numComments: Int,
     open val points: Int,
     open val title: String,
-) : HNItem(author, created_at, id, kids, TYPE), Serializable {
+) : Item(author, created_at, id, kids, TYPE), Serializable {
     companion object {
         const val TYPE = "story"
 
