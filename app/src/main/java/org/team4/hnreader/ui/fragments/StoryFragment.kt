@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.google.firebase.auth.FirebaseAuth
 import org.team4.hnreader.data.model.Story
 import org.team4.hnreader.data.model.StoryWithURL
 import org.team4.hnreader.databinding.FragmentStoryBinding
@@ -17,6 +18,7 @@ import org.team4.hnreader.utils.URLUtils
 class StoryFragment : Fragment() {
     private var _binding: FragmentStoryBinding? = null
     private val binding get() = _binding!!
+    private var firebaseAuth: FirebaseAuth? = null
 
     private var story: Story = StoryWithURL(
         "User",
@@ -34,6 +36,8 @@ class StoryFragment : Fragment() {
         arguments?.let { bundle ->
             story = bundle.getSerializable(ARG_STORY) as Story
         }
+
+        firebaseAuth = FirebaseAuth.getInstance()
     }
 
     override fun onCreateView(
@@ -74,6 +78,12 @@ class StoryFragment : Fragment() {
 
         binding.saveBtn.setOnClickListener {
             Toast.makeText(this.activity, "Saved item in bookmarks", Toast.LENGTH_SHORT).show()
+        }
+
+        if (firebaseAuth?.currentUser == null) {
+            binding.saveBtn.visibility = View.INVISIBLE
+        } else {
+            binding.saveBtn.visibility = View.VISIBLE
         }
 
         return binding.root

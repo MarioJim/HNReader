@@ -3,10 +3,12 @@ package org.team4.hnreader.ui.adapters
 import android.content.Intent
 import android.net.Uri
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
 import org.team4.hnreader.data.model.Story
 import org.team4.hnreader.data.model.StoryWithURL
 import org.team4.hnreader.databinding.FragmentStoryBinding
@@ -16,12 +18,16 @@ import org.team4.hnreader.utils.URLUtils
 
 class StoryAdapter(private val dataSet: List<Story>) :
     RecyclerView.Adapter<StoryAdapter.StoryViewHolder>() {
+
+    private var firebaseAuth: FirebaseAuth? = FirebaseAuth.getInstance()
+
     class StoryViewHolder(binding: FragmentStoryBinding) :
         RecyclerView.ViewHolder(binding.root) {
         val tvTitle = binding.tvTitle
         val tvInfo = binding.tvInfo
         val tvUrl = binding.tvUrl
         val tvVotes = binding.tvVotes
+        val btnSave = binding.saveBtn
         var story: Story? = null
 
         init {
@@ -77,6 +83,13 @@ class StoryAdapter(private val dataSet: List<Story>) :
         viewHolder.tvVotes.text =
             "${dataSet[position].points} points, ${dataSet[position].numComments} comments"
         viewHolder.story = dataSet[position]
+
+        if (firebaseAuth?.currentUser == null) {
+            viewHolder.btnSave.visibility = View.INVISIBLE
+        } else {
+            viewHolder.btnSave.visibility = View.VISIBLE
+
+        }
     }
 
     override fun getItemCount() = dataSet.size
