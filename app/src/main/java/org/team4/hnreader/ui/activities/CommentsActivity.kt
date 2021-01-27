@@ -40,8 +40,6 @@ class CommentsActivity : AppCompatActivity() {
         val story = maybeStory as Story
         parentCommentIdsList = story.kids
 
-        binding.srComments.setOnRefreshListener { refreshPage(story.id) }
-
         commentsAdapter = CommentAdapter(this, story, commentsList)
         binding.recyclerviewComments.adapter = commentsAdapter
         val linearLayoutManager = LinearLayoutManager(this)
@@ -57,12 +55,13 @@ class CommentsActivity : AppCompatActivity() {
                 }
             }
         })
+        binding.srComments.setOnRefreshListener { refreshPage(story.id) }
+
         loadComments()
     }
 
     private fun refreshPage(storyId: Int) {
         fromCache = false
-
         ItemFinder.getInstance(this).getStory(
             storyId,
             fromCache,
@@ -72,9 +71,7 @@ class CommentsActivity : AppCompatActivity() {
                 lastLoadedParentCommentIdx = 0
                 commentsAdapter = CommentAdapter(this, it, commentsList)
                 binding.recyclerviewComments.adapter = commentsAdapter
-                loadComments {
-                    binding.srComments.isRefreshing = false
-                }
+                loadComments { binding.srComments.isRefreshing = false }
             },
             { displayError(it) },
         )
@@ -103,18 +100,18 @@ class CommentsActivity : AppCompatActivity() {
                 isLoading.set(false)
                 finishedCallback()
             },
-            { error ->
-                when (error.cause) {
-                    is DeletedItemException -> Log.e("DeletedItemException", "${error.message}")
-                    else -> displayError(error)
-                }
-            }
+            { displayError(it) }
         )
     }
 
     private fun displayError(error: VolleyError) {
-        Log.e("volley error", error.message, error.cause)
-        Toast.makeText(this, "Error: " + error.message, Toast.LENGTH_SHORT).show()
+        when (error.cause) {
+            is DeletedItemException -> Log.e("DeletedItemException", "${error.message}")
+            else -> {
+                Log.e("volley error", error.message, error.cause)
+                Toast.makeText(this, "Error: " + error.message, Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     companion object {

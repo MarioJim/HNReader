@@ -13,6 +13,8 @@ import com.google.firebase.auth.FirebaseAuth
 import org.team4.hnreader.data.ItemFinder
 import org.team4.hnreader.data.model.Story
 import org.team4.hnreader.data.remote.ApiRequestQueue
+import org.team4.hnreader.data.remote.DeletedItemException
+import org.team4.hnreader.data.remote.ItemTypeNotImplementedException
 import org.team4.hnreader.databinding.ActivityMainBinding
 import org.team4.hnreader.ui.activities.BookmarksActivity
 import org.team4.hnreader.ui.activities.LoginActivity
@@ -25,6 +27,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var storyAdapter: StoryAdapter
+
+    private var fromCache: Boolean = true
     private var storiesIds: ArrayList<Int> = ArrayList()
     private var storiesList: ArrayList<Story> = ArrayList()
 
@@ -54,16 +58,16 @@ class MainActivity : AppCompatActivity() {
                 val lastViewedItem = linearLayoutManager.findLastCompletelyVisibleItemPosition()
                 val shouldLoadMoreStories = lastViewedItem + 7 >= storiesList.size
                 if (shouldLoadMoreStories && isLoading.compareAndSet(false, true)) {
-                    loadMoreStories()
+                    loadStories()
                 }
             }
         })
+        binding.srStories.setOnRefreshListener { refreshPage() }
 
         binding.loginBtn.setOnClickListener {
             val intentToLogin = Intent(this, LoginActivity::class.java)
             startActivity(intentToLogin)
         }
-
         binding.logoutBtn.setOnClickListener {
             firebaseAuth.signOut()
             checkIfSignedIn()
@@ -73,7 +77,7 @@ class MainActivity : AppCompatActivity() {
         ApiRequestQueue.getInstance().fetchTopStoriesIds(
             {
                 storiesIds.plusAssign(it)
-                loadMoreStories()
+                loadStories()
             },
             { displayError(it) })
     }
@@ -84,7 +88,19 @@ class MainActivity : AppCompatActivity() {
         checkIfSignedIn()
     }
 
-    private fun loadMoreStories() {
+    private fun refreshPage() {
+        fromCache = false
+        ApiRequestQueue.getInstance().fetchTopStoriesIds(
+            {
+                storiesIds.clear()
+                storiesIds.plusAssign(it)
+                storiesList.clear()
+                loadStories { binding.srStories.isRefreshing = false }
+            },
+            { displayError(it) })
+    }
+
+    private fun loadStories(finishedCallback: () -> Unit = {}) {
         val numStoriesToAdd = min(NUM_STORIES_PER_LOADING_EVENT, storiesIds.size - storiesList.size)
         if (numStoriesToAdd == 0) return
         val storiesToAdd = arrayOfNulls<Story>(numStoriesToAdd)
@@ -95,11 +111,12 @@ class MainActivity : AppCompatActivity() {
                 storyAdapter.notifyDataSetChanged()
             }
             isLoading.set(false)
+            finishedCallback()
         }
         for (i in storiesList.size until storiesList.size + numStoriesToAdd) {
             ItemFinder.getInstance(this).getStory(
                 storiesIds[i],
-                true,
+                fromCache,
                 { story ->
                     storiesToAdd[i - storiesList.size] = story
                     if (storiesToAddCounter.decrementAndGet() == 0) finishedFetching()
@@ -113,8 +130,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun displayError(error: VolleyError) {
-        Log.e("volley error", error.message, error.cause)
-        Toast.makeText(this, "Error: " + error.message, Toast.LENGTH_SHORT).show()
+        when (error.cause) {
+            is DeletedItemException -> Log.e("DeletedItemException", "${error.message}")
+            is ItemTypeNotImplementedException -> Log.e("ItemTypeNotImplementedException",
+                "${error.message}")
+            else -> {
+                Log.e("volley error", error.message, error.cause)
+                Toast.makeText(this, "Error: " + error.message, Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private fun checkIfSignedIn() {
