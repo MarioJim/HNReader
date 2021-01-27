@@ -66,10 +66,10 @@ class CommentsActivity : AppCompatActivity() {
             storyId,
             fromCache,
             {
+                commentsAdapter.story = it
                 parentCommentIdsList = it.kids
-                commentsList = ArrayList()
+                commentsList.clear()
                 lastLoadedParentCommentIdx = 0
-                commentsAdapter = CommentAdapter(this, it, commentsList)
                 binding.recyclerviewComments.adapter = commentsAdapter
                 loadComments { binding.srComments.isRefreshing = false }
             },
@@ -87,7 +87,7 @@ class CommentsActivity : AppCompatActivity() {
             lastLoadedParentCommentIdx,
             lastLoadedParentCommentIdx + numCommentsToAdd
         )
-        ItemFinder.getInstance(this).fetchCommentsFromIdsList(
+        ItemFinder.getInstance(this).getCommentsFromIdsList(
             commentIdsToFetch,
             0,
             fromCache,

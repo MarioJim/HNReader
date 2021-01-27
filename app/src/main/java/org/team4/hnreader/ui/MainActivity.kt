@@ -20,7 +20,6 @@ import org.team4.hnreader.ui.activities.BookmarksActivity
 import org.team4.hnreader.ui.activities.LoginActivity
 import org.team4.hnreader.ui.adapters.StoryAdapter
 import java.util.concurrent.atomic.AtomicBoolean
-import java.util.concurrent.atomic.AtomicInteger
 import kotlin.math.min
 
 class MainActivity : AppCompatActivity() {
@@ -31,6 +30,7 @@ class MainActivity : AppCompatActivity() {
     private var fromCache: Boolean = true
     private var storiesIds: ArrayList<Int> = ArrayList()
     private var storiesList: ArrayList<Story> = ArrayList()
+    private var lastLoadedStory: Int = 0
 
     // Don't load stories until storiesIds is filled
     private var isLoading: AtomicBoolean = AtomicBoolean(true)
@@ -95,38 +95,33 @@ class MainActivity : AppCompatActivity() {
                 storiesIds.clear()
                 storiesIds.plusAssign(it)
                 storiesList.clear()
+                lastLoadedStory = 0
                 loadStories { binding.srStories.isRefreshing = false }
             },
             { displayError(it) })
     }
 
     private fun loadStories(finishedCallback: () -> Unit = {}) {
-        val numStoriesToAdd = min(NUM_STORIES_PER_LOADING_EVENT, storiesIds.size - storiesList.size)
+        val numStoriesToAdd = min(NUM_STORIES_PER_LOADING_EVENT, storiesIds.size - lastLoadedStory)
         if (numStoriesToAdd == 0) return
-        val storiesToAdd = arrayOfNulls<Story>(numStoriesToAdd)
-        val storiesToAddCounter = AtomicInteger(numStoriesToAdd)
-        val finishedFetching = {
-            storiesList.addAll(storiesToAdd.filterNotNull().toTypedArray())
-            binding.recyclerviewStories.post {
-                storyAdapter.notifyDataSetChanged()
-            }
-            isLoading.set(false)
-            finishedCallback()
-        }
-        for (i in storiesList.size until storiesList.size + numStoriesToAdd) {
-            ItemFinder.getInstance(this).getStory(
-                storiesIds[i],
-                fromCache,
-                { story ->
-                    storiesToAdd[i - storiesList.size] = story
-                    if (storiesToAddCounter.decrementAndGet() == 0) finishedFetching()
-                },
-                {
-                    displayError(it)
-                    if (storiesToAddCounter.decrementAndGet() == 0) finishedFetching()
+        val storyIdsToFetch = storiesIds.subList(
+            lastLoadedStory,
+            lastLoadedStory + numStoriesToAdd
+        )
+        ItemFinder.getInstance(this).getStoriesFromIdsList(
+            storyIdsToFetch,
+            fromCache,
+            { fetchedStories ->
+                storiesList.addAll(fetchedStories)
+                lastLoadedStory += numStoriesToAdd
+                binding.recyclerviewStories.post {
+                    storyAdapter.notifyDataSetChanged()
                 }
-            )
-        }
+                isLoading.set(false)
+                finishedCallback()
+            },
+            { displayError(it) }
+        )
     }
 
     private fun displayError(error: VolleyError) {

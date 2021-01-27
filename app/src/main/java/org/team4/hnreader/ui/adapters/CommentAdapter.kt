@@ -19,7 +19,7 @@ import org.team4.hnreader.utils.URLUtils
 
 class CommentAdapter(
     private val activity: AppCompatActivity,
-    private val story: Story,
+    var story: Story,
     private val comments: List<FlattenedComment>,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
@@ -59,6 +59,7 @@ class CommentAdapter(
 
     private fun onBindStoryViewHolder(viewHolder: StoryViewHolder) {
         viewHolder.tvTitle.text = story.title
+        val story = this.story
         viewHolder.tvUrl.text = when (story) {
             is StoryWithURL -> URLUtils.getDomain(story.url)
             is StoryWithText -> TextUtils.fromHTML(story.text)

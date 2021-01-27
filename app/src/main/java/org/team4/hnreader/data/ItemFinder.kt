@@ -23,6 +23,32 @@ class ItemFinder(ctx: Context) {
 
     private val dbHelper by lazy { DBHelper(ctx) }
 
+    fun getStoriesFromIdsList(
+        idList: List<Int>,
+        fromCache: Boolean,
+        listener: Response.Listener<List<Story>>,
+        errorListener: Response.ErrorListener,
+    ) {
+        val storiesToAdd = arrayOfNulls<Story>(idList.size)
+        val storiesToAddLeft = AtomicInteger(idList.size)
+        for (storyIdx in idList.indices) {
+            getStory(
+                idList[storyIdx],
+                fromCache,
+                { story ->
+                    storiesToAdd[storyIdx] = story
+                    if (storiesToAddLeft.decrementAndGet() == 0)
+                        listener.onResponse(storiesToAdd.filterNotNull())
+                },
+                { error ->
+                    errorListener.onErrorResponse(error)
+                    if (storiesToAddLeft.decrementAndGet() == 0)
+                        listener.onResponse(storiesToAdd.filterNotNull())
+                }
+            )
+        }
+    }
+
     fun getStory(
         id: Int,
         fromCache: Boolean,
@@ -61,7 +87,7 @@ class ItemFinder(ctx: Context) {
         errorListener
     )
 
-    fun fetchCommentsFromIdsList(
+    fun getCommentsFromIdsList(
         idList: List<Int>,
         depth: Int,
         fromCache: Boolean,
@@ -113,7 +139,7 @@ class ItemFinder(ctx: Context) {
                     listener.onResponse(result)
                 } else {
                     // Else, fetch comments for every id
-                    fetchCommentsFromIdsList(
+                    getCommentsFromIdsList(
                         parentComment.kids,
                         depth + 1,
                         fromCache,
