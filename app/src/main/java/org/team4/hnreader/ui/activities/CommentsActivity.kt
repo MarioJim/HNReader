@@ -10,6 +10,7 @@ import com.android.volley.VolleyError
 import org.team4.hnreader.data.ItemFinder
 import org.team4.hnreader.data.model.FlattenedComment
 import org.team4.hnreader.data.model.Story
+import org.team4.hnreader.data.remote.DeletedItemException
 import org.team4.hnreader.databinding.ActivityCommentsBinding
 import org.team4.hnreader.ui.adapters.CommentAdapter
 import java.util.concurrent.atomic.AtomicBoolean
@@ -19,6 +20,7 @@ class CommentsActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCommentsBinding
     private lateinit var commentsAdapter: CommentAdapter
 
+    private var fromCache: Boolean = true
     private var parentCommentIdsList: List<Int> = ArrayList()
     private var commentsList: ArrayList<FlattenedComment> = ArrayList()
     private var lastLoadedParentCommentIdx: Int = 0
@@ -38,6 +40,8 @@ class CommentsActivity : AppCompatActivity() {
         val story = maybeStory as Story
         parentCommentIdsList = story.kids
 
+        binding.srComments.setOnRefreshListener { refreshPage(story.id) }
+
         commentsAdapter = CommentAdapter(this, story, commentsList)
         binding.recyclerviewComments.adapter = commentsAdapter
         val linearLayoutManager = LinearLayoutManager(this)
@@ -49,18 +53,38 @@ class CommentsActivity : AppCompatActivity() {
                 val lastViewedItem = linearLayoutManager.findLastCompletelyVisibleItemPosition()
                 val shouldLoadMoreComments = lastViewedItem + 7 >= commentsList.size
                 if (shouldLoadMoreComments && isLoading.compareAndSet(false, true)) {
-                    loadMoreComments(false)
+                    loadComments()
                 }
             }
         })
-        loadMoreComments(true)
+        loadComments()
     }
 
-    private fun loadMoreComments(initialLoad: Boolean) {
-        var numCommentsToAdd =
-            if (initialLoad) NUM_STARTING_COMMENTS else NUM_COMMENTS_PER_LOAD_EVENT
-        numCommentsToAdd =
-            min(numCommentsToAdd, parentCommentIdsList.size - lastLoadedParentCommentIdx)
+    private fun refreshPage(storyId: Int) {
+        fromCache = false
+
+        ItemFinder.getInstance(this).getStory(
+            storyId,
+            fromCache,
+            {
+                parentCommentIdsList = it.kids
+                commentsList = ArrayList()
+                lastLoadedParentCommentIdx = 0
+                commentsAdapter = CommentAdapter(this, it, commentsList)
+                binding.recyclerviewComments.adapter = commentsAdapter
+                loadComments {
+                    binding.srComments.isRefreshing = false
+                }
+            },
+            { displayError(it) },
+        )
+    }
+
+    private fun loadComments(finishedCallback: () -> Unit = {}) {
+        val numCommentsToAdd = min(
+            NUM_COMMENTS_PER_LOAD_EVENT,
+            parentCommentIdsList.size - lastLoadedParentCommentIdx,
+        )
         if (numCommentsToAdd == 0) return
         val commentIdsToFetch = parentCommentIdsList.subList(
             lastLoadedParentCommentIdx,
@@ -69,7 +93,7 @@ class CommentsActivity : AppCompatActivity() {
         ItemFinder.getInstance(this).fetchCommentsFromIdsList(
             commentIdsToFetch,
             0,
-            true,
+            fromCache,
             { fetchedCommentList ->
                 commentsList.addAll(fetchedCommentList)
                 binding.recyclerviewComments.post {
@@ -77,8 +101,14 @@ class CommentsActivity : AppCompatActivity() {
                 }
                 lastLoadedParentCommentIdx += numCommentsToAdd
                 isLoading.set(false)
+                finishedCallback()
             },
-            { displayError(it) }
+            { error ->
+                when (error.cause) {
+                    is DeletedItemException -> Log.e("DeletedItemException", "${error.message}")
+                    else -> displayError(error)
+                }
+            }
         )
     }
 
@@ -90,7 +120,6 @@ class CommentsActivity : AppCompatActivity() {
     companion object {
         const val ARG_STORY = "story"
 
-        private const val NUM_STARTING_COMMENTS = 10
         private const val NUM_COMMENTS_PER_LOAD_EVENT = 5
     }
 }
