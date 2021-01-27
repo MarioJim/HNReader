@@ -8,4 +8,6 @@
     <string name="email">Email</string>
     <string name="login">Login</string>
     <string name="logout">Logout</string>
+    <string name="bookmark">Bookmark</string>
+    <string name="share">Share</string>
 </resources>

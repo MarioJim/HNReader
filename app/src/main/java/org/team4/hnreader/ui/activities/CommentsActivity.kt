@@ -45,7 +45,7 @@ class CommentsActivity : AppCompatActivity() {
             commit()
         }
 
-        commentsAdapter = CommentAdapter(commentsList)
+        commentsAdapter = CommentAdapter(this, commentsList)
         binding.recyclerviewComments.adapter = commentsAdapter
         val linearLayoutManager = LinearLayoutManager(this)
         binding.recyclerviewComments.layoutManager = linearLayoutManager

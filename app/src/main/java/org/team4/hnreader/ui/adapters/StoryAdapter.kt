@@ -16,7 +16,7 @@ import org.team4.hnreader.ui.activities.CommentsActivity
 import org.team4.hnreader.utils.DateTimeUtils
 import org.team4.hnreader.utils.URLUtils
 
-class StoryAdapter(private val dataSet: List<Story>) :
+class StoryAdapter(private val stories: List<Story>) :
     RecyclerView.Adapter<StoryAdapter.StoryViewHolder>() {
 
     private var firebaseAuth: FirebaseAuth? = FirebaseAuth.getInstance()
@@ -73,16 +73,16 @@ class StoryAdapter(private val dataSet: List<Story>) :
     }
 
     override fun onBindViewHolder(viewHolder: StoryViewHolder, position: Int) {
-        viewHolder.tvTitle.text = dataSet[position].title
-        if (dataSet[position] is StoryWithURL) {
-            val url = (dataSet[position] as StoryWithURL).url
+        viewHolder.tvTitle.text = stories[position].title
+        if (stories[position] is StoryWithURL) {
+            val url = (stories[position] as StoryWithURL).url
             viewHolder.tvUrl.text = URLUtils.getDomain(url)
         }
-        val timeAgo = DateTimeUtils.timeAgo(dataSet[position].created_at)
-        viewHolder.tvInfo.text = "by ${dataSet[position].author}, $timeAgo"
+        val timeAgo = DateTimeUtils.timeAgo(stories[position].created_at)
+        viewHolder.tvInfo.text = "by ${stories[position].author}, $timeAgo"
         viewHolder.tvVotes.text =
-            "${dataSet[position].points} points, ${dataSet[position].numComments} comments"
-        viewHolder.story = dataSet[position]
+            "${stories[position].points} points, ${stories[position].numComments} comments"
+        viewHolder.story = stories[position]
 
         if (firebaseAuth?.currentUser == null) {
             viewHolder.btnSave.visibility = View.INVISIBLE
@@ -92,5 +92,5 @@ class StoryAdapter(private val dataSet: List<Story>) :
         }
     }
 
-    override fun getItemCount() = dataSet.size
+    override fun getItemCount() = stories.size
 }

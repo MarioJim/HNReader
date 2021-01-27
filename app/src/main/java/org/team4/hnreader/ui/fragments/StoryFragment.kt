@@ -77,7 +77,8 @@ class StoryFragment : Fragment() {
         }
 
         binding.saveBtn.setOnClickListener {
-            Toast.makeText(this.activity, "Saved item in bookmarks", Toast.LENGTH_SHORT).show()
+            // TODO: Save in bookmarks
+            Toast.makeText(this.activity, "Saved story in bookmarks", Toast.LENGTH_SHORT).show()
         }
 
         binding.saveBtn.visibility = if (firebaseAuth.currentUser == null) {
