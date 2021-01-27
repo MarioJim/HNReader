@@ -10,7 +10,7 @@ import org.team4.hnreader.ui.MainActivity
 
 class SignUpActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySignUpBinding
-    private var firebaseAuth: FirebaseAuth? = null
+    private lateinit var firebaseAuth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,28 +27,36 @@ class SignUpActivity : AppCompatActivity() {
 
             if (email.isNotEmpty() && password.isNotEmpty() && passwordConfirmation.isNotEmpty()) {
                 if (password == passwordConfirmation) {
-                    firebaseAuth?.createUserWithEmailAndPassword(email, password)
-                        ?.addOnCompleteListener { task ->
-                            if (task.isSuccessful) {
-                                Toast.makeText(this, "Sign up was successful!", Toast.LENGTH_SHORT).show()
-                                val intentToMain = Intent(this, MainActivity::class.java)
-                                startActivity(intentToMain)
-                            } else {
-                                Toast.makeText(this, task.exception?.message, Toast.LENGTH_SHORT).show()
-                            }
-                        }
+                    signUp(email, password)
                 } else {
                     binding.tePassword.setText("")
                     binding.tePasswordConfirm.setText("")
-                    Toast.makeText(this, "Make sure your passwords match!", Toast.LENGTH_SHORT).show()
+                    displayToast("Make sure your passwords match!")
                 }
             } else {
-                Toast.makeText(this, "Fill in all the fields!", Toast.LENGTH_SHORT).show()
+                displayToast("Fill in all the fields!")
             }
         }
 
-        binding.btnCancelSignUp.setOnClickListener{
+        binding.btnCancelSignUp.setOnClickListener {
             finish()
         }
+    }
+
+    private fun signUp(email: String, password: String) {
+        firebaseAuth.createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    displayToast("Sign up was successful!")
+                    val intentToMain = Intent(this, MainActivity::class.java)
+                    startActivity(intentToMain)
+                } else {
+                    task.exception?.message?.let { displayToast(it) }
+                }
+            }
+    }
+
+    private fun displayToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }

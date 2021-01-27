@@ -7,26 +7,24 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.VolleyError
-import org.team4.hnreader.R
 import org.team4.hnreader.data.ItemFinder
 import org.team4.hnreader.data.model.FlattenedComment
 import org.team4.hnreader.data.model.Story
 import org.team4.hnreader.databinding.ActivityCommentsBinding
 import org.team4.hnreader.ui.adapters.CommentAdapter
-import org.team4.hnreader.ui.fragments.StoryFragment
+import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.min
 
 class CommentsActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCommentsBinding
     private lateinit var commentsAdapter: CommentAdapter
 
-    private lateinit var story: Story
-    private lateinit var storyFragment: StoryFragment
+    private var parentCommentIdsList: List<Int> = ArrayList()
     private var commentsList: ArrayList<FlattenedComment> = ArrayList()
-    private var lastLoadedTree: Int = 0
+    private var lastLoadedParentCommentIdx: Int = 0
 
     // Start as true for the initial comment loading
-    private var isLoading: Boolean = true
+    private var isLoading: AtomicBoolean = AtomicBoolean(true)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,18 +32,13 @@ class CommentsActivity : AppCompatActivity() {
         setContentView(binding.root)
         title = "Comments"
 
-        val maybeStory = intent.getSerializableExtra("story") ?: {
+        val maybeStory = intent.getSerializableExtra(ARG_STORY) ?: {
             finish()
         }
-        story = maybeStory as Story
+        val story = maybeStory as Story
+        parentCommentIdsList = story.kids
 
-        storyFragment = StoryFragment.newInstance(story)
-        supportFragmentManager.beginTransaction().apply {
-            add(R.id.container, storyFragment)
-            commit()
-        }
-
-        commentsAdapter = CommentAdapter(this, commentsList)
+        commentsAdapter = CommentAdapter(this, story, commentsList)
         binding.recyclerviewComments.adapter = commentsAdapter
         val linearLayoutManager = LinearLayoutManager(this)
         binding.recyclerviewComments.layoutManager = linearLayoutManager
@@ -54,9 +47,9 @@ class CommentsActivity : AppCompatActivity() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val lastViewedItem = linearLayoutManager.findLastCompletelyVisibleItemPosition()
-                if (!isLoading && lastViewedItem + 7 >= commentsList.size) {
+                val shouldLoadMoreComments = lastViewedItem + 7 >= commentsList.size
+                if (shouldLoadMoreComments && isLoading.compareAndSet(false, true)) {
                     loadMoreComments(false)
-                    isLoading = true
                 }
             }
         })
@@ -66,19 +59,24 @@ class CommentsActivity : AppCompatActivity() {
     private fun loadMoreComments(initialLoad: Boolean) {
         var numCommentsToAdd =
             if (initialLoad) NUM_STARTING_COMMENTS else NUM_COMMENTS_PER_LOAD_EVENT
-        numCommentsToAdd = min(numCommentsToAdd, story.kids.size - lastLoadedTree)
+        numCommentsToAdd =
+            min(numCommentsToAdd, parentCommentIdsList.size - lastLoadedParentCommentIdx)
         if (numCommentsToAdd == 0) return
-        val commentIdsToFetch =
-            story.kids.subList(lastLoadedTree, lastLoadedTree + numCommentsToAdd)
+        val commentIdsToFetch = parentCommentIdsList.subList(
+            lastLoadedParentCommentIdx,
+            lastLoadedParentCommentIdx + numCommentsToAdd
+        )
         ItemFinder.getInstance(this).fetchCommentsFromIdsList(
             commentIdsToFetch,
             0,
             true,
             { fetchedCommentList ->
                 commentsList.addAll(fetchedCommentList)
-                commentsAdapter.notifyDataSetChanged()
-                lastLoadedTree += numCommentsToAdd
-                isLoading = false
+                binding.recyclerviewComments.post {
+                    commentsAdapter.notifyDataSetChanged()
+                }
+                lastLoadedParentCommentIdx += numCommentsToAdd
+                isLoading.set(false)
             },
             { displayError(it) }
         )
@@ -90,6 +88,8 @@ class CommentsActivity : AppCompatActivity() {
     }
 
     companion object {
+        const val ARG_STORY = "story"
+
         private const val NUM_STARTING_COMMENTS = 10
         private const val NUM_COMMENTS_PER_LOAD_EVENT = 5
     }

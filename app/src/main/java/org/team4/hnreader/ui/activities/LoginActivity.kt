@@ -38,11 +38,11 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
-        binding.btnCancelLogin.setOnClickListener{
+        binding.btnCancelLogin.setOnClickListener {
             finish()
         }
 
-        binding.btnGoToSignUp.setOnClickListener{
+        binding.btnGoToSignUp.setOnClickListener {
             val intentToSignUp = Intent(this, SignUpActivity::class.java)
             startActivity(intentToSignUp)
         }

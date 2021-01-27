@@ -17,6 +17,7 @@ import org.team4.hnreader.databinding.ActivityMainBinding
 import org.team4.hnreader.ui.activities.BookmarksActivity
 import org.team4.hnreader.ui.activities.LoginActivity
 import org.team4.hnreader.ui.adapters.StoryAdapter
+import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.math.min
 
@@ -28,7 +29,7 @@ class MainActivity : AppCompatActivity() {
     private var storiesList: ArrayList<Story> = ArrayList()
 
     // Don't load stories until storiesIds is filled
-    private var isLoading: Boolean = true
+    private var isLoading: AtomicBoolean = AtomicBoolean(true)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,9 +52,9 @@ class MainActivity : AppCompatActivity() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val lastViewedItem = linearLayoutManager.findLastCompletelyVisibleItemPosition()
-                if (!isLoading && lastViewedItem + 7 >= storiesList.size) {
+                val shouldLoadMoreStories = lastViewedItem + 7 >= storiesList.size
+                if (shouldLoadMoreStories && isLoading.compareAndSet(false, true)) {
                     loadMoreStories()
-                    isLoading = true
                 }
             }
         })
@@ -90,8 +91,10 @@ class MainActivity : AppCompatActivity() {
         val storiesToAddCounter = AtomicInteger(numStoriesToAdd)
         val finishedFetching = {
             storiesList.addAll(storiesToAdd.filterNotNull().toTypedArray())
-            storyAdapter.notifyDataSetChanged()
-            isLoading = false
+            binding.recyclerviewStories.post {
+                storyAdapter.notifyDataSetChanged()
+            }
+            isLoading.set(false)
         }
         for (i in storiesList.size until storiesList.size + numStoriesToAdd) {
             ItemFinder.getInstance(this).getStory(
