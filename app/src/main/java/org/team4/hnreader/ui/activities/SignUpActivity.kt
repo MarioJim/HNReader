@@ -8,7 +8,6 @@ import com.google.firebase.auth.FirebaseAuth
 import org.team4.hnreader.databinding.ActivitySignUpBinding
 import org.team4.hnreader.ui.MainActivity
 
-
 class SignUpActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySignUpBinding
     private var firebaseAuth: FirebaseAuth? = null

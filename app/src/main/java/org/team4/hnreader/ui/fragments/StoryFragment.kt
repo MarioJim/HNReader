@@ -18,7 +18,7 @@ import org.team4.hnreader.utils.URLUtils
 class StoryFragment : Fragment() {
     private var _binding: FragmentStoryBinding? = null
     private val binding get() = _binding!!
-    private var firebaseAuth: FirebaseAuth? = null
+    private lateinit var firebaseAuth: FirebaseAuth
 
     private var story: Story = StoryWithURL(
         "User",
@@ -80,10 +80,10 @@ class StoryFragment : Fragment() {
             Toast.makeText(this.activity, "Saved item in bookmarks", Toast.LENGTH_SHORT).show()
         }
 
-        if (firebaseAuth?.currentUser == null) {
-            binding.saveBtn.visibility = View.INVISIBLE
+        binding.saveBtn.visibility = if (firebaseAuth.currentUser == null) {
+            View.INVISIBLE
         } else {
-            binding.saveBtn.visibility = View.VISIBLE
+            View.VISIBLE
         }
 
         return binding.root

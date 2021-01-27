@@ -1,9 +1,6 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
-}
-
-plugins {
     id 'com.google.gms.google-services'
 }
 

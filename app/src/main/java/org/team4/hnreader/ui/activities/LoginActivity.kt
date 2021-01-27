@@ -1,16 +1,15 @@
 package org.team4.hnreader.ui.activities
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import org.team4.hnreader.databinding.ActivityLoginBinding
 
-
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
-    private var firebaseAuth: FirebaseAuth? = null
+    private lateinit var firebaseAuth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,8 +24,8 @@ class LoginActivity : AppCompatActivity() {
             val password = binding.tePasswordLogin.text.toString()
 
             if (email.isNotEmpty() && password.isNotEmpty()) {
-                firebaseAuth?.signInWithEmailAndPassword(email, password)
-                    ?.addOnCompleteListener { task ->
+                firebaseAuth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
                             Toast.makeText(this, "Login was successful!", Toast.LENGTH_SHORT).show()
                             finish()

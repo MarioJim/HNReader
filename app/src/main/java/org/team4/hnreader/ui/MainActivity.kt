@@ -22,10 +22,10 @@ import kotlin.math.min
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+    private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var storyAdapter: StoryAdapter
     private var storiesIds: ArrayList<Int> = ArrayList()
     private var storiesList: ArrayList<Story> = ArrayList()
-    private var firebaseAuth: FirebaseAuth? = null
 
     // Don't load stories until storiesIds is filled
     private var isLoading: Boolean = true
@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.logoutBtn.setOnClickListener {
-            firebaseAuth?.signOut()
+            firebaseAuth.signOut()
             checkIfSignedIn()
         }
 
@@ -119,7 +119,7 @@ class MainActivity : AppCompatActivity() {
         val logoutBtn = binding.logoutBtn
         val bookmarksBtn = binding.bookmarksBtn
 
-        val user = firebaseAuth?.currentUser
+        val user = firebaseAuth.currentUser
         if (user != null) {
             Toast.makeText(this, "Current user: " + user.email, Toast.LENGTH_SHORT).show()
             loginBtn.visibility = View.GONE

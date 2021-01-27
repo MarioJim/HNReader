@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">Hacker News Reader</string>
     <string name="story_img_description">View post</string>
+    <string name="cancel">Cancel</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="password">Password</string>
+    <string name="email">Email</string>
+    <string name="login">Login</string>
+    <string name="logout">Logout</string>
 </resources>

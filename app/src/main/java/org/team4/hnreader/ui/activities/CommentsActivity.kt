@@ -1,6 +1,5 @@
 package org.team4.hnreader.ui.activities
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -44,12 +43,6 @@ class CommentsActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction().apply {
             add(R.id.container, storyFragment)
             commit()
-        }
-        binding.goToAddCommentBtn.setOnClickListener {
-            val intentToAddComment = Intent(this, AddCommentActivity::class.java).apply {
-                putExtra("parent_id", story.id)
-            }
-            startActivity(intentToAddComment)
         }
 
         commentsAdapter = CommentAdapter(commentsList)
