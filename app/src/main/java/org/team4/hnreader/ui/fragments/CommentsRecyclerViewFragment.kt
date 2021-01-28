@@ -32,6 +32,7 @@ class CommentsRecyclerViewFragment : Fragment() {
     private var parentCommentIdsList: List<Int> = ArrayList()
     private var commentsList: ArrayList<FlattenedComment> = ArrayList()
     private var lastLoadedParentCommentIdx: Int = 0
+
     // Start as true for the initial comment loading
     private var isLoading: AtomicBoolean = AtomicBoolean(true)
 

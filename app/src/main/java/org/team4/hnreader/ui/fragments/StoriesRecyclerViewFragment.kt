@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.VolleyError
@@ -17,6 +18,7 @@ import org.team4.hnreader.data.remote.DeletedItemException
 import org.team4.hnreader.data.remote.ItemTypeNotImplementedException
 import org.team4.hnreader.databinding.FragmentStoriesRecyclerViewBinding
 import org.team4.hnreader.ui.adapters.StoryAdapter
+import org.team4.hnreader.ui.callbacks.OpenCommentsRVFragment
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.min
 
@@ -29,6 +31,7 @@ class StoriesRecyclerViewFragment : Fragment() {
     private var storiesIds: ArrayList<Int> = ArrayList()
     private var storiesList: ArrayList<Story> = ArrayList()
     private var lastLoadedStory: Int = 0
+
     // Don't load stories until storiesIds is filled
     private var isLoading: AtomicBoolean = AtomicBoolean(true)
 
@@ -44,7 +47,10 @@ class StoriesRecyclerViewFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        storyAdapter = StoryAdapter(storiesList)
+        storyAdapter = StoryAdapter(storiesList) { story ->
+            if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED))
+                (requireActivity() as OpenCommentsRVFragment).openCommentsRV(story)
+        }
         binding.recyclerviewStories.adapter = storyAdapter
         val linearLayoutManager = LinearLayoutManager(context)
         binding.recyclerviewStories.layoutManager = linearLayoutManager

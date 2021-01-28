@@ -7,12 +7,18 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import org.team4.hnreader.R
+import org.team4.hnreader.data.model.FlattenedComment
+import org.team4.hnreader.data.model.Story
 import org.team4.hnreader.databinding.ActivityMainBinding
 import org.team4.hnreader.ui.activities.BookmarksActivity
 import org.team4.hnreader.ui.activities.LoginActivity
+import org.team4.hnreader.ui.callbacks.OpenCommentsRVFragment
+import org.team4.hnreader.ui.callbacks.ShowCommentMenu
+import org.team4.hnreader.ui.fragments.CommentOptionsBottomSheet
+import org.team4.hnreader.ui.fragments.CommentsRecyclerViewFragment
 import org.team4.hnreader.ui.fragments.StoriesRecyclerViewFragment
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ShowCommentMenu, OpenCommentsRVFragment {
     private lateinit var binding: ActivityMainBinding
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var storiesRecyclerViewFragment: StoriesRecyclerViewFragment
@@ -66,5 +72,20 @@ class MainActivity : AppCompatActivity() {
         }
 
         storiesRecyclerViewFragment.updateItems()
+    }
+
+    override fun showCommentMenu(comment: FlattenedComment) {
+        CommentOptionsBottomSheet(comment).show(
+            supportFragmentManager,
+            CommentOptionsBottomSheet.TAG,
+        )
+    }
+
+    override fun openCommentsRV(story: Story) {
+        val commentsRecyclerViewFragment = CommentsRecyclerViewFragment.newInstance(story)
+        supportFragmentManager.beginTransaction().apply {
+            replace(R.id.mainContent, commentsRecyclerViewFragment)
+            commit()
+        }
     }
 }

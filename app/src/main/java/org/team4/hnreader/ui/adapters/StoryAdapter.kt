@@ -11,13 +11,16 @@ import org.team4.hnreader.databinding.FragmentStoryBinding
 import org.team4.hnreader.utils.DateTimeUtils
 import org.team4.hnreader.utils.URLUtils
 
-class StoryAdapter(private val stories: List<Story>) : RecyclerView.Adapter<StoryViewHolder>() {
+class StoryAdapter(
+    private val stories: List<Story>,
+    private val openCommentsRVCallback: (story: Story) -> Unit,
+) : RecyclerView.Adapter<StoryViewHolder>() {
     private var firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): StoryViewHolder {
         val binding =
             FragmentStoryBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false)
-        return StoryViewHolder(binding, true)
+        return StoryViewHolder(binding, openCommentsRVCallback)
     }
 
     override fun onBindViewHolder(viewHolder: StoryViewHolder, position: Int) {
