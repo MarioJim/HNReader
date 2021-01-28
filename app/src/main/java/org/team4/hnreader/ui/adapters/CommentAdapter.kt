@@ -3,7 +3,6 @@ package org.team4.hnreader.ui.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import org.team4.hnreader.data.model.FlattenedComment
@@ -12,15 +11,14 @@ import org.team4.hnreader.data.model.StoryWithText
 import org.team4.hnreader.data.model.StoryWithURL
 import org.team4.hnreader.databinding.FragmentCommentBinding
 import org.team4.hnreader.databinding.FragmentStoryBinding
-import org.team4.hnreader.ui.fragments.CommentOptionsBottomSheet
 import org.team4.hnreader.utils.DateTimeUtils
 import org.team4.hnreader.utils.TextUtils
 import org.team4.hnreader.utils.URLUtils
 
 class CommentAdapter(
-    private val activity: AppCompatActivity,
     var story: Story?,
     private val comments: List<FlattenedComment>,
+    private val showCommentMenuCallback: (comment: FlattenedComment) -> Unit,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
 
@@ -90,10 +88,7 @@ class CommentAdapter(
         viewHolder.tvContent.text = TextUtils.fromHTML(comment.text)
 
         viewHolder.root.setOnLongClickListener {
-            CommentOptionsBottomSheet(comment).show(
-                activity.supportFragmentManager,
-                CommentOptionsBottomSheet.TAG,
-            )
+            showCommentMenuCallback(comment)
             true
         }
     }

@@ -1,0 +1,104 @@
+[1mdiff --cc app/build.gradle[m
+[1mindex 59b2c7b,ba66d56..0000000[m
+[1m--- a/app/build.gradle[m
+[1m+++ b/app/build.gradle[m
+[36m@@@ -52,7 -53,9 +53,9 @@@[m [mdependencies [m
+      implementation 'com.android.volley:volley:1.1.1'[m
+      implementation platform('com.google.firebase:firebase-bom:26.3.0')[m
+      implementation 'com.google.firebase:firebase-auth'[m
+[31m -    implementation 'com.google.firebase:firebase-firestore'[m
+[32m +    implementation 'com.google.firebase:firebase-firestore-ktx'[m
+[32m+     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"[m
+[32m+     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"[m
+  [m
+      testImplementation 'junit:junit:4.13.1'[m
+      androidTestImplementation 'androidx.test.ext:junit:1.1.2'[m
+[1mdiff --cc app/src/main/java/org/team4/hnreader/ui/MainActivity.kt[m
+[1mindex 8de5163,abf622b..0000000[m
+[1m--- a/app/src/main/java/org/team4/hnreader/ui/MainActivity.kt[m
+[1m+++ b/app/src/main/java/org/team4/hnreader/ui/MainActivity.kt[m
+[36m@@@ -73,13 -38,15 +38,11 @@@[m [mclass MainActivity : AppCompatActivity([m
+              checkIfSignedIn()[m
+          }[m
+  [m
+[31m-         // Load story ids[m
+[31m-         ApiRequestQueue.getInstance().fetchTopStoriesIds([m
+[31m-             {[m
+[31m-                 storiesIds.plusAssign(it)[m
+[31m-                 loadStories()[m
+[31m-             },[m
+[31m-             { displayError(it) })[m
+[32m+         storiesRecyclerViewFragment = StoriesRecyclerViewFragment()[m
+[32m+         supportFragmentManager.beginTransaction().apply {[m
+[32m+             add(R.id.mainContent, storiesRecyclerViewFragment)[m
+[32m+             commit()[m
+[32m+         }[m
+[31m -    }[m
+[31m -[m
+[31m -    override fun onStart() {[m
+[31m -        super.onStart()[m
+  [m
+          checkIfSignedIn()[m
+      }[m
+[1mdiff --cc app/src/main/java/org/team4/hnreader/ui/adapters/CommentAdapter.kt[m
+[1mindex 8494380,2b2ff35..0000000[m
+[1m--- a/app/src/main/java/org/team4/hnreader/ui/adapters/CommentAdapter.kt[m
+[1m+++ b/app/src/main/java/org/team4/hnreader/ui/adapters/CommentAdapter.kt[m
+[36m@@@ -18,9 -16,9 +16,9 @@@[m [mimport org.team4.hnreader.utils.TextUti[m
+  import org.team4.hnreader.utils.URLUtils[m
+  [m
+  class CommentAdapter([m
+[31m-     private val activity: AppCompatActivity,[m
+[31m -    var story: Story,[m
+[32m +    var story: Story?,[m
+      private val comments: List<FlattenedComment>,[m
+[32m+     private val showCommentMenuCallback: (comment: FlattenedComment) -> Unit,[m
+  ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {[m
+      private var firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()[m
+  [m
+[1mdiff --cc app/src/main/res/layout/activity_comments.xml[m
+[1mindex 71e0675,19c2b73..0000000[m
+[1m--- a/app/src/main/res/layout/activity_comments.xml[m
+[1m+++ b/app/src/main/res/layout/activity_comments.xml[m
+[36m@@@ -4,32 -4,15 +4,19 @@@[m
+      xmlns:tools="http://schemas.android.com/tools"[m
+      android:layout_width="match_parent"[m
+      android:layout_height="match_parent"[m
+[32m +    android:clipToPadding="false"[m
+      android:orientation="vertical"[m
+[31m -    android:padding="12dp"[m
+[32m +    android:padding="0dp"[m
+      tools:context=".ui.activities.CommentsActivity">[m
+  [m
+[31m-     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout[m
+[31m-         android:id="@+id/srComments"[m
+[32m+     <androidx.constraintlayout.widget.ConstraintLayout[m
+[32m+         android:id="@+id/commentsContent"[m
+          android:layout_width="match_parent"[m
+[31m -        android:layout_height="match_parent">[m
+[32m +        android:layout_height="match_parent"[m
+[32m +        android:clipToPadding="false"[m
+[32m +        tools:layout_editor_absoluteX="12dp"[m
+[32m +        tools:layout_editor_absoluteY="12dp">[m
+  [m
+[31m-         <androidx.recyclerview.widget.RecyclerView[m
+[31m-             android:id="@+id/recyclerviewComments"[m
+[31m-             android:layout_width="0dp"[m
+[31m-             android:layout_height="wrap_content"[m
+[31m-             android:clipToPadding="false"[m
+[31m-             android:padding="12dp"[m
+[31m-             app:layout_constraintBottom_toBottomOf="parent"[m
+[31m-             app:layout_constraintEnd_toEndOf="parent"[m
+[31m-             app:layout_constraintStart_toStartOf="parent"[m
+[31m-             app:layout_constraintTop_toTopOf="parent"[m
+[31m-             app:layout_constraintVertical_bias="0.0"[m
+[31m-             tools:listitem="@layout/fragment_comment" />[m
+[31m- [m
+[31m-     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>[m
+[32m+     </androidx.constraintlayout.widget.ConstraintLayout>[m
+  [m
+  </androidx.constraintlayout.widget.ConstraintLayout>[m
+[1mdiff --cc app/src/main/res/layout/activity_main.xml[m
+[1mindex 6e9511d,de6c140..0000000[m
+[1m--- a/app/src/main/res/layout/activity_main.xml[m
+[1m+++ b/app/src/main/res/layout/activity_main.xml[m

@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper
 import androidx.core.database.sqlite.transaction
 import org.team4.hnreader.data.model.*
 
-class DBHelper(ctx: Context) : SQLiteOpenHelper(ctx, DB_FILE, null, 8) {
+class DBHelper(ctx: Context?) : SQLiteOpenHelper(ctx, DB_FILE, null, 8) {
     companion object {
         private const val DB_FILE = "cache.sqlite"
     }
