@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.team4.hnreader.data.model.FlattenedComment
+import org.team4.hnreader.data.remote.FirestoreHelper
 import org.team4.hnreader.databinding.FragmentCommentOptionsBottomSheetBinding
 
 class CommentOptionsBottomSheet(private val comment: FlattenedComment) :
@@ -23,8 +24,11 @@ class CommentOptionsBottomSheet(private val comment: FlattenedComment) :
         _binding = FragmentCommentOptionsBottomSheetBinding.inflate(inflater, container, false)
 
         binding.btnBookmarkComment.setOnClickListener {
-            // TODO: Save in bookmarks
-            Toast.makeText(this.activity, "Saved comment in bookmarks", Toast.LENGTH_SHORT).show()
+            if (comment != null) {
+                FirestoreHelper.getInstance().addCommentToBookmarks(comment) {
+                    Toast.makeText(binding.root.context, it.second, Toast.LENGTH_SHORT).show()
+                }
+            }
         }
         binding.btnShareComment.setOnClickListener {
             val url = "https://news.ycombinator.com/item?id=${comment.id}"
