@@ -11,11 +11,11 @@ import org.team4.hnreader.data.model.Story
 import org.team4.hnreader.data.remote.ApiRequestQueue
 import java.util.concurrent.atomic.AtomicInteger
 
-class ItemFinder(ctx: Context) {
+class ItemFinder(ctx: Context?) {
     companion object {
         @Volatile
         private var instance: ItemFinder? = null
-        fun getInstance(ctx: Context) =
+        fun getInstance(ctx: Context?) =
             instance ?: synchronized(this) {
                 instance ?: ItemFinder(ctx).also { instance = it }
             }
