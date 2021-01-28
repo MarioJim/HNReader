@@ -19,7 +19,7 @@ import org.team4.hnreader.utils.URLUtils
 
 class CommentAdapter(
     private val activity: AppCompatActivity,
-    var story: Story,
+    var story: Story?,
     private val comments: List<FlattenedComment>,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
@@ -58,24 +58,29 @@ class CommentAdapter(
     }
 
     private fun onBindStoryViewHolder(viewHolder: StoryViewHolder) {
-        viewHolder.tvTitle.text = story.title
+        viewHolder.tvTitle.text = story?.title
         val story = this.story
-        viewHolder.tvUrl.text = when (story) {
-            is StoryWithURL -> URLUtils.getDomain(story.url)
-            is StoryWithText -> TextUtils.fromHTML(story.text)
-            else -> ""
-        }
-        if (viewHolder.tvUrl.text.isEmpty())
-            viewHolder.tvUrl.visibility = View.INVISIBLE
-        val timeAgo = DateTimeUtils.timeAgo(story.created_at)
-        viewHolder.tvInfo.text = "by ${story.author}, $timeAgo"
-        viewHolder.tvVotes.text = "${story.points} points, ${story.numComments} comments"
-        viewHolder.story = story
 
-        viewHolder.btnSave.visibility = if (firebaseAuth.currentUser == null) {
-            View.INVISIBLE
+        if (story != null) {
+            viewHolder.tvUrl.text = when (story) {
+                is StoryWithURL -> URLUtils.getDomain(story.url)
+                is StoryWithText -> TextUtils.fromHTML(story.text)
+                else -> ""
+            }
+            if (viewHolder.tvUrl.text.isEmpty())
+                viewHolder.tvUrl.visibility = View.INVISIBLE
+            val timeAgo = DateTimeUtils.timeAgo(story.created_at)
+            viewHolder.tvInfo.text = "by ${story.author}, $timeAgo"
+            viewHolder.tvVotes.text = "${story.points} points, ${story.numComments} comments"
+            viewHolder.story = story
+
+            viewHolder.btnSave.visibility = if (firebaseAuth.currentUser == null) {
+                View.INVISIBLE
+            } else {
+                View.VISIBLE
+            }
         } else {
-            View.VISIBLE
+            viewHolder.container.maxHeight = 0
         }
     }
 

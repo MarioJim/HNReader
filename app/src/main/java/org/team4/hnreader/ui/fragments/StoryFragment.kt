@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import org.team4.hnreader.data.model.Story
 import org.team4.hnreader.data.model.StoryWithURL
+import org.team4.hnreader.data.remote.FirestoreHelper
 import org.team4.hnreader.databinding.FragmentStoryBinding
 import org.team4.hnreader.utils.DateTimeUtils
 import org.team4.hnreader.utils.URLUtils
@@ -77,8 +78,9 @@ class StoryFragment : Fragment() {
         }
 
         binding.saveBtn.setOnClickListener {
-            // TODO: Save in bookmarks
-            Toast.makeText(this.activity, "Saved story in bookmarks", Toast.LENGTH_SHORT).show()
+            FirestoreHelper.getInstance().addStoryToBookmarks(story!!) {
+                Toast.makeText(binding.root.context, it.second, Toast.LENGTH_SHORT).show()
+            }
         }
 
         binding.saveBtn.visibility = if (firebaseAuth.currentUser == null) {

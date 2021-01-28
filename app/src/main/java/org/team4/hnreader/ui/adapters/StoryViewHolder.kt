@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import org.team4.hnreader.data.model.Story
 import org.team4.hnreader.data.model.StoryWithURL
+import org.team4.hnreader.data.remote.FirestoreHelper
 import org.team4.hnreader.databinding.FragmentStoryBinding
 import org.team4.hnreader.ui.activities.CommentsActivity
 
@@ -14,6 +15,7 @@ class StoryViewHolder(
     binding: FragmentStoryBinding,
     private val shouldOpenComments: Boolean,
 ) : RecyclerView.ViewHolder(binding.root) {
+    val container = binding.storyFragmentContainer
     val tvTitle = binding.tvTitle
     val tvInfo = binding.tvInfo
     val tvUrl = binding.tvUrl
@@ -53,9 +55,11 @@ class StoryViewHolder(
             ContextCompat.startActivity(binding.root.context, shareIntent, null)
         }
         binding.saveBtn.setOnClickListener {
-            // TODO: Save in bookmarks
-            Toast.makeText(binding.root.context, "Saved item in bookmarks", Toast.LENGTH_SHORT)
-                .show()
+            if (story != null) {
+                FirestoreHelper.getInstance().addStoryToBookmarks(story!!) {
+                    Toast.makeText(binding.root.context, it.second, Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 }

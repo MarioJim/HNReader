@@ -80,10 +80,6 @@ class MainActivity : AppCompatActivity() {
                 loadStories()
             },
             { displayError(it) })
-    }
-
-    override fun onStart() {
-        super.onStart()
 
         checkIfSignedIn()
     }
