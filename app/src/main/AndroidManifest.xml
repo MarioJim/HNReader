@@ -14,7 +14,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HackerNewsReader">
         <activity android:name=".ui.activities.BookmarksActivity" />
-        <activity android:name=".ui.activities.CommentsActivity" />
         <activity android:name=".ui.activities.LoginActivity" />
         <activity android:name=".ui.activities.SignUpActivity" />
         <activity android:name=".ui.MainActivity" >

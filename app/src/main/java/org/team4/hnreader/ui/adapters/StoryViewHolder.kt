@@ -9,11 +9,10 @@ import org.team4.hnreader.data.model.Story
 import org.team4.hnreader.data.model.StoryWithURL
 import org.team4.hnreader.data.remote.FirestoreHelper
 import org.team4.hnreader.databinding.FragmentStoryBinding
-import org.team4.hnreader.ui.activities.CommentsActivity
 
 class StoryViewHolder(
     binding: FragmentStoryBinding,
-    private val shouldOpenComments: Boolean,
+    private val openCommentsRVCallback: (story: Story) -> Unit = {},
 ) : RecyclerView.ViewHolder(binding.root) {
     val container = binding.storyFragmentContainer
     val tvTitle = binding.tvTitle
@@ -31,15 +30,7 @@ class StoryViewHolder(
                 ContextCompat.startActivity(binding.root.context, browserIntent, null)
             }
         }
-        binding.commentsBtn.setOnClickListener {
-            if (shouldOpenComments) {
-                val intentToComments =
-                    Intent(binding.root.context, CommentsActivity::class.java).apply {
-                        putExtra(CommentsActivity.ARG_STORY, story)
-                    }
-                ContextCompat.startActivity(binding.root.context, intentToComments, null)
-            }
-        }
+        binding.commentsBtn.setOnClickListener { openCommentsRVCallback(story!!) }
         binding.shareBtn.setOnClickListener {
             val url = if (story is StoryWithURL) {
                 (story as StoryWithURL).url

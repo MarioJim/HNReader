@@ -33,7 +33,7 @@ class CommentAdapter(
                     viewGroup,
                     false,
                 )
-                StoryViewHolder(binding, false)
+                StoryViewHolder(binding)
             }
             COMMENT_VIEW_TYPE -> {
                 val binding = FragmentCommentBinding.inflate(
