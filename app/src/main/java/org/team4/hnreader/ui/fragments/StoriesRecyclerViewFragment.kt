@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.VolleyError
@@ -18,7 +18,6 @@ import org.team4.hnreader.data.remote.DeletedItemException
 import org.team4.hnreader.data.remote.ItemTypeNotImplementedException
 import org.team4.hnreader.databinding.FragmentStoriesRecyclerViewBinding
 import org.team4.hnreader.ui.adapters.StoryAdapter
-import org.team4.hnreader.ui.callbacks.OpenCommentsRVFragment
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.min
 
@@ -48,8 +47,9 @@ class StoriesRecyclerViewFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         storyAdapter = StoryAdapter(storiesList) { story ->
-            if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED))
-                (requireActivity() as OpenCommentsRVFragment).openCommentsRV(story)
+            val directions = StoriesRecyclerViewFragmentDirections
+                .actionStoriesRecyclerViewFragmentToCommentsRecyclerViewFragment(story)
+            findNavController().navigate(directions)
         }
         binding.recyclerviewStories.adapter = storyAdapter
         val linearLayoutManager = LinearLayoutManager(context)

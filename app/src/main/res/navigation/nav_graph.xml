@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/storiesRecyclerViewFragment">
+
+    <fragment
+        android:id="@+id/storiesRecyclerViewFragment"
+        android:name="org.team4.hnreader.ui.fragments.StoriesRecyclerViewFragment"
+        android:label="fragment_stories_recycler_view"
+        tools:layout="@layout/fragment_stories_recycler_view" >
+        <action
+            android:id="@+id/action_storiesRecyclerViewFragment_to_commentsRecyclerViewFragment"
+            app:destination="@id/commentsRecyclerViewFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/commentsRecyclerViewFragment"
+        android:name="org.team4.hnreader.ui.fragments.CommentsRecyclerViewFragment"
+        android:label="fragment_comments_recycler_view"
+        tools:layout="@layout/fragment_comments_recycler_view">
+        <argument
+            android:name="story"
+            app:argType="org.team4.hnreader.data.model.Story" />
+    </fragment>
+</navigation>
