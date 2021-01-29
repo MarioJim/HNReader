@@ -23,6 +23,8 @@ class MainActivity : AppCompatActivity(), ShowCommentMenu {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var firebaseAuth: FirebaseAuth
 
+    private val LOGIN_ACTIVITY_CODE = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -51,14 +53,20 @@ class MainActivity : AppCompatActivity(), ShowCommentMenu {
 
         binding.loginBtn.setOnClickListener {
             val intentToLogin = Intent(this, LoginActivity::class.java)
-            startActivity(intentToLogin)
+            startActivityForResult(intentToLogin, LOGIN_ACTIVITY_CODE)
         }
         binding.logoutBtn.setOnClickListener {
             firebaseAuth.signOut()
-            checkIfSignedIn()
+            recreate()
         }
+    }
 
-        checkIfSignedIn()
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == LOGIN_ACTIVITY_CODE) {
+            recreate()
+        }
     }
 
     override fun onStart() {
@@ -87,9 +95,6 @@ class MainActivity : AppCompatActivity(), ShowCommentMenu {
             loginBtn.visibility = View.VISIBLE
             logoutBtn.visibility = View.GONE
         }
-
-        // TODO: Find way to notify StoriesRecyclerViewFragment (calling updateItems)
-        //
     }
 
     override fun showCommentMenu(comment: FlattenedComment) {
