@@ -7,7 +7,7 @@ import org.team4.hnreader.data.model.FlattenedComment
 import org.team4.hnreader.data.model.Story
 import java.util.*
 
-class FirestoreHelper() {
+class FirestoreHelper {
     companion object {
         @Volatile
         private var instance: FirestoreHelper? = null
@@ -26,10 +26,12 @@ class FirestoreHelper() {
         db.collection("users/${firebaseAuth.currentUser?.uid}/bookmarks-stories")
             .document(story.id.toString()).set(storyMap)
             .addOnCompleteListener { task ->
-                callback(
-                    Pair(task.isSuccessful,
-                        if (task.isSuccessful) "Success saving story to bookmarks" else task.exception?.message ?: "Error")
-                )
+                val message = if (task.isSuccessful) {
+                    "Success saving story to bookmarks"
+                } else {
+                    task.exception?.message ?: "Error"
+                }
+                callback(Pair(task.isSuccessful, message))
             }
     }
 
@@ -45,18 +47,23 @@ class FirestoreHelper() {
                     }
                     callback(list)
                 }
-        }
+            }
     }
 
-    fun addCommentToBookmarks(comment: FlattenedComment, callback: (Pair<Boolean, String>) -> Unit) {
+    fun addCommentToBookmarks(
+        comment: FlattenedComment,
+        callback: (Pair<Boolean, String>) -> Unit,
+    ) {
         val commentMap = mapOf("save-date" to Calendar.getInstance().time, "id" to comment.id)
         db.collection("users/${firebaseAuth.currentUser?.uid}/bookmarks-comments")
             .document(comment.id.toString()).set(commentMap)
             .addOnCompleteListener { task ->
-                callback(
-                    Pair(task.isSuccessful,
-                        if (task.isSuccessful) "Success saving comment to bookmarks" else task.exception?.message ?: "Error")
-                )
+                val message = if (task.isSuccessful) {
+                    "Success saving comment to bookmarks"
+                } else {
+                    task.exception?.message ?: "Error"
+                }
+                callback(Pair(task.isSuccessful, message))
             }
     }
 

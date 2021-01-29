@@ -5,10 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
-import org.team4.hnreader.data.model.FlattenedComment
-import org.team4.hnreader.data.model.Story
-import org.team4.hnreader.data.model.StoryWithText
-import org.team4.hnreader.data.model.StoryWithURL
+import org.team4.hnreader.data.model.*
 import org.team4.hnreader.databinding.FragmentCommentBinding
 import org.team4.hnreader.databinding.FragmentStoryBinding
 import org.team4.hnreader.utils.DateTimeUtils
@@ -16,14 +13,16 @@ import org.team4.hnreader.utils.TextUtils
 import org.team4.hnreader.utils.URLUtils
 
 class CommentAdapter(
-    var story: Story?,
-    private val comments: List<FlattenedComment>,
+    private val items: List<DisplayedItem>,
     private val showCommentMenuCallback: (comment: FlattenedComment) -> Unit,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
 
-    override fun getItemViewType(position: Int) =
-        if (position == 0) STORY_VIEW_TYPE else COMMENT_VIEW_TYPE
+    override fun getItemViewType(position: Int) = when (items[position]) {
+        is Story -> STORY_VIEW_TYPE
+        is FlattenedComment -> COMMENT_VIEW_TYPE
+        else -> throw Exception("ViewType for item ${items[position]} not implemented")
+    }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
@@ -49,36 +48,30 @@ class CommentAdapter(
 
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
         if (viewHolder is StoryViewHolder) {
-            onBindStoryViewHolder(viewHolder)
+            onBindStoryViewHolder(viewHolder, items[position] as Story)
         } else if (viewHolder is CommentViewHolder) {
-            onBindCommentViewHolder(viewHolder, comments[position - 1])
+            onBindCommentViewHolder(viewHolder, items[position] as FlattenedComment)
         }
     }
 
-    private fun onBindStoryViewHolder(viewHolder: StoryViewHolder) {
-        viewHolder.tvTitle.text = story?.title
-        val story = this.story
+    private fun onBindStoryViewHolder(viewHolder: StoryViewHolder, story: Story) {
+        viewHolder.tvTitle.text = story.title
+        viewHolder.tvUrl.text = when (story) {
+            is StoryWithURL -> URLUtils.getDomain(story.url)
+            is StoryWithText -> TextUtils.fromHTML(story.text)
+            else -> ""
+        }
+        if (viewHolder.tvUrl.text.isEmpty())
+            viewHolder.tvUrl.visibility = View.INVISIBLE
+        val timeAgo = DateTimeUtils.timeAgo(story.created_at)
+        viewHolder.tvInfo.text = "by ${story.author}, $timeAgo"
+        viewHolder.tvVotes.text = "${story.points} points, ${story.numComments} comments"
+        viewHolder.story = story
 
-        if (story != null) {
-            viewHolder.tvUrl.text = when (story) {
-                is StoryWithURL -> URLUtils.getDomain(story.url)
-                is StoryWithText -> TextUtils.fromHTML(story.text)
-                else -> ""
-            }
-            if (viewHolder.tvUrl.text.isEmpty())
-                viewHolder.tvUrl.visibility = View.INVISIBLE
-            val timeAgo = DateTimeUtils.timeAgo(story.created_at)
-            viewHolder.tvInfo.text = "by ${story.author}, $timeAgo"
-            viewHolder.tvVotes.text = "${story.points} points, ${story.numComments} comments"
-            viewHolder.story = story
-
-            viewHolder.btnSave.visibility = if (firebaseAuth.currentUser == null) {
-                View.INVISIBLE
-            } else {
-                View.VISIBLE
-            }
+        viewHolder.btnSave.visibility = if (firebaseAuth.currentUser == null) {
+            View.INVISIBLE
         } else {
-            viewHolder.container.maxHeight = 0
+            View.VISIBLE
         }
     }
 
@@ -93,7 +86,7 @@ class CommentAdapter(
         }
     }
 
-    override fun getItemCount() = comments.size + 1
+    override fun getItemCount() = items.size
 
     companion object {
         private const val STORY_VIEW_TYPE = 1

@@ -79,7 +79,7 @@ class StoryFragment : Fragment() {
         }
 
         binding.saveBtn.setOnClickListener {
-            FirestoreHelper.getInstance().addStoryToBookmarks(story!!) {
+            FirestoreHelper.getInstance().addStoryToBookmarks(story) {
                 Toast.makeText(binding.root.context, it.second, Toast.LENGTH_SHORT).show()
             }
         }

@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.VolleyError
 import org.team4.hnreader.data.ItemFinder
-import org.team4.hnreader.data.model.FlattenedComment
+import org.team4.hnreader.data.model.DisplayedItem
 import org.team4.hnreader.data.model.Story
 import org.team4.hnreader.data.remote.DeletedItemException
 import org.team4.hnreader.databinding.FragmentCommentsRecyclerViewBinding
@@ -30,7 +30,7 @@ class CommentsRecyclerViewFragment : Fragment() {
 
     private var fromCache: Boolean = true
     private var parentCommentIdsList: List<Int> = ArrayList()
-    private var commentsList: ArrayList<FlattenedComment> = ArrayList()
+    private var itemsList: ArrayList<DisplayedItem> = ArrayList()
     private var lastLoadedParentCommentIdx: Int = 0
 
     // Start as true for the initial comment loading
@@ -56,7 +56,8 @@ class CommentsRecyclerViewFragment : Fragment() {
 
         parentCommentIdsList = story.kids
 
-        commentsAdapter = CommentAdapter(story, commentsList) { comment ->
+        itemsList.add(story)
+        commentsAdapter = CommentAdapter(itemsList) { comment ->
             if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED))
                 (requireActivity() as ShowCommentMenu).showCommentMenu(comment)
         }
@@ -68,7 +69,7 @@ class CommentsRecyclerViewFragment : Fragment() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val lastViewedItem = linearLayoutManager.findLastCompletelyVisibleItemPosition()
-                val shouldLoadMoreComments = lastViewedItem + 7 >= commentsList.size
+                val shouldLoadMoreComments = lastViewedItem + 7 >= itemsList.size
                 if (shouldLoadMoreComments && isLoading.compareAndSet(false, true)) {
                     loadComments()
                 }
@@ -86,9 +87,9 @@ class CommentsRecyclerViewFragment : Fragment() {
             storyId,
             fromCache,
             {
-                commentsAdapter.story = it
+                itemsList.clear()
+                itemsList.add(it)
                 parentCommentIdsList = it.kids
-                commentsList.clear()
                 lastLoadedParentCommentIdx = 0
                 binding.recyclerviewComments.adapter = commentsAdapter
                 loadComments { binding.srComments.isRefreshing = false }
@@ -112,7 +113,7 @@ class CommentsRecyclerViewFragment : Fragment() {
             0,
             fromCache,
             { fetchedCommentList ->
-                commentsList.addAll(fetchedCommentList)
+                itemsList.addAll(fetchedCommentList)
                 binding.recyclerviewComments.post {
                     commentsAdapter.notifyDataSetChanged()
                 }

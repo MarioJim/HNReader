@@ -14,7 +14,6 @@ class StoryViewHolder(
     binding: FragmentStoryBinding,
     private val openCommentsRVCallback: (story: Story) -> Unit = {},
 ) : RecyclerView.ViewHolder(binding.root) {
-    val container = binding.storyFragmentContainer
     val tvTitle = binding.tvTitle
     val tvInfo = binding.tvInfo
     val tvUrl = binding.tvUrl
