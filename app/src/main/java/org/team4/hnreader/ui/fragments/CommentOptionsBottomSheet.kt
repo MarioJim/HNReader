@@ -24,10 +24,8 @@ class CommentOptionsBottomSheet(private val comment: FlattenedComment) :
         _binding = FragmentCommentOptionsBottomSheetBinding.inflate(inflater, container, false)
 
         binding.btnBookmarkComment.setOnClickListener {
-            if (comment != null) {
-                FirestoreHelper.getInstance().addCommentToBookmarks(comment) {
-                    Toast.makeText(binding.root.context, it.second, Toast.LENGTH_SHORT).show()
-                }
+            FirestoreHelper.getInstance().addCommentToBookmarks(comment) {
+                Toast.makeText(binding.root.context, it.second, Toast.LENGTH_SHORT).show()
             }
         }
         binding.btnShareComment.setOnClickListener {

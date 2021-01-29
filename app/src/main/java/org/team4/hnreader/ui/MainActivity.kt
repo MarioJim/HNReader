@@ -5,30 +5,45 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
 import com.google.firebase.auth.FirebaseAuth
+import org.team4.hnreader.R
 import org.team4.hnreader.data.model.FlattenedComment
 import org.team4.hnreader.databinding.ActivityMainBinding
-import org.team4.hnreader.ui.activities.BookmarksActivity
 import org.team4.hnreader.ui.activities.LoginActivity
 import org.team4.hnreader.ui.callbacks.ShowCommentMenu
 import org.team4.hnreader.ui.fragments.CommentOptionsBottomSheet
 
 class MainActivity : AppCompatActivity(), ShowCommentMenu {
     private lateinit var binding: ActivityMainBinding
+    private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var firebaseAuth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        supportActionBar?.hide()
+        setSupportActionBar(binding.toolbar)
+
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.mainContent) as NavHostFragment
+        val navController = navHostFragment.navController
+        appBarConfiguration = AppBarConfiguration(
+            setOf(
+                R.id.bookmarksStoriesFragment,
+                R.id.bookmarksCommentsFragment,
+                R.id.storiesRecyclerViewFragment,
+            ),
+            binding.drawerLayout
+        )
+        setupActionBarWithNavController(navController, appBarConfiguration)
+        binding.navDrawer.setupWithNavController(navController)
 
         firebaseAuth = FirebaseAuth.getInstance()
 
-        binding.bookmarksBtn.setOnClickListener {
-            val intentToBookmarks = Intent(this, BookmarksActivity::class.java)
-            startActivity(intentToBookmarks)
-        }
         binding.loginBtn.setOnClickListener {
             val intentToLogin = Intent(this, LoginActivity::class.java)
             startActivity(intentToLogin)
@@ -41,25 +56,29 @@ class MainActivity : AppCompatActivity(), ShowCommentMenu {
         checkIfSignedIn()
     }
 
+    override fun onSupportNavigateUp(): Boolean {
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.mainContent) as NavHostFragment
+        val navController = navHostFragment.navController
+        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
+
     private fun checkIfSignedIn() {
         val loginBtn = binding.loginBtn
         val logoutBtn = binding.logoutBtn
-        val bookmarksBtn = binding.bookmarksBtn
 
         val user = firebaseAuth.currentUser
         if (user != null) {
             Toast.makeText(this, "Current user: " + user.email, Toast.LENGTH_SHORT).show()
             loginBtn.visibility = View.GONE
             logoutBtn.visibility = View.VISIBLE
-            bookmarksBtn.visibility = View.VISIBLE
         } else {
             Toast.makeText(this, "Login to save bookmarks!", Toast.LENGTH_SHORT).show()
             loginBtn.visibility = View.VISIBLE
             logoutBtn.visibility = View.GONE
-            bookmarksBtn.visibility = View.GONE
         }
 
-        // TODO: Find way to notify StoriesRecyclerViewFragment
+        // TODO: Find way to notify StoriesRecyclerViewFragment (calling updateItems)
+        //
     }
 
     override fun showCommentMenu(comment: FlattenedComment) {

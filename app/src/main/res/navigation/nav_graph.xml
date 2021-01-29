@@ -8,19 +8,36 @@
     <fragment
         android:id="@+id/storiesRecyclerViewFragment"
         android:name="org.team4.hnreader.ui.fragments.StoriesRecyclerViewFragment"
-        android:label="fragment_stories_recycler_view"
+        android:label="Stories"
         tools:layout="@layout/fragment_stories_recycler_view" >
         <action
             android:id="@+id/action_storiesRecyclerViewFragment_to_commentsRecyclerViewFragment"
             app:destination="@id/commentsRecyclerViewFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/commentsRecyclerViewFragment"
         android:name="org.team4.hnreader.ui.fragments.CommentsRecyclerViewFragment"
-        android:label="fragment_comments_recycler_view"
+        android:label="Comments"
         tools:layout="@layout/fragment_comments_recycler_view">
         <argument
             android:name="story"
             app:argType="org.team4.hnreader.data.model.Story" />
     </fragment>
+
+    <fragment
+        android:id="@+id/bookmarksStoriesFragment"
+        android:name="org.team4.hnreader.ui.fragments.BookmarksStoriesFragment"
+        android:label="Bookmarked stories"
+        tools:layout="@layout/fragment_bookmarks_stories">
+        <action
+            android:id="@+id/action_bookmarksStoriesFragment_to_commentsRecyclerViewFragment"
+            app:destination="@id/commentsRecyclerViewFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/bookmarksCommentsFragment"
+        android:name="org.team4.hnreader.ui.fragments.BookmarksCommentsFragment"
+        android:label="Bookmarked comments"
+        tools:layout="@layout/fragment_bookmarks_comments" />
 </navigation>

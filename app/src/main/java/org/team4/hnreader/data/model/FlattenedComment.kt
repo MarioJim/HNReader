@@ -8,7 +8,7 @@ data class FlattenedComment(
     val depth: Int,
     val id: Int,
     val text: String,
-) : Serializable {
+) : DisplayedItem, Serializable {
     companion object {
         fun fromComment(comment: Comment, depth: Int) = FlattenedComment(
             comment.author,

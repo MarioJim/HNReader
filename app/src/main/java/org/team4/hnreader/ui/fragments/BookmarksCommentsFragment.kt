@@ -2,12 +2,12 @@ package org.team4.hnreader.ui.fragments
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.VolleyError
@@ -17,6 +17,7 @@ import org.team4.hnreader.data.remote.DeletedItemException
 import org.team4.hnreader.data.remote.FirestoreHelper
 import org.team4.hnreader.databinding.FragmentBookmarksCommentsBinding
 import org.team4.hnreader.ui.adapters.CommentAdapter
+import org.team4.hnreader.ui.callbacks.ShowCommentMenu
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.min
 
@@ -35,11 +36,13 @@ class BookmarksCommentsFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
+    ): View {
         _binding = FragmentBookmarksCommentsBinding.inflate(inflater, container, false)
 
-        commentAdapter = CommentAdapter(
-            activity as AppCompatActivity, null , commentsList)
+        commentAdapter = CommentAdapter(commentsList) { comment ->
+            if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED))
+                (requireActivity() as ShowCommentMenu).showCommentMenu(comment)
+        }
         binding.rvBookmarksComments.adapter = commentAdapter
         val linearLayoutManager = LinearLayoutManager(binding.root.context)
         binding.rvBookmarksComments.layoutManager = linearLayoutManager
@@ -104,7 +107,8 @@ class BookmarksCommentsFragment : Fragment() {
             is DeletedItemException -> Log.e("DeletedItemException", "${error.message}")
             else -> {
                 Log.e("volley error", error.message, error.cause)
-                Toast.makeText(binding.root.context, "Error: " + error.message, Toast.LENGTH_SHORT).show()
+                Toast.makeText(binding.root.context, "Error: " + error.message, Toast.LENGTH_SHORT)
+                    .show()
             }
         }
     }
