@@ -4,8 +4,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.FirebaseAuth
+import org.team4.hnreader.R
 import org.team4.hnreader.data.model.*
+import org.team4.hnreader.data.remote.FirestoreHelper
 import org.team4.hnreader.databinding.FragmentCommentBinding
 import org.team4.hnreader.databinding.FragmentStoryBinding
 import org.team4.hnreader.utils.DateTimeUtils
@@ -68,10 +71,14 @@ class CommentAdapter(
         viewHolder.tvVotes.text = "${story.points} points, ${story.numComments} comments"
         viewHolder.story = story
 
-        viewHolder.btnSave.visibility = if (firebaseAuth.currentUser == null) {
+        viewHolder.saveBtn.visibility = if (firebaseAuth.currentUser == null) {
             View.INVISIBLE
         } else {
             View.VISIBLE
+        }
+
+        FirestoreHelper.getInstance().checkIfStoryIsBookmark(story) {
+            (viewHolder.saveBtn as MaterialButton).setIconTintResource(if (it) R.color.white else R.color.transparent)
         }
     }
 

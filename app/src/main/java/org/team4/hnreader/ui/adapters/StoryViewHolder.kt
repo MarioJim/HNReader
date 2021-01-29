@@ -4,18 +4,17 @@ import android.app.PendingIntent
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.net.Uri
-import android.widget.Toast
 import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.button.MaterialButton
 import org.team4.hnreader.R
 import org.team4.hnreader.ShareBroadcastReceiver
 import org.team4.hnreader.data.model.Story
 import org.team4.hnreader.data.model.StoryWithURL
 import org.team4.hnreader.data.remote.FirestoreHelper
 import org.team4.hnreader.databinding.FragmentStoryBinding
-
 
 class StoryViewHolder(
     binding: FragmentStoryBinding,
@@ -25,7 +24,7 @@ class StoryViewHolder(
     val tvInfo = binding.tvInfo
     val tvUrl = binding.tvUrl
     val tvVotes = binding.tvVotes
-    val btnSave = binding.saveBtn
+    val saveBtn = binding.saveBtn
     var story: Story? = null
 
     init {
@@ -76,8 +75,19 @@ class StoryViewHolder(
         }
         binding.saveBtn.setOnClickListener {
             if (story != null) {
-                FirestoreHelper.getInstance().addStoryToBookmarks(story!!) {
-                    Toast.makeText(binding.root.context, it.second, Toast.LENGTH_SHORT).show()
+                val firestoreHelper = FirestoreHelper.getInstance()
+                firestoreHelper.checkIfStoryIsBookmark(story!!) { exist ->
+                    if (exist) {
+                        firestoreHelper.removeStoryFromBookmarks(story!!) {
+                            // TODO: Handle result
+                        }
+                        (binding.saveBtn as MaterialButton).setIconTintResource(R.color.transparent)
+                    } else {
+                        firestoreHelper.addStoryToBookmarks(story!!) {
+                            // TODO: Handle result
+                        }
+                        (binding.saveBtn as MaterialButton).setIconTintResource(R.color.white)
+                    }
                 }
             }
         }

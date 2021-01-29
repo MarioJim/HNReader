@@ -22,12 +22,24 @@ class FirestoreHelper {
 
     fun addStoryToBookmarks(story: Story, callback: (Pair<Boolean, String>) -> Unit) {
         val storyMap = mapOf("save-date" to Calendar.getInstance().time, "id" to story.id)
-
         db.collection("users/${firebaseAuth.currentUser?.uid}/bookmarks-stories")
             .document(story.id.toString()).set(storyMap)
             .addOnCompleteListener { task ->
                 val message = if (task.isSuccessful) {
                     "Success saving story to bookmarks"
+                } else {
+                    task.exception?.message ?: "Error"
+                }
+                callback(Pair(task.isSuccessful, message))
+            }
+    }
+
+    fun removeStoryFromBookmarks(story: Story, callback: (Pair<Boolean, String>) -> Unit) {
+        db.collection("users/${firebaseAuth.currentUser?.uid}/bookmarks-stories")
+            .document(story.id.toString()).delete()
+            .addOnCompleteListener { task ->
+                val message = if (task.isSuccessful) {
+                    "Success removing story from bookmarks"
                 } else {
                     task.exception?.message ?: "Error"
                 }
@@ -50,6 +62,14 @@ class FirestoreHelper {
             }
     }
 
+    fun checkIfStoryIsBookmark(story: Story, callback: (Boolean) -> Unit) {
+        db.collection("users/${firebaseAuth.currentUser?.uid}/bookmarks-stories")
+            .document(story.id.toString()).get()
+            .addOnCompleteListener { task ->
+                callback(task.result?.exists() ?: false)
+            }
+    }
+
     fun addCommentToBookmarks(
         comment: FlattenedComment,
         callback: (Pair<Boolean, String>) -> Unit,
@@ -59,7 +79,23 @@ class FirestoreHelper {
             .document(comment.id.toString()).set(commentMap)
             .addOnCompleteListener { task ->
                 val message = if (task.isSuccessful) {
-                    "Success saving comment to bookmarks"
+                    "Success saving comment from bookmarks"
+                } else {
+                    task.exception?.message ?: "Error"
+                }
+                callback(Pair(task.isSuccessful, message))
+            }
+    }
+
+    fun removeCommentFromBookmarks(
+        comment: FlattenedComment,
+        callback: (Pair<Boolean, String>) -> Unit,
+    ) {
+        db.collection("users/${firebaseAuth.currentUser?.uid}/bookmarks-comments")
+            .document(comment.id.toString()).delete()
+            .addOnCompleteListener { task ->
+                val message = if (task.isSuccessful) {
+                    "Success removing comment to bookmarks"
                 } else {
                     task.exception?.message ?: "Error"
                 }
@@ -79,6 +115,14 @@ class FirestoreHelper {
                     }
                     callback(list)
                 }
+            }
+    }
+
+    fun checkIfCommentIsBookmark(comment: FlattenedComment, callback: (Boolean) -> Unit) {
+        db.collection("users/${firebaseAuth.currentUser?.uid}/bookmarks-comments")
+            .document(comment.id.toString()).get()
+            .addOnCompleteListener { task ->
+                callback(task.result?.exists() ?: false)
             }
     }
 }

@@ -61,6 +61,11 @@ class MainActivity : AppCompatActivity(), ShowCommentMenu {
         checkIfSignedIn()
     }
 
+    override fun onStart() {
+        super.onStart()
+        checkIfSignedIn()
+    }
+
     override fun onSupportNavigateUp(): Boolean {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.mainContent) as NavHostFragment
@@ -74,7 +79,7 @@ class MainActivity : AppCompatActivity(), ShowCommentMenu {
 
         val user = firebaseAuth.currentUser
         if (user != null) {
-            Toast.makeText(this, "Current user: " + user.email, Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Current user: ${user.email}", Toast.LENGTH_SHORT).show()
             loginBtn.visibility = View.GONE
             logoutBtn.visibility = View.VISIBLE
         } else {

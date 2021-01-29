@@ -8,10 +8,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.fragment.app.Fragment
+import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.FirebaseAuth
 import org.team4.hnreader.R
 import org.team4.hnreader.ShareBroadcastReceiver
@@ -108,8 +108,21 @@ class StoryFragment : Fragment() {
         }
 
         binding.saveBtn.setOnClickListener {
-            FirestoreHelper.getInstance().addStoryToBookmarks(story) {
-                Toast.makeText(binding.root.context, it.second, Toast.LENGTH_SHORT).show()
+            if (story != null) {
+                val firestoreHelper = FirestoreHelper.getInstance()
+                firestoreHelper.checkIfStoryIsBookmark(story) { exist ->
+                    if (exist) {
+                        firestoreHelper.removeStoryFromBookmarks(story) {
+                            // TODO: Handle result
+                        }
+                        (binding.saveBtn as MaterialButton).setIconTintResource(R.color.transparent)
+                    } else {
+                        firestoreHelper.addStoryToBookmarks(story) {
+                            // TODO: Handle result
+                        }
+                        (binding.saveBtn as MaterialButton).setIconTintResource(R.color.white)
+                    }
+                }
             }
         }
 

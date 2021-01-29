@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.team4.hnreader.data.model.FlattenedComment
 import org.team4.hnreader.data.remote.FirestoreHelper
@@ -23,9 +22,28 @@ class CommentOptionsBottomSheet(private val comment: FlattenedComment) :
     ): View {
         _binding = FragmentCommentOptionsBottomSheetBinding.inflate(inflater, container, false)
 
+        val firestoreHelper = FirestoreHelper.getInstance()
+        firestoreHelper.checkIfCommentIsBookmark(comment) { exist ->
+            if (exist) {
+                binding.btnBookmarkComment.text = "Remove from bookmarks"
+            } else {
+                binding.btnBookmarkComment.text = "Add to bookmarks"
+            }
+        }
+
         binding.btnBookmarkComment.setOnClickListener {
-            FirestoreHelper.getInstance().addCommentToBookmarks(comment) {
-                Toast.makeText(binding.root.context, it.second, Toast.LENGTH_SHORT).show()
+            firestoreHelper.checkIfCommentIsBookmark(comment) { exist ->
+                if (exist) {
+                    firestoreHelper.removeCommentFromBookmarks(comment) {
+                        // TODO: Handle result
+                    }
+                    binding.btnBookmarkComment.text = "Add to bookmarks"
+                } else {
+                    firestoreHelper.addCommentToBookmarks(comment) {
+                        // TODO: Handle result
+                    }
+                    binding.btnBookmarkComment.text = "Remove from bookmarks"
+                }
             }
         }
         binding.btnShareComment.setOnClickListener {
