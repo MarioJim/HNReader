@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.firebase.auth.FirebaseAuth
 import org.team4.hnreader.data.model.FlattenedComment
 import org.team4.hnreader.data.remote.FirestoreHelper
 import org.team4.hnreader.databinding.FragmentCommentOptionsBottomSheetBinding
@@ -29,6 +30,10 @@ class CommentOptionsBottomSheet(private val comment: FlattenedComment) :
             } else {
                 binding.btnBookmarkComment.text = "Add to bookmarks"
             }
+        }
+
+        if (FirebaseAuth.getInstance().currentUser == null) {
+            binding.btnBookmarkComment.visibility = View.GONE
         }
 
         binding.btnBookmarkComment.setOnClickListener {

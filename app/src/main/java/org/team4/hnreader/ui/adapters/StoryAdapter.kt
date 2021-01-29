@@ -41,10 +41,8 @@ class StoryAdapter(
         viewHolder.tvVotes.text = "${story.points} points, ${story.numComments} comments"
         viewHolder.story = story
 
-        viewHolder.saveBtn.visibility = if (firebaseAuth.currentUser == null) {
-            View.INVISIBLE
-        } else {
-            View.VISIBLE
+        if (firebaseAuth.currentUser == null) {
+            viewHolder.saveBtn.visibility = View.INVISIBLE
         }
 
         FirestoreHelper.getInstance().checkIfStoryIsBookmark(story) {

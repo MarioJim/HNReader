@@ -88,10 +88,8 @@ class MainActivity : AppCompatActivity(), ShowCommentMenu {
         if (user != null) {
             Toast.makeText(this, "Current user: ${user.email}", Toast.LENGTH_SHORT).show()
             loginBtn.visibility = View.GONE
-            logoutBtn.visibility = View.VISIBLE
         } else {
             Toast.makeText(this, "Login to save bookmarks!", Toast.LENGTH_SHORT).show()
-            loginBtn.visibility = View.VISIBLE
             logoutBtn.visibility = View.GONE
         }
     }

@@ -126,10 +126,8 @@ class StoryFragment : Fragment() {
             }
         }
 
-        binding.saveBtn.visibility = if (firebaseAuth.currentUser == null) {
-            View.INVISIBLE
-        } else {
-            View.VISIBLE
+        if (firebaseAuth.currentUser == null) {
+            binding.saveBtn.visibility = View.INVISIBLE
         }
 
         return binding.root
