@@ -87,7 +87,7 @@ class ItemFinder(ctx: Context?) {
         errorListener
     )
 
-    fun getCommentsFromIdsList(
+    fun getCommentTreesFromIdsList(
         idList: List<Int>,
         depth: Int,
         fromCache: Boolean,
@@ -139,7 +139,7 @@ class ItemFinder(ctx: Context?) {
                     listener.onResponse(result)
                 } else {
                     // Else, fetch comments for every id
-                    getCommentsFromIdsList(
+                    getCommentTreesFromIdsList(
                         parentComment.kids,
                         depth + 1,
                         fromCache,
@@ -150,6 +150,32 @@ class ItemFinder(ctx: Context?) {
             },
             errorListener
         )
+    }
+
+    fun getCommentsFromIdsList(
+        idList: List<Int>,
+        fromCache: Boolean,
+        listener: Response.Listener<List<Comment>>,
+        errorListener: Response.ErrorListener,
+    ) {
+        val commentsToAdd = arrayOfNulls<Comment>(idList.size)
+        val commentsToAddLeft = AtomicInteger(idList.size)
+        for (commentIdx in idList.indices) {
+            getComment(
+                idList[commentIdx],
+                fromCache,
+                { comment ->
+                    commentsToAdd[commentIdx] = comment
+                    if (commentsToAddLeft.decrementAndGet() == 0)
+                        listener.onResponse(commentsToAdd.filterNotNull())
+                },
+                { error ->
+                    errorListener.onErrorResponse(error)
+                    if (commentsToAddLeft.decrementAndGet() == 0)
+                        listener.onResponse(commentsToAdd.filterNotNull())
+                }
+            )
+        }
     }
 
     private fun getComment(

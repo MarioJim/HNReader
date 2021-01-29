@@ -26,7 +26,6 @@ class BookmarksCommentsFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var commentAdapter: CommentAdapter
 
-    private var fromCache: Boolean = true
     private var commentsIds: ArrayList<Int> = ArrayList()
     private var commentsList: ArrayList<FlattenedComment> = ArrayList()
     private var lastLoadedComment: Int = 0
@@ -65,7 +64,6 @@ class BookmarksCommentsFragment : Fragment() {
     }
 
     private fun refreshPage() {
-        fromCache = false
         FirestoreHelper.getInstance().getCommentsFromBookmarks {
             commentsIds.clear()
             commentsIds.plusAssign(it)
@@ -87,10 +85,12 @@ class BookmarksCommentsFragment : Fragment() {
         )
         ItemFinder.getInstance(binding.root.context).getCommentsFromIdsList(
             commentIdsToFetch,
-            0,
-            fromCache,
+            true,
             { fetchedCommentList ->
-                commentsList.addAll(fetchedCommentList)
+                val fetchedFlattenedCommentList = fetchedCommentList.map {
+                    FlattenedComment.fromComment(it, 0)
+                }
+                commentsList.addAll(fetchedFlattenedCommentList)
                 binding.rvBookmarksComments.post {
                     commentAdapter.notifyDataSetChanged()
                 }
@@ -114,6 +114,6 @@ class BookmarksCommentsFragment : Fragment() {
     }
 
     companion object {
-        private const val NUM_COMMENTS_PER_LOAD_EVENT = 5
+        private const val NUM_COMMENTS_PER_LOAD_EVENT = 20
     }
 }

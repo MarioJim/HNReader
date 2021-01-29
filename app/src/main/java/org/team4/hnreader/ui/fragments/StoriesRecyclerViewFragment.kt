@@ -73,6 +73,7 @@ class StoriesRecyclerViewFragment : Fragment() {
 
         idsSourceAndClickHandlerProvider.fetchStoryIds(
             {
+                storiesIds.clear()
                 storiesIds.plusAssign(it)
                 loadStories()
             },

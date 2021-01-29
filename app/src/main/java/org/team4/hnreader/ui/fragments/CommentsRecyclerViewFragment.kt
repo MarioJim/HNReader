@@ -108,7 +108,7 @@ class CommentsRecyclerViewFragment : Fragment() {
             lastLoadedParentCommentIdx,
             lastLoadedParentCommentIdx + numCommentsToAdd
         )
-        ItemFinder.getInstance(context).getCommentsFromIdsList(
+        ItemFinder.getInstance(context).getCommentTreesFromIdsList(
             commentIdsToFetch,
             0,
             fromCache,
