@@ -1,15 +1,22 @@
 package org.team4.hnreader.ui.adapters
 
+import org.team4.hnreader.R
+import android.app.PendingIntent
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.widget.Toast
+import androidx.browser.customtabs.CustomTabColorSchemeParams
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import org.team4.hnreader.ShareBroadcastReceiver
 import org.team4.hnreader.data.model.Story
 import org.team4.hnreader.data.model.StoryWithURL
 import org.team4.hnreader.data.remote.FirestoreHelper
 import org.team4.hnreader.databinding.FragmentStoryBinding
 import org.team4.hnreader.ui.activities.CommentsActivity
+
 
 class StoryViewHolder(
     binding: FragmentStoryBinding,
@@ -27,8 +34,29 @@ class StoryViewHolder(
         binding.urlBtn.setOnClickListener {
             if (story is StoryWithURL) {
                 val url = (story as StoryWithURL).url
-                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                ContextCompat.startActivity(binding.root.context, browserIntent, null)
+                val builder : CustomTabsIntent.Builder = CustomTabsIntent.Builder()
+
+                val shareIcon =
+                    BitmapFactory.decodeResource(binding.root.context.resources,
+                        android.R.drawable.ic_menu_share)
+
+                val shareIntent = Intent(
+                    binding.root.context, ShareBroadcastReceiver::class.java)
+                val pendingIntent =
+                    PendingIntent.getBroadcast(binding.root.context,
+                        0,
+                        shareIntent,
+                        0)
+
+                builder.setActionButton(shareIcon, "Share via...", pendingIntent)
+
+                val params = CustomTabColorSchemeParams.Builder()
+                    .setToolbarColor(binding.root.context.getColor(R.color.purple_500))
+                    .build()
+                builder.setColorSchemeParams(CustomTabsIntent.COLOR_SCHEME_DARK, params)
+
+                val customTabsIntent : CustomTabsIntent = builder.build()
+                customTabsIntent.launchUrl(binding.root.context, Uri.parse(url))
             }
         }
         binding.commentsBtn.setOnClickListener {
