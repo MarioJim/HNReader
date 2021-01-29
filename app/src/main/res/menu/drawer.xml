@@ -34,7 +34,7 @@
     <group
         android:id="@+id/bookmarksGroup"
         android:checkableBehavior="single">
-        <item android:title="@string/bookmarks" >
+        <item android:title="@string/bookmarks">
             <menu>
                 <item
                     android:id="@+id/bookmarksStoriesFragment"
@@ -47,7 +47,8 @@
             </menu>
         </item>
     </group>
-    <group android:id="@+id/extraGroup"
+    <group
+        android:id="@+id/extraGroup"
         android:checkableBehavior="single">
         <item
             android:id="@+id/settingsFragment"

@@ -9,7 +9,7 @@
         android:id="@+id/topStoriesFragment"
         android:name="org.team4.hnreader.ui.fragments.TopStoriesFragment"
         android:label="@string/top_stories"
-        tools:layout="@layout/fragment_top_stories" >
+        tools:layout="@layout/fragment_top_stories">
         <action
             android:id="@+id/action_topStoriesFragment_to_commentsRecyclerViewFragment"
             app:destination="@id/commentsRecyclerViewFragment" />
@@ -19,7 +19,7 @@
         android:id="@+id/newStoriesFragment"
         android:name="org.team4.hnreader.ui.fragments.NewStoriesFragment"
         android:label="@string/new_stories"
-        tools:layout="@layout/fragment_new_stories" >
+        tools:layout="@layout/fragment_new_stories">
         <action
             android:id="@+id/action_newStoriesFragment_to_commentsRecyclerViewFragment"
             app:destination="@id/commentsRecyclerViewFragment" />
@@ -29,7 +29,7 @@
         android:id="@+id/bestStoriesFragment"
         android:name="org.team4.hnreader.ui.fragments.BestStoriesFragment"
         android:label="@string/best_stories"
-        tools:layout="@layout/fragment_best_stories" >
+        tools:layout="@layout/fragment_best_stories">
         <action
             android:id="@+id/action_bestStoriesFragment_to_commentsRecyclerViewFragment"
             app:destination="@id/commentsRecyclerViewFragment" />
@@ -39,7 +39,7 @@
         android:id="@+id/askHNFragment"
         android:name="org.team4.hnreader.ui.fragments.AskHNFragment"
         android:label="@string/ask_hn"
-        tools:layout="@layout/fragment_ask_hn" >
+        tools:layout="@layout/fragment_ask_hn">
         <action
             android:id="@+id/action_askHNFragment_to_commentsRecyclerViewFragment"
             app:destination="@id/commentsRecyclerViewFragment" />
@@ -49,7 +49,7 @@
         android:id="@+id/showHNFragment"
         android:name="org.team4.hnreader.ui.fragments.ShowHNFragment"
         android:label="@string/show_hn"
-        tools:layout="@layout/fragment_show_hn" >
+        tools:layout="@layout/fragment_show_hn">
         <action
             android:id="@+id/action_showHNFragment_to_commentsRecyclerViewFragment"
             app:destination="@id/commentsRecyclerViewFragment" />
