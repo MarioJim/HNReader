@@ -85,8 +85,6 @@ class StoriesRecyclerViewFragment : Fragment() {
         _binding = null
     }
 
-    fun updateItems() = storyAdapter.notifyDataSetChanged()
-
     private fun refreshPage() {
         fromCache = false
         idsSourceAndClickHandlerProvider.fetchStoryIds(

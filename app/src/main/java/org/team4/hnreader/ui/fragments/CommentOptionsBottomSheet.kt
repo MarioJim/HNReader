@@ -44,6 +44,7 @@ class CommentOptionsBottomSheet(private val comment: FlattenedComment) :
                     }
                     binding.btnBookmarkComment.text = "Remove from bookmarks"
                 }
+                dismiss()
             }
         }
         binding.btnShareComment.setOnClickListener {
@@ -55,6 +56,7 @@ class CommentOptionsBottomSheet(private val comment: FlattenedComment) :
             }
             val shareIntent = Intent.createChooser(sendIntent, null)
             startActivity(shareIntent)
+            dismiss()
         }
 
         return binding.root

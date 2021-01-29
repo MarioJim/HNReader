@@ -3,27 +3,55 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
+    <group
+        android:id="@+id/storiesGroup"
+        android:checkableBehavior="single">
+        <item android:title="@string/stories">
+            <menu>
+                <item
+                    android:id="@+id/topStoriesFragment"
+                    android:icon="@drawable/ic_top_icon"
+                    android:title="@string/top_stories" />
+                <item
+                    android:id="@+id/newStoriesFragment"
+                    android:icon="@drawable/ic_new_icon"
+                    android:title="@string/new_stories" />
+                <item
+                    android:id="@+id/bestStoriesFragment"
+                    android:icon="@drawable/ic_best_icon"
+                    android:title="@string/best_stories" />
+                <item
+                    android:id="@+id/askHNFragment"
+                    android:icon="@drawable/ic_askhn_icon"
+                    android:title="@string/ask_hn" />
+                <item
+                    android:id="@+id/showHNFragment"
+                    android:icon="@drawable/ic_showhn_icon"
+                    android:title="@string/show_hn" />
+            </menu>
+        </item>
+    </group>
+    <group
+        android:id="@+id/bookmarksGroup"
+        android:checkableBehavior="single">
+        <item android:title="@string/bookmarks" >
+            <menu>
+                <item
+                    android:id="@+id/bookmarksStoriesFragment"
+                    android:icon="@drawable/ic_bookmarks_icon"
+                    android:title="@string/stories" />
+                <item
+                    android:id="@+id/bookmarksCommentsFragment"
+                    android:icon="@drawable/ic_bookmarks_icon"
+                    android:title="@string/comments" />
+            </menu>
+        </item>
+    </group>
+    <group android:id="@+id/extraGroup"
+        android:checkableBehavior="single">
         <item
-            android:id="@+id/bookmarksStoriesFragment"
-            android:title="@string/bookmarked_stories" />
-        <item
-            android:id="@+id/bookmarksCommentsFragment"
-            android:title="@string/bookmarked_comments" />
-        <item
-            android:id="@+id/topStoriesFragment"
-            android:title="@string/top_stories" />
-        <item
-            android:id="@+id/newStoriesFragment"
-            android:title="@string/new_stories" />
-        <item
-            android:id="@+id/bestStoriesFragment"
-            android:title="@string/best_stories" />
-        <item
-            android:id="@+id/showHNFragment"
-            android:title="@string/show_hn" />
-        <item
-            android:id="@+id/askHNFragment"
-            android:title="@string/ask_hn" />
+            android:id="@+id/settingsFragment"
+            android:icon="@drawable/ic_settings_icon"
+            android:title="@string/settings" />
     </group>
 </menu>

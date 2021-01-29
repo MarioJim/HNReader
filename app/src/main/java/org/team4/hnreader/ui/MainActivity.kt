@@ -23,8 +23,6 @@ class MainActivity : AppCompatActivity(), ShowCommentMenu {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var firebaseAuth: FirebaseAuth
 
-    private val LOGIN_ACTIVITY_CODE = 0
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -48,6 +46,7 @@ class MainActivity : AppCompatActivity(), ShowCommentMenu {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         binding.navDrawer.setupWithNavController(navController)
+
 
         firebaseAuth = FirebaseAuth.getInstance()
 
@@ -102,5 +101,9 @@ class MainActivity : AppCompatActivity(), ShowCommentMenu {
             supportFragmentManager,
             CommentOptionsBottomSheet.TAG,
         )
+    }
+
+    companion object {
+        private const val LOGIN_ACTIVITY_CODE = 0
     }
 }
