@@ -11,7 +11,19 @@
             android:id="@+id/bookmarksCommentsFragment"
             android:title="@string/bookmarked_comments" />
         <item
-            android:id="@+id/storiesRecyclerViewFragment"
+            android:id="@+id/topStoriesFragment"
             android:title="@string/top_stories" />
+        <item
+            android:id="@+id/newStoriesFragment"
+            android:title="@string/new_stories" />
+        <item
+            android:id="@+id/bestStoriesFragment"
+            android:title="@string/best_stories" />
+        <item
+            android:id="@+id/showHNFragment"
+            android:title="@string/show_hn" />
+        <item
+            android:id="@+id/askHNFragment"
+            android:title="@string/ask_hn" />
     </group>
 </menu>

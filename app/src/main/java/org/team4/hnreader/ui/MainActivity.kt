@@ -29,13 +29,18 @@ class MainActivity : AppCompatActivity(), ShowCommentMenu {
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
 
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.mainContent) as NavHostFragment
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.mainContent) as NavHostFragment
         val navController = navHostFragment.navController
         appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.bookmarksStoriesFragment,
                 R.id.bookmarksCommentsFragment,
-                R.id.storiesRecyclerViewFragment,
+                R.id.topStoriesFragment,
+                R.id.newStoriesFragment,
+                R.id.bestStoriesFragment,
+                R.id.askHNFragment,
+                R.id.showHNFragment,
             ),
             binding.drawerLayout
         )
@@ -57,7 +62,8 @@ class MainActivity : AppCompatActivity(), ShowCommentMenu {
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.mainContent) as NavHostFragment
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.mainContent) as NavHostFragment
         val navController = navHostFragment.navController
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }

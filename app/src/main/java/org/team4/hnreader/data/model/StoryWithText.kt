@@ -23,7 +23,7 @@ data class StoryWithText(
             kidsFromJSONObject(jsonObject),
             jsonObject.getInt("descendants"),
             jsonObject.getInt("score"),
-            jsonObject.getString("text"),
+            jsonObject.optString("text"),
             jsonObject.getString("title")
         )
     }

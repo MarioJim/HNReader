@@ -10,6 +10,10 @@
     <string name="bookmark">Bookmark</string>
     <string name="share">Share</string>
     <string name="top_stories">Top stories</string>
+    <string name="new_stories">New stories</string>
+    <string name="best_stories">Best stories</string>
+    <string name="ask_hn">Ask HN</string>
+    <string name="show_hn">Show HN</string>
     <string name="bookmarked_comments">Bookmarked comments</string>
     <string name="bookmarked_stories">Bookmarked stories</string>
 </resources>
