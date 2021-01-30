@@ -10,7 +10,7 @@ import org.team4.hnreader.data.model.Story
 import org.team4.hnreader.data.remote.ApiRequestQueue
 import org.team4.hnreader.databinding.FragmentAskHnBinding
 import org.team4.hnreader.ui.callbacks.StoryRecyclerViewCallbacks
-import org.team4.hnreader.ui.fragments.AskHNFragmentDirections
+import org.team4.hnreader.ui.destinations.AskHNFragmentDirections
 
 class AskHNFragment : Fragment(), StoryRecyclerViewCallbacks {
     private var _binding: FragmentAskHnBinding? = null

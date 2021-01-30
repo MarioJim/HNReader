@@ -7,21 +7,33 @@
     android:paddingHorizontal="32dp"
     android:paddingVertical="16dp">
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnBookmarkComment"
         style="@style/Widget.MaterialComponents.Button.TextButton.Dialog.Flush"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/bookmark"
         android:textAlignment="center"
-        app:icon="@android:drawable/btn_star" />
+        app:icon="@drawable/ic_star_outline"
+        app:iconSize="32dp" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnCopyCommentText"
+        style="@style/Widget.MaterialComponents.Button.TextButton.Dialog.Flush"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/copy_text"
+        android:textAlignment="center"
+        app:icon="@drawable/ic_copy_icon"
+        app:iconSize="32dp" />
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnShareComment"
         style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/share"
         android:textAlignment="center"
-        app:icon="@android:drawable/ic_menu_share" />
+        app:icon="@drawable/ic_share"
+        app:iconSize="32dp" />
 </LinearLayout>

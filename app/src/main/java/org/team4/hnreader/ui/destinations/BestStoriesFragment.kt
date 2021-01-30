@@ -10,7 +10,7 @@ import org.team4.hnreader.data.model.Story
 import org.team4.hnreader.data.remote.ApiRequestQueue
 import org.team4.hnreader.databinding.FragmentBestStoriesBinding
 import org.team4.hnreader.ui.callbacks.StoryRecyclerViewCallbacks
-import org.team4.hnreader.ui.fragments.BestStoriesFragmentDirections
+import org.team4.hnreader.ui.destinations.BestStoriesFragmentDirections
 
 class BestStoriesFragment : Fragment(), StoryRecyclerViewCallbacks {
     private var _binding: FragmentBestStoriesBinding? = null

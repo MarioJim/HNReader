@@ -74,20 +74,23 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/saveBtn"
-                    android:layout_width="64dp"
-                    android:layout_height="52dp"
+                    style="@style/Widget.HackerNewsReader.Button.OutlinedButton.IconOnly"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
-                    app:icon="@android:drawable/btn_star"
-                    app:iconTint="#99FFFFFF"
+                    app:icon="@drawable/ic_star_outline"
+                    app:iconSize="30dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/shareBtn"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/shareBtn"
-                    android:layout_width="64dp"
-                    android:layout_height="52dp"
-                    app:icon="@android:drawable/ic_menu_share"
+                    style="@style/Widget.HackerNewsReader.Button.OutlinedButton.IconOnly"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:icon="@drawable/ic_share"
+                    app:iconSize="30dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />

@@ -81,11 +81,13 @@ class StoriesRecyclerViewFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         // TODO: Remove workaround for saving storyAdapter's inner list
-        showingStories?.let { storyAdapter.extendList(it) {} }
+        if (storyAdapter.currentList.size == 0)
+            showingStories?.let { storyAdapter.extendList(it) {} }
     }
 
     override fun onPause() {
         super.onPause()
+        // TODO: Remove workaround for saving storyAdapter's inner list
         showingStories = storyAdapter.currentList
     }
 

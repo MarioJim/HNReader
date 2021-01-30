@@ -1,5 +1,7 @@
 package org.team4.hnreader.ui
 
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -9,6 +11,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
 import com.google.firebase.auth.FirebaseAuth
 import org.team4.hnreader.R
 import org.team4.hnreader.data.model.FlattenedComment
@@ -93,10 +96,9 @@ class MainActivity : AppCompatActivity(), ShowCommentMenu {
     }
 
     override fun showCommentMenu(comment: FlattenedComment) {
-        CommentOptionsBottomSheet(comment).show(
-            supportFragmentManager,
-            CommentOptionsBottomSheet.TAG,
-        )
+        val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        CommentOptionsBottomSheet(comment, clipboard)
+            .show(supportFragmentManager, CommentOptionsBottomSheet.TAG)
     }
 
     companion object {

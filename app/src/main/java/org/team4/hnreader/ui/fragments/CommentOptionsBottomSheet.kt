@@ -1,18 +1,24 @@
 package org.team4.hnreader.ui.fragments
 
-import android.content.Intent
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.res.ResourcesCompat
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.auth.FirebaseAuth
+import org.team4.hnreader.R
 import org.team4.hnreader.data.model.FlattenedComment
 import org.team4.hnreader.data.remote.FirestoreHelper
 import org.team4.hnreader.databinding.FragmentCommentOptionsBottomSheetBinding
+import org.team4.hnreader.utils.IntentUtils
 
-class CommentOptionsBottomSheet(private val comment: FlattenedComment) :
-    BottomSheetDialogFragment() {
+class CommentOptionsBottomSheet(
+    private val comment: FlattenedComment,
+    private val clipboardManager: ClipboardManager,
+) : BottomSheetDialogFragment() {
     private var _binding: FragmentCommentOptionsBottomSheetBinding? = null
     private val binding get() = _binding!!
 
@@ -25,11 +31,8 @@ class CommentOptionsBottomSheet(private val comment: FlattenedComment) :
 
         val firestoreHelper = FirestoreHelper.getInstance()
         firestoreHelper.checkIfCommentIsBookmark(comment) { exist ->
-            if (exist) {
-                binding.btnBookmarkComment.text = "Remove from bookmarks"
-            } else {
-                binding.btnBookmarkComment.text = "Add to bookmarks"
-            }
+            if (exist) setBookmarkButtonToRemove()
+            else setBookmarkButtonToAdd()
         }
 
         if (FirebaseAuth.getInstance().currentUser == null) {
@@ -42,29 +45,49 @@ class CommentOptionsBottomSheet(private val comment: FlattenedComment) :
                     firestoreHelper.removeCommentFromBookmarks(comment) {
                         // TODO: Handle result
                     }
-                    binding.btnBookmarkComment.text = "Add to bookmarks"
+                    setBookmarkButtonToAdd()
                 } else {
                     firestoreHelper.addCommentToBookmarks(comment) {
                         // TODO: Handle result
                     }
-                    binding.btnBookmarkComment.text = "Remove from bookmarks"
+                    setBookmarkButtonToRemove()
                 }
                 dismiss()
             }
         }
+
+        binding.btnCopyCommentText.setOnClickListener {
+            val clip = ClipData.newPlainText("Hacker News comment", comment.text)
+            clipboardManager.setPrimaryClip(clip)
+            dismiss()
+        }
+
         binding.btnShareComment.setOnClickListener {
-            val url = "https://news.ycombinator.com/item?id=${comment.id}"
-            val sendIntent: Intent = Intent().apply {
-                action = Intent.ACTION_SEND
-                putExtra(Intent.EXTRA_TEXT, "Check this Hacker News comment: $url")
-                type = "text/plain"
-            }
-            val shareIntent = Intent.createChooser(sendIntent, null)
+            val text = "Check this Hacker News comment: ${comment.getUrl()}"
+            val shareIntent = IntentUtils.buildShareIntent(text)
             startActivity(shareIntent)
             dismiss()
         }
 
         return binding.root
+    }
+
+    private fun setBookmarkButtonToAdd() {
+        binding.btnBookmarkComment.text = "Add to bookmarks"
+        binding.btnBookmarkComment.icon = ResourcesCompat.getDrawable(
+            binding.root.context.resources,
+            R.drawable.ic_star_outline,
+            binding.root.context.theme,
+        )
+    }
+
+    private fun setBookmarkButtonToRemove() {
+        binding.btnBookmarkComment.text = "Remove from bookmarks"
+        binding.btnBookmarkComment.icon = ResourcesCompat.getDrawable(
+            binding.root.context.resources,
+            R.drawable.ic_star_filled,
+            binding.root.context.theme,
+        )
     }
 
     companion object {

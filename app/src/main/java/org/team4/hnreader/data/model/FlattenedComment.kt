@@ -19,6 +19,8 @@ data class FlattenedComment(
         )
     }
 
+    fun getUrl() = "https://news.ycombinator.com/item?id=$id"
+
     override fun getItemId() = id
 
     override fun equalsDisplayedItem(other: DisplayedItem) = when (other) {

@@ -10,7 +10,7 @@ import org.team4.hnreader.data.model.Story
 import org.team4.hnreader.data.remote.FirestoreHelper
 import org.team4.hnreader.databinding.FragmentBookmarksStoriesBinding
 import org.team4.hnreader.ui.callbacks.StoryRecyclerViewCallbacks
-import org.team4.hnreader.ui.fragments.BookmarksStoriesFragmentDirections
+import org.team4.hnreader.ui.destinations.BookmarksStoriesFragmentDirections
 
 class BookmarksStoriesFragment : Fragment(), StoryRecyclerViewCallbacks {
     private var _binding: FragmentBookmarksStoriesBinding? = null
