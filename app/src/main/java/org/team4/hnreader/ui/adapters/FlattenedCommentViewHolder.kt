@@ -9,7 +9,7 @@ import org.team4.hnreader.utils.DateTimeUtils
 import org.team4.hnreader.utils.TextUtils
 
 class FlattenedCommentViewHolder(
-    val binding: FragmentFlattenedCommentBinding,
+    private val binding: FragmentFlattenedCommentBinding,
     private val longClickListener: (FlattenedComment) -> Unit,
 ) : BindableViewHolder<FlattenedComment>(binding.root) {
     override fun bindTo(item: FlattenedComment) {

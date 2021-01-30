@@ -25,12 +25,10 @@ class StoriesRecyclerViewFragment : Fragment() {
     private lateinit var storyAdapter: StoryAdapter
     private lateinit var idsSourceAndClickHandlerProvider: StoryIdsSourceAndClickHandler
 
+    private var showingStories: List<Story>? = null
     private var fromCache: Boolean = true
-    private var storiesIds: ArrayList<Int> = ArrayList()
-    private var storiesList: ArrayList<Story> = ArrayList()
+    private var storiesIds: List<Int> = ArrayList()
     private var lastLoadedStory: Int = 0
-
-    // Don't load stories until storiesIds is filled
     private var isLoading: AtomicBoolean = AtomicBoolean(true)
 
     override fun onCreateView(
@@ -51,7 +49,7 @@ class StoriesRecyclerViewFragment : Fragment() {
             throw Exception("StoriesRecyclerViewFragment created in a fragment that doesn't extend StoryIdsSourceAndClickHandler")
         }
 
-        storyAdapter = StoryAdapter(storiesList) { story ->
+        storyAdapter = StoryAdapter { story ->
             idsSourceAndClickHandlerProvider.openComments(story)
         }
         binding.recyclerviewStories.adapter = storyAdapter
@@ -62,7 +60,7 @@ class StoriesRecyclerViewFragment : Fragment() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val lastViewedItem = linearLayoutManager.findLastCompletelyVisibleItemPosition()
-                val shouldLoadMoreStories = lastViewedItem + 7 >= storiesList.size
+                val shouldLoadMoreStories = lastViewedItem + 7 >= storyAdapter.itemCount
                 if (shouldLoadMoreStories && isLoading.compareAndSet(false, true)) {
                     loadStories()
                 }
@@ -73,11 +71,22 @@ class StoriesRecyclerViewFragment : Fragment() {
 
         idsSourceAndClickHandlerProvider.fetchStoryIds(
             {
-                storiesIds.clear()
-                storiesIds.plusAssign(it)
+                storiesIds = it
                 loadStories()
             },
             { displayError(it) })
+    }
+
+
+    override fun onResume() {
+        super.onResume()
+        // TODO: Remove workaround for saving storyAdapter's inner list
+        showingStories?.let { storyAdapter.extendList(it) {} }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        showingStories = storyAdapter.currentList
     }
 
     override fun onDestroyView() {
@@ -89,11 +98,14 @@ class StoriesRecyclerViewFragment : Fragment() {
         fromCache = false
         idsSourceAndClickHandlerProvider.fetchStoryIds(
             {
-                storiesIds.clear()
-                storiesIds.plusAssign(it)
-                storiesList.clear()
+                storiesIds = it
+                isLoading.set(true)
                 lastLoadedStory = 0
-                loadStories { binding.srStories.isRefreshing = false }
+                storyAdapter.resetList {
+                    loadStories {
+                        binding.srStories.isRefreshing = false
+                    }
+                }
             },
             { displayError(it) })
     }
@@ -109,12 +121,11 @@ class StoriesRecyclerViewFragment : Fragment() {
             storyIdsToFetch,
             fromCache,
             { fetchedStories ->
-                val oldSize = storiesList.size
-                storiesList.addAll(fetchedStories)
-                storyAdapter.notifyItemRangeInserted(oldSize, fetchedStories.size)
-                lastLoadedStory += numStoriesToAdd
-                isLoading.set(false)
-                finishedCallback()
+                storyAdapter.extendList(fetchedStories) {
+                    lastLoadedStory += numStoriesToAdd
+                    isLoading.set(false)
+                    finishedCallback()
+                }
             },
             { displayError(it) }
         )

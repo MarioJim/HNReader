@@ -21,7 +21,8 @@ import org.team4.hnreader.utils.TextUtils
 import org.team4.hnreader.utils.URLUtils
 
 class StoryViewHolder(
-    val binding: FragmentStoryBinding,
+    private val binding: FragmentStoryBinding,
+    private val shouldDisplayText: Boolean,
     private val openCommentsRVCallback: (story: Story) -> Unit = {},
 ) : BindableViewHolder<Story>(binding.root) {
     override fun bindTo(item: Story) {
@@ -30,9 +31,12 @@ class StoryViewHolder(
             is StoryWithURL -> URLUtils.getDomain(item.getUrl())
             is StoryWithText -> TextUtils.fromHTML(item.text)
             else -> {
-                binding.tvUrl.visibility = View.INVISIBLE
+                binding.tvUrl.visibility = View.GONE
                 ""
             }
+        }
+        if (!shouldDisplayText && item is StoryWithText) {
+            binding.tvUrl.visibility = View.GONE
         }
         val timeAgo = DateTimeUtils.timeAgo(item.created_at)
         binding.tvInfo.text = "by ${item.author}, $timeAgo"

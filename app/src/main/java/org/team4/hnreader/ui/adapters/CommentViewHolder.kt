@@ -6,7 +6,7 @@ import org.team4.hnreader.utils.DateTimeUtils
 import org.team4.hnreader.utils.TextUtils
 
 class CommentViewHolder(
-    val binding: FragmentCommentBinding,
+    private val binding: FragmentCommentBinding,
     private val longClickListener: (Comment) -> Unit,
 ) : BindableViewHolder<Comment>(binding.root) {
     override fun bindTo(item: Comment) {

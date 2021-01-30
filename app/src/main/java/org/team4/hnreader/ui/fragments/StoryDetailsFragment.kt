@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.VolleyError
 import org.team4.hnreader.data.ItemFinder
-import org.team4.hnreader.data.model.DisplayedItem
 import org.team4.hnreader.data.model.Story
 import org.team4.hnreader.data.remote.DeletedItemException
 import org.team4.hnreader.databinding.FragmentCommentsRecyclerViewBinding
@@ -30,10 +29,7 @@ class StoryDetailsFragment : Fragment() {
 
     private var fromCache: Boolean = true
     private var parentCommentIdsList: List<Int> = ArrayList()
-    private var itemsList: ArrayList<DisplayedItem> = ArrayList()
     private var lastLoadedParentCommentIdx: Int = 0
-
-    // Start as true for the initial comment loading
     private var isLoading: AtomicBoolean = AtomicBoolean(true)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,11 +53,11 @@ class StoryDetailsFragment : Fragment() {
 
         parentCommentIdsList = story.kids
 
-        itemsList.add(story)
-        storyDetailsAdapter = StoryDetailsAdapter(itemsList) { comment ->
+        storyDetailsAdapter = StoryDetailsAdapter { comment ->
             if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED))
                 (requireActivity() as ShowCommentMenu).showCommentMenu(comment)
         }
+        storyDetailsAdapter.clearAndSetStory(story) {}
         binding.recyclerviewComments.adapter = storyDetailsAdapter
         val linearLayoutManager = LinearLayoutManager(context)
         binding.recyclerviewComments.layoutManager = linearLayoutManager
@@ -70,7 +66,7 @@ class StoryDetailsFragment : Fragment() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val lastViewedItem = linearLayoutManager.findLastCompletelyVisibleItemPosition()
-                val shouldLoadMoreComments = lastViewedItem + 7 >= itemsList.size
+                val shouldLoadMoreComments = lastViewedItem + 7 >= storyDetailsAdapter.itemCount
                 if (shouldLoadMoreComments && isLoading.compareAndSet(false, true)) {
                     loadComments()
                 }
@@ -86,15 +82,13 @@ class StoryDetailsFragment : Fragment() {
         ItemFinder.getInstance(context).getStory(
             storyId,
             fromCache,
-            {
-                val oldSize = itemsList.size
-                itemsList.clear()
-                storyDetailsAdapter.notifyItemRangeRemoved(0, oldSize)
-                itemsList.add(it)
-                storyDetailsAdapter.notifyItemInserted(0)
-                parentCommentIdsList = it.kids
-                lastLoadedParentCommentIdx = 0
-                loadComments { binding.srComments.isRefreshing = false }
+            { fetchedStory ->
+                isLoading.set(true)
+                parentCommentIdsList = fetchedStory.kids
+                storyDetailsAdapter.clearAndSetStory(fetchedStory) {
+                    lastLoadedParentCommentIdx = 0
+                    loadComments { binding.srComments.isRefreshing = false }
+                }
             },
             { displayError(it) },
         )
@@ -115,12 +109,11 @@ class StoryDetailsFragment : Fragment() {
             0,
             fromCache,
             { fetchedCommentList ->
-                val oldSize = itemsList.size
-                itemsList.addAll(fetchedCommentList)
-                storyDetailsAdapter.notifyItemRangeInserted(oldSize, fetchedCommentList.size)
-                lastLoadedParentCommentIdx += numCommentsToAdd
-                isLoading.set(false)
-                finishedCallback()
+                storyDetailsAdapter.extendList(fetchedCommentList) {
+                    lastLoadedParentCommentIdx += numCommentsToAdd
+                    isLoading.set(false)
+                    finishedCallback()
+                }
             },
             { displayError(it) }
         )
@@ -138,16 +131,6 @@ class StoryDetailsFragment : Fragment() {
 
     companion object {
         private const val NUM_COMMENTS_PER_LOAD_EVENT = 5
-
         private const val ARG_STORY = "story"
-
-        @Suppress("unused") // Used for navigation
-        @JvmStatic
-        fun newInstance(story: Story) =
-            StoryDetailsFragment().apply {
-                arguments = Bundle().apply {
-                    putSerializable(ARG_STORY, story)
-                }
-            }
     }
 }

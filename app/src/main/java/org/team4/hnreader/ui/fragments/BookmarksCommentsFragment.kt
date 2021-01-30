@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.VolleyError
 import org.team4.hnreader.data.ItemFinder
-import org.team4.hnreader.data.model.Comment
 import org.team4.hnreader.data.remote.DeletedItemException
 import org.team4.hnreader.data.remote.FirestoreHelper
 import org.team4.hnreader.databinding.FragmentBookmarksCommentsBinding
@@ -26,10 +25,8 @@ class BookmarksCommentsFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var commentAdapter: CommentAdapter
 
-    private var commentsIds: ArrayList<Int> = ArrayList()
-    private var commentsList: ArrayList<Comment> = ArrayList()
+    private var commentsIds: List<Int> = ArrayList()
     private var lastLoadedComment: Int = 0
-
     private var isLoading: AtomicBoolean = AtomicBoolean(true)
 
     override fun onCreateView(
@@ -39,7 +36,7 @@ class BookmarksCommentsFragment : Fragment() {
     ): View {
         _binding = FragmentBookmarksCommentsBinding.inflate(inflater, container, false)
 
-        commentAdapter = CommentAdapter(commentsList) { comment ->
+        commentAdapter = CommentAdapter { comment ->
             if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED))
                 (requireActivity() as ShowCommentMenu).showCommentMenu(comment)
         }
@@ -51,7 +48,7 @@ class BookmarksCommentsFragment : Fragment() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val lastViewedItem = linearLayoutManager.findLastCompletelyVisibleItemPosition()
-                val shouldLoadMoreComments = lastViewedItem + 7 >= commentsList.size
+                val shouldLoadMoreComments = lastViewedItem + 7 >= commentAdapter.itemCount
                 if (shouldLoadMoreComments && isLoading.compareAndSet(false, true)) {
                     loadComments()
                 }
@@ -66,13 +63,14 @@ class BookmarksCommentsFragment : Fragment() {
 
     private fun refreshPage() {
         FirestoreHelper.getInstance().getCommentsFromBookmarks {
-            commentsIds.clear()
-            commentsIds.plusAssign(it)
-            val oldSize = commentsList.size
-            commentsList.clear()
-            commentAdapter.notifyItemRangeRemoved(0, oldSize)
-            lastLoadedComment = 0
-            loadComments { binding.srBookmarksComments.isRefreshing = false }
+            commentsIds = it
+            commentAdapter.clearList {
+                isLoading.set(true)
+                lastLoadedComment = 0
+                loadComments {
+                    binding.srBookmarksComments.isRefreshing = false
+                }
+            }
         }
     }
 
@@ -90,12 +88,11 @@ class BookmarksCommentsFragment : Fragment() {
             commentIdsToFetch,
             true,
             { fetchedCommentList ->
-                val oldSize = commentsList.size
-                commentsList.addAll(fetchedCommentList)
-                commentAdapter.notifyItemRangeInserted(oldSize, fetchedCommentList.size)
-                lastLoadedComment += numCommentsToAdd
-                isLoading.set(false)
-                finishedCallback()
+                commentAdapter.extendList(fetchedCommentList) {
+                    lastLoadedComment += numCommentsToAdd
+                    isLoading.set(false)
+                    finishedCallback()
+                }
             },
             { displayError(it) }
         )
