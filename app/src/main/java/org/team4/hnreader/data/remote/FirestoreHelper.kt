@@ -15,6 +15,9 @@ class FirestoreHelper {
             instance ?: synchronized(this) {
                 instance ?: FirestoreHelper().also { instance = it }
             }
+
+        fun getBookmarkedStoriesPath(userId: String) = "users/$userId/bookmarks-stories"
+        fun getBookmarkedCommentsPath(userId: String) = "users/$userId/bookmarks-comments"
     }
 
     private var db = Firebase.firestore
@@ -22,7 +25,7 @@ class FirestoreHelper {
 
     fun addStoryToBookmarks(story: Story, callback: (Pair<Boolean, String>) -> Unit) {
         val storyMap = mapOf("save-date" to Calendar.getInstance().time, "id" to story.id)
-        db.collection("users/${firebaseAuth.currentUser?.uid}/bookmarks-stories")
+        db.collection(getBookmarkedStoriesPath(firebaseAuth.currentUser?.uid!!))
             .document(story.id.toString()).set(storyMap)
             .addOnCompleteListener { task ->
                 val message = if (task.isSuccessful) {
@@ -35,7 +38,7 @@ class FirestoreHelper {
     }
 
     fun removeStoryFromBookmarks(story: Story, callback: (Pair<Boolean, String>) -> Unit) {
-        db.collection("users/${firebaseAuth.currentUser?.uid}/bookmarks-stories")
+        db.collection(getBookmarkedStoriesPath(firebaseAuth.currentUser?.uid!!))
             .document(story.id.toString()).delete()
             .addOnCompleteListener { task ->
                 val message = if (task.isSuccessful) {
@@ -48,7 +51,7 @@ class FirestoreHelper {
     }
 
     fun getStoriesFromBookmarks(callback: (List<Int>) -> Unit) {
-        db.collection("users/${firebaseAuth.currentUser?.uid}/bookmarks-stories")
+        db.collection(getBookmarkedStoriesPath(firebaseAuth.currentUser?.uid!!))
             .get()
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
@@ -63,7 +66,7 @@ class FirestoreHelper {
     }
 
     fun checkIfStoryIsBookmark(story: Story, callback: (Boolean) -> Unit) {
-        db.collection("users/${firebaseAuth.currentUser?.uid}/bookmarks-stories")
+        db.collection(getBookmarkedStoriesPath(firebaseAuth.currentUser?.uid!!))
             .document(story.id.toString()).get()
             .addOnCompleteListener { task ->
                 callback(task.result?.exists() ?: false)
@@ -75,7 +78,7 @@ class FirestoreHelper {
         callback: (Pair<Boolean, String>) -> Unit,
     ) {
         val commentMap = mapOf("save-date" to Calendar.getInstance().time, "id" to comment.id)
-        db.collection("users/${firebaseAuth.currentUser?.uid}/bookmarks-comments")
+        db.collection(getBookmarkedCommentsPath(firebaseAuth.currentUser?.uid!!))
             .document(comment.id.toString()).set(commentMap)
             .addOnCompleteListener { task ->
                 val message = if (task.isSuccessful) {
@@ -91,7 +94,7 @@ class FirestoreHelper {
         comment: FlattenedComment,
         callback: (Pair<Boolean, String>) -> Unit,
     ) {
-        db.collection("users/${firebaseAuth.currentUser?.uid}/bookmarks-comments")
+        db.collection(getBookmarkedCommentsPath(firebaseAuth.currentUser?.uid!!))
             .document(comment.id.toString()).delete()
             .addOnCompleteListener { task ->
                 val message = if (task.isSuccessful) {
@@ -104,7 +107,7 @@ class FirestoreHelper {
     }
 
     fun getCommentsFromBookmarks(callback: (List<Int>) -> Unit) {
-        db.collection("users/${firebaseAuth.currentUser?.uid}/bookmarks-comments")
+        db.collection(getBookmarkedCommentsPath(firebaseAuth.currentUser?.uid!!))
             .get()
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
@@ -119,7 +122,7 @@ class FirestoreHelper {
     }
 
     fun checkIfCommentIsBookmark(comment: FlattenedComment, callback: (Boolean) -> Unit) {
-        db.collection("users/${firebaseAuth.currentUser?.uid}/bookmarks-comments")
+        db.collection(getBookmarkedCommentsPath(firebaseAuth.currentUser?.uid!!))
             .document(comment.id.toString()).get()
             .addOnCompleteListener { task ->
                 callback(task.result?.exists() ?: false)
