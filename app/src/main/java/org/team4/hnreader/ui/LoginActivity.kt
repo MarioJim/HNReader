@@ -1,4 +1,4 @@
-package org.team4.hnreader.ui.activities
+package org.team4.hnreader.ui
 
 import android.content.Intent
 import android.os.Bundle

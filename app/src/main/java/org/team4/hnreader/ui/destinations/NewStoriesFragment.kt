@@ -1,4 +1,4 @@
-package org.team4.hnreader.ui.fragments
+package org.team4.hnreader.ui.destinations
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,9 +9,10 @@ import androidx.navigation.fragment.findNavController
 import org.team4.hnreader.data.model.Story
 import org.team4.hnreader.data.remote.ApiRequestQueue
 import org.team4.hnreader.databinding.FragmentNewStoriesBinding
-import org.team4.hnreader.ui.callbacks.StoryIdsSourceAndClickHandler
+import org.team4.hnreader.ui.callbacks.StoryRecyclerViewCallbacks
+import org.team4.hnreader.ui.fragments.NewStoriesFragmentDirections
 
-class NewStoriesFragment : Fragment(), StoryIdsSourceAndClickHandler {
+class NewStoriesFragment : Fragment(), StoryRecyclerViewCallbacks {
     private var _binding: FragmentNewStoriesBinding? = null
     private val binding get() = _binding!!
 
@@ -36,7 +37,7 @@ class NewStoriesFragment : Fragment(), StoryIdsSourceAndClickHandler {
         ApiRequestQueue.getInstance().fetchNewStoriesIds(responseCallback, errorCallback)
     }
 
-    override fun openComments(story: Story) {
+    override fun openStoryDetails(story: Story) {
         val directions = NewStoriesFragmentDirections
             .actionNewStoriesFragmentToStoryDetailsFragment(story)
         findNavController().navigate(directions)

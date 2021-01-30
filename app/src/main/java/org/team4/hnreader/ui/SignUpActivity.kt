@@ -1,4 +1,4 @@
-package org.team4.hnreader.ui.activities
+package org.team4.hnreader.ui
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,7 +6,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import org.team4.hnreader.databinding.ActivitySignUpBinding
-import org.team4.hnreader.ui.MainActivity
 
 class SignUpActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySignUpBinding

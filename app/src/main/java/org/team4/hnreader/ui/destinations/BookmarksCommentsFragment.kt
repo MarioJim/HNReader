@@ -1,4 +1,4 @@
-package org.team4.hnreader.ui.fragments
+package org.team4.hnreader.ui.destinations
 
 import android.os.Bundle
 import android.util.Log

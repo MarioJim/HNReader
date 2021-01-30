@@ -17,8 +17,8 @@
             android:name=".ShareBroadcastReceiver"
             android:enabled="true">
         </receiver>
-        <activity android:name=".ui.activities.LoginActivity" />
-        <activity android:name=".ui.activities.SignUpActivity" />
+        <activity android:name=".ui.LoginActivity" />
+        <activity android:name=".ui.SignUpActivity" />
         <activity
             android:name=".ui.MainActivity"
             android:label="@string/app_name"

@@ -11,20 +11,18 @@ import org.team4.hnreader.databinding.FragmentCommentBinding
 class CommentAdapter(
     private val showCommentMenuCallback: (comment: FlattenedComment) -> Unit,
 ) : ListAdapter<Comment, CommentViewHolder>(DIFF_CALLBACK) {
-    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): CommentViewHolder {
-        val binding = FragmentCommentBinding.inflate(
+    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int) =
+        CommentViewHolder(FragmentCommentBinding.inflate(
             LayoutInflater.from(viewGroup.context),
             viewGroup,
             false,
-        )
-        return CommentViewHolder(binding) {
+        ))
+
+    override fun onBindViewHolder(viewHolder: CommentViewHolder, position: Int) =
+        viewHolder.bindTo(getItem(position)) {
             val flattenedComment = FlattenedComment.fromComment(it, 0)
             showCommentMenuCallback(flattenedComment)
         }
-    }
-
-    override fun onBindViewHolder(viewHolder: CommentViewHolder, position: Int) =
-        viewHolder.bindTo(getItem(position))
 
     fun clearList(callback: Runnable) = submitList(emptyList(), callback)
 

@@ -8,6 +8,7 @@ import android.view.View
 import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import org.team4.hnreader.R
 import org.team4.hnreader.ShareBroadcastReceiver
@@ -20,12 +21,13 @@ import org.team4.hnreader.utils.DateTimeUtils
 import org.team4.hnreader.utils.TextUtils
 import org.team4.hnreader.utils.URLUtils
 
-class StoryViewHolder(
-    private val binding: FragmentStoryBinding,
-    private val shouldDisplayText: Boolean,
-    private val openCommentsRVCallback: (story: Story) -> Unit = {},
-) : BindableViewHolder<Story>(binding.root) {
-    override fun bindTo(item: Story) {
+class StoryViewHolder(private val binding: FragmentStoryBinding) :
+    RecyclerView.ViewHolder(binding.root) {
+    fun bindTo(
+        item: Story,
+        shouldDisplayText: Boolean,
+        openStoryDetailsCallback: (story: Story) -> Unit = {},
+    ) {
         binding.tvTitle.text = item.title
         binding.tvUrl.text = when (item) {
             is StoryWithURL -> URLUtils.getDomain(item.getUrl())
@@ -51,7 +53,7 @@ class StoryViewHolder(
         }
 
         binding.commentsBtn.setOnClickListener {
-            openCommentsRVCallback(item)
+            openStoryDetailsCallback(item)
         }
 
         binding.shareBtn.setOnClickListener {

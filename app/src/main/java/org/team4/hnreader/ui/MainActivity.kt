@@ -9,12 +9,10 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
 import com.google.firebase.auth.FirebaseAuth
 import org.team4.hnreader.R
 import org.team4.hnreader.data.model.FlattenedComment
 import org.team4.hnreader.databinding.ActivityMainBinding
-import org.team4.hnreader.ui.activities.LoginActivity
 import org.team4.hnreader.ui.callbacks.ShowCommentMenu
 import org.team4.hnreader.ui.fragments.CommentOptionsBottomSheet
 

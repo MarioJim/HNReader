@@ -1,4 +1,4 @@
-package org.team4.hnreader.ui.fragments
+package org.team4.hnreader.ui.destinations
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,9 +9,10 @@ import androidx.navigation.fragment.findNavController
 import org.team4.hnreader.data.model.Story
 import org.team4.hnreader.data.remote.FirestoreHelper
 import org.team4.hnreader.databinding.FragmentBookmarksStoriesBinding
-import org.team4.hnreader.ui.callbacks.StoryIdsSourceAndClickHandler
+import org.team4.hnreader.ui.callbacks.StoryRecyclerViewCallbacks
+import org.team4.hnreader.ui.fragments.BookmarksStoriesFragmentDirections
 
-class BookmarksStoriesFragment : Fragment(), StoryIdsSourceAndClickHandler {
+class BookmarksStoriesFragment : Fragment(), StoryRecyclerViewCallbacks {
     private var _binding: FragmentBookmarksStoriesBinding? = null
     private val binding get() = _binding!!
 
@@ -38,7 +39,7 @@ class BookmarksStoriesFragment : Fragment(), StoryIdsSourceAndClickHandler {
         }
     }
 
-    override fun openComments(story: Story) {
+    override fun openStoryDetails(story: Story) {
         val directions = BookmarksStoriesFragmentDirections
             .actionBookmarksStoriesFragmentToStoryDetailsFragment(story)
         findNavController().navigate(directions)

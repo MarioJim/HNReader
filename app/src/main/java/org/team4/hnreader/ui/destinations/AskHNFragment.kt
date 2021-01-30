@@ -1,4 +1,4 @@
-package org.team4.hnreader.ui.fragments
+package org.team4.hnreader.ui.destinations
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,11 +8,12 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import org.team4.hnreader.data.model.Story
 import org.team4.hnreader.data.remote.ApiRequestQueue
-import org.team4.hnreader.databinding.FragmentTopStoriesBinding
-import org.team4.hnreader.ui.callbacks.StoryIdsSourceAndClickHandler
+import org.team4.hnreader.databinding.FragmentAskHnBinding
+import org.team4.hnreader.ui.callbacks.StoryRecyclerViewCallbacks
+import org.team4.hnreader.ui.fragments.AskHNFragmentDirections
 
-class TopStoriesFragment : Fragment(), StoryIdsSourceAndClickHandler {
-    private var _binding: FragmentTopStoriesBinding? = null
+class AskHNFragment : Fragment(), StoryRecyclerViewCallbacks {
+    private var _binding: FragmentAskHnBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -20,7 +21,7 @@ class TopStoriesFragment : Fragment(), StoryIdsSourceAndClickHandler {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        _binding = FragmentTopStoriesBinding.inflate(inflater, container, false)
+        _binding = FragmentAskHnBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -33,12 +34,11 @@ class TopStoriesFragment : Fragment(), StoryIdsSourceAndClickHandler {
         responseCallback: (List<Int>) -> Unit,
         errorCallback: (Exception) -> Unit,
     ) {
-        ApiRequestQueue.getInstance().fetchTopStoriesIds(responseCallback, errorCallback)
+        ApiRequestQueue.getInstance().fetchAskStoriesIds(responseCallback, errorCallback)
     }
 
-    override fun openComments(story: Story) {
-        val directions = TopStoriesFragmentDirections
-            .actionTopStoriesFragmentToStoryDetailsFragment(story)
+    override fun openStoryDetails(story: Story) {
+        val directions = AskHNFragmentDirections.actionAskHNFragmentToStoryDetailsFragment(story)
         findNavController().navigate(directions)
     }
 }

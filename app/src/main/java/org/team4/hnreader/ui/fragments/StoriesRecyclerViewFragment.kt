@@ -15,7 +15,7 @@ import org.team4.hnreader.data.remote.DeletedItemException
 import org.team4.hnreader.data.remote.ItemTypeNotImplementedException
 import org.team4.hnreader.databinding.FragmentStoriesRecyclerViewBinding
 import org.team4.hnreader.ui.adapters.StoryAdapter
-import org.team4.hnreader.ui.callbacks.StoryIdsSourceAndClickHandler
+import org.team4.hnreader.ui.callbacks.StoryRecyclerViewCallbacks
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.min
 
@@ -23,7 +23,7 @@ class StoriesRecyclerViewFragment : Fragment() {
     private var _binding: FragmentStoriesRecyclerViewBinding? = null
     private val binding get() = _binding!!
     private lateinit var storyAdapter: StoryAdapter
-    private lateinit var idsSourceAndClickHandlerProvider: StoryIdsSourceAndClickHandler
+    private lateinit var callbacksProvider: StoryRecyclerViewCallbacks
 
     private var showingStories: List<Story>? = null
     private var fromCache: Boolean = true
@@ -43,14 +43,14 @@ class StoriesRecyclerViewFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (parentFragment is StoryIdsSourceAndClickHandler) {
-            idsSourceAndClickHandlerProvider = parentFragment as StoryIdsSourceAndClickHandler
+        if (parentFragment is StoryRecyclerViewCallbacks) {
+            callbacksProvider = parentFragment as StoryRecyclerViewCallbacks
         } else {
             throw Exception("StoriesRecyclerViewFragment created in a fragment that doesn't extend StoryIdsSourceAndClickHandler")
         }
 
         storyAdapter = StoryAdapter { story ->
-            idsSourceAndClickHandlerProvider.openComments(story)
+            callbacksProvider.openStoryDetails(story)
         }
         binding.recyclerviewStories.adapter = storyAdapter
         val linearLayoutManager = LinearLayoutManager(context)
@@ -69,7 +69,7 @@ class StoriesRecyclerViewFragment : Fragment() {
 
         binding.srStories.setOnRefreshListener { refreshPage() }
 
-        idsSourceAndClickHandlerProvider.fetchStoryIds(
+        callbacksProvider.fetchStoryIds(
             {
                 storiesIds = it
                 loadStories()
@@ -96,7 +96,7 @@ class StoriesRecyclerViewFragment : Fragment() {
 
     private fun refreshPage() {
         fromCache = false
-        idsSourceAndClickHandlerProvider.fetchStoryIds(
+        callbacksProvider.fetchStoryIds(
             {
                 storiesIds = it
                 isLoading.set(true)

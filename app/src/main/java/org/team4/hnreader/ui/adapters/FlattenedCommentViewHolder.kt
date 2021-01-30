@@ -3,16 +3,15 @@ package org.team4.hnreader.ui.adapters
 import android.content.res.Resources
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.updateMarginsRelative
+import androidx.recyclerview.widget.RecyclerView
 import org.team4.hnreader.data.model.FlattenedComment
 import org.team4.hnreader.databinding.FragmentFlattenedCommentBinding
 import org.team4.hnreader.utils.DateTimeUtils
 import org.team4.hnreader.utils.TextUtils
 
-class FlattenedCommentViewHolder(
-    private val binding: FragmentFlattenedCommentBinding,
-    private val longClickListener: (FlattenedComment) -> Unit,
-) : BindableViewHolder<FlattenedComment>(binding.root) {
-    override fun bindTo(item: FlattenedComment) {
+class FlattenedCommentViewHolder(private val binding: FragmentFlattenedCommentBinding) :
+    RecyclerView.ViewHolder(binding.root) {
+    fun bindTo(item: FlattenedComment, longClickListener: (FlattenedComment) -> Unit) {
         val newStartMargin = 20 * item.depth * Resources.getSystem().displayMetrics.density
         val params = binding.tvFlatCommentInfo.layoutParams as ConstraintLayout.LayoutParams
         params.updateMarginsRelative(start = newStartMargin.toInt())

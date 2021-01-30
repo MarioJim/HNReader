@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/topStoriesFragment"
-        android:name="org.team4.hnreader.ui.fragments.TopStoriesFragment"
+        android:name="org.team4.hnreader.ui.destinations.TopStoriesFragment"
         android:label="@string/top_stories_title"
         tools:layout="@layout/fragment_top_stories">
         <action
@@ -17,7 +17,7 @@
 
     <fragment
         android:id="@+id/newStoriesFragment"
-        android:name="org.team4.hnreader.ui.fragments.NewStoriesFragment"
+        android:name="org.team4.hnreader.ui.destinations.NewStoriesFragment"
         android:label="@string/new_stories_title"
         tools:layout="@layout/fragment_new_stories">
         <action
@@ -27,7 +27,7 @@
 
     <fragment
         android:id="@+id/bestStoriesFragment"
-        android:name="org.team4.hnreader.ui.fragments.BestStoriesFragment"
+        android:name="org.team4.hnreader.ui.destinations.BestStoriesFragment"
         android:label="@string/best_stories_title"
         tools:layout="@layout/fragment_best_stories">
         <action
@@ -37,7 +37,7 @@
 
     <fragment
         android:id="@+id/askHNFragment"
-        android:name="org.team4.hnreader.ui.fragments.AskHNFragment"
+        android:name="org.team4.hnreader.ui.destinations.AskHNFragment"
         android:label="@string/ask_hn"
         tools:layout="@layout/fragment_ask_hn">
         <action
@@ -47,7 +47,7 @@
 
     <fragment
         android:id="@+id/showHNFragment"
-        android:name="org.team4.hnreader.ui.fragments.ShowHNFragment"
+        android:name="org.team4.hnreader.ui.destinations.ShowHNFragment"
         android:label="@string/show_hn"
         tools:layout="@layout/fragment_show_hn">
         <action
@@ -57,7 +57,7 @@
 
     <fragment
         android:id="@+id/storyDetailsFragment"
-        android:name="org.team4.hnreader.ui.fragments.StoryDetailsFragment"
+        android:name="org.team4.hnreader.ui.destinations.StoryDetailsFragment"
         android:label="Comments"
         tools:layout="@layout/fragment_comments_recycler_view">
         <argument
@@ -67,7 +67,7 @@
 
     <fragment
         android:id="@+id/bookmarksStoriesFragment"
-        android:name="org.team4.hnreader.ui.fragments.BookmarksStoriesFragment"
+        android:name="org.team4.hnreader.ui.destinations.BookmarksStoriesFragment"
         android:label="Bookmarked stories"
         tools:layout="@layout/fragment_bookmarks_stories">
         <action
@@ -77,7 +77,7 @@
 
     <fragment
         android:id="@+id/bookmarksCommentsFragment"
-        android:name="org.team4.hnreader.ui.fragments.BookmarksCommentsFragment"
+        android:name="org.team4.hnreader.ui.destinations.BookmarksCommentsFragment"
         android:label="Bookmarked comments"
         tools:layout="@layout/fragment_bookmarks_comments" />
 </navigation>

@@ -21,30 +21,27 @@ class StoryDetailsAdapter(
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int) = when (viewType) {
-        STORY_VIEW_TYPE -> {
-            val binding = FragmentStoryBinding.inflate(
+        STORY_VIEW_TYPE ->
+            StoryViewHolder(FragmentStoryBinding.inflate(
                 LayoutInflater.from(viewGroup.context),
                 viewGroup,
                 false,
-            )
-            StoryViewHolder(binding, true)
-        }
-        FLAT_COMMENT_VIEW_TYPE -> {
-            val binding = FragmentFlattenedCommentBinding.inflate(
+            ))
+        FLAT_COMMENT_VIEW_TYPE ->
+            FlattenedCommentViewHolder(FragmentFlattenedCommentBinding.inflate(
                 LayoutInflater.from(viewGroup.context),
                 viewGroup,
                 false,
-            )
-            FlattenedCommentViewHolder(binding) { showCommentMenuCallback(it) }
-        }
+            ))
         else -> throw Exception("ViewHolder for viewType $viewType not implemented")
     }
 
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
-        if (viewHolder is StoryViewHolder) {
-            viewHolder.bindTo(getItem(position) as Story)
-        } else if (viewHolder is FlattenedCommentViewHolder) {
-            viewHolder.bindTo(getItem(position) as FlattenedComment)
+        when (viewHolder) {
+            is StoryViewHolder -> viewHolder.bindTo(getItem(position) as Story, true)
+            is FlattenedCommentViewHolder -> viewHolder.bindTo(getItem(position) as FlattenedComment) {
+                showCommentMenuCallback(it)
+            }
         }
     }
 

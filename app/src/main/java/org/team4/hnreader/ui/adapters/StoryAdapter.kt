@@ -10,17 +10,15 @@ import org.team4.hnreader.databinding.FragmentStoryBinding
 class StoryAdapter(
     private val openCommentsRVCallback: (story: Story) -> Unit,
 ) : ListAdapter<Story, StoryViewHolder>(DIFF_CALLBACK) {
-    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): StoryViewHolder {
-        val binding = FragmentStoryBinding.inflate(
+    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int) =
+        StoryViewHolder(FragmentStoryBinding.inflate(
             LayoutInflater.from(viewGroup.context),
             viewGroup,
             false,
-        )
-        return StoryViewHolder(binding, false, openCommentsRVCallback)
-    }
+        ))
 
     override fun onBindViewHolder(viewHolder: StoryViewHolder, position: Int) =
-        viewHolder.bindTo(getItem(position))
+        viewHolder.bindTo(getItem(position), false, openCommentsRVCallback)
 
     fun resetList(callback: Runnable) = submitList(emptyList(), callback)
 
