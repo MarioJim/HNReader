@@ -13,7 +13,7 @@ data class StoryWithURL(
     override val numComments: Int,
     override val points: Int,
     override val title: String,
-    val url: String,
+    private val url: String,
 ) : Story(author, created_at, id, kids, numComments, points, title), Serializable {
     companion object {
         fun fromJSONObject(jsonObject: JSONObject) = StoryWithURL(
@@ -27,6 +27,8 @@ data class StoryWithURL(
             jsonObject.getString("url")
         )
     }
+
+    override fun getUrl() = url
 
     override fun toItemsContentValues() = ContentValues().apply {
         put(ItemsTable.FIELD_AUTHOR, author)

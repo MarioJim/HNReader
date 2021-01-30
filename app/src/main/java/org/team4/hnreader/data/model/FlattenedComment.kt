@@ -18,4 +18,11 @@ data class FlattenedComment(
             comment.text,
         )
     }
+
+    override fun getItemId() = id
+
+    override fun equalsDisplayedItem(other: DisplayedItem) = when (other) {
+        is FlattenedComment -> id == other.id
+        else -> false
+    }
 }

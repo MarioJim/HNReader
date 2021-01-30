@@ -31,4 +31,6 @@ abstract class Item(
             put(KidsTable.FIELD_KID_ID, kidID)
         }
     }
+
+    open fun getUrl() = "https://news.ycombinator.com/item?id=$id"
 }

@@ -72,7 +72,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/saveBtn"
                     android:layout_width="64dp"
                     android:layout_height="52dp"
@@ -83,7 +83,7 @@
                     app:layout_constraintEnd_toStartOf="@+id/shareBtn"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/shareBtn"
                     android:layout_width="64dp"
                     android:layout_height="52dp"

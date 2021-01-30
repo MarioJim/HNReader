@@ -23,4 +23,11 @@ abstract class Story(
             }
         }
     }
+
+    override fun getItemId() = id
+
+    override fun equalsDisplayedItem(other: DisplayedItem) = when (other) {
+        is Story -> id == other.id && numComments == other.numComments && points == other.points
+        else -> false
+    }
 }
