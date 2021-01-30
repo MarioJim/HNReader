@@ -10,8 +10,11 @@
     <string name="bookmark">Bookmark</string>
     <string name="share">Share</string>
     <string name="top_stories">Top</string>
+    <string name="top_stories_title">Top stories</string>
     <string name="new_stories">New</string>
+    <string name="new_stories_title">New stories</string>
     <string name="best_stories">Best</string>
+    <string name="best_stories_title">Best stories</string>
     <string name="ask_hn">Ask HN</string>
     <string name="show_hn">Show HN</string>
     <string name="settings">Settings</string>

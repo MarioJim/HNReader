@@ -38,7 +38,7 @@ class NewStoriesFragment : Fragment(), StoryIdsSourceAndClickHandler {
 
     override fun openComments(story: Story) {
         val directions = NewStoriesFragmentDirections
-            .actionNewStoriesFragmentToCommentsRecyclerViewFragment(story)
+            .actionNewStoriesFragmentToStoryDetailsFragment(story)
         findNavController().navigate(directions)
     }
 }

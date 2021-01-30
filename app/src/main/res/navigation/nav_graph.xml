@@ -8,31 +8,31 @@
     <fragment
         android:id="@+id/topStoriesFragment"
         android:name="org.team4.hnreader.ui.fragments.TopStoriesFragment"
-        android:label="@string/top_stories"
+        android:label="@string/top_stories_title"
         tools:layout="@layout/fragment_top_stories">
         <action
-            android:id="@+id/action_topStoriesFragment_to_commentsRecyclerViewFragment"
-            app:destination="@id/commentsRecyclerViewFragment" />
+            android:id="@+id/action_topStoriesFragment_to_storyDetailsFragment"
+            app:destination="@id/storyDetailsFragment" />
     </fragment>
 
     <fragment
         android:id="@+id/newStoriesFragment"
         android:name="org.team4.hnreader.ui.fragments.NewStoriesFragment"
-        android:label="@string/new_stories"
+        android:label="@string/new_stories_title"
         tools:layout="@layout/fragment_new_stories">
         <action
-            android:id="@+id/action_newStoriesFragment_to_commentsRecyclerViewFragment"
-            app:destination="@id/commentsRecyclerViewFragment" />
+            android:id="@+id/action_newStoriesFragment_to_storyDetailsFragment"
+            app:destination="@id/storyDetailsFragment" />
     </fragment>
 
     <fragment
         android:id="@+id/bestStoriesFragment"
         android:name="org.team4.hnreader.ui.fragments.BestStoriesFragment"
-        android:label="@string/best_stories"
+        android:label="@string/best_stories_title"
         tools:layout="@layout/fragment_best_stories">
         <action
-            android:id="@+id/action_bestStoriesFragment_to_commentsRecyclerViewFragment"
-            app:destination="@id/commentsRecyclerViewFragment" />
+            android:id="@+id/action_bestStoriesFragment_to_storyDetailsFragment"
+            app:destination="@id/storyDetailsFragment" />
     </fragment>
 
     <fragment
@@ -41,8 +41,8 @@
         android:label="@string/ask_hn"
         tools:layout="@layout/fragment_ask_hn">
         <action
-            android:id="@+id/action_askHNFragment_to_commentsRecyclerViewFragment"
-            app:destination="@id/commentsRecyclerViewFragment" />
+            android:id="@+id/action_askHNFragment_to_storyDetailsFragment"
+            app:destination="@id/storyDetailsFragment" />
     </fragment>
 
     <fragment
@@ -51,13 +51,13 @@
         android:label="@string/show_hn"
         tools:layout="@layout/fragment_show_hn">
         <action
-            android:id="@+id/action_showHNFragment_to_commentsRecyclerViewFragment"
-            app:destination="@id/commentsRecyclerViewFragment" />
+            android:id="@+id/action_showHNFragment_to_storyDetailsFragment"
+            app:destination="@id/storyDetailsFragment" />
     </fragment>
 
     <fragment
-        android:id="@+id/commentsRecyclerViewFragment"
-        android:name="org.team4.hnreader.ui.fragments.CommentsRecyclerViewFragment"
+        android:id="@+id/storyDetailsFragment"
+        android:name="org.team4.hnreader.ui.fragments.StoryDetailsFragment"
         android:label="Comments"
         tools:layout="@layout/fragment_comments_recycler_view">
         <argument
@@ -71,8 +71,8 @@
         android:label="Bookmarked stories"
         tools:layout="@layout/fragment_bookmarks_stories">
         <action
-            android:id="@+id/action_bookmarksStoriesFragment_to_commentsRecyclerViewFragment"
-            app:destination="@id/commentsRecyclerViewFragment" />
+            android:id="@+id/action_bookmarksStoriesFragment_to_storyDetailsFragment"
+            app:destination="@id/storyDetailsFragment" />
     </fragment>
 
     <fragment

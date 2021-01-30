@@ -16,15 +16,15 @@ import org.team4.hnreader.data.model.DisplayedItem
 import org.team4.hnreader.data.model.Story
 import org.team4.hnreader.data.remote.DeletedItemException
 import org.team4.hnreader.databinding.FragmentCommentsRecyclerViewBinding
-import org.team4.hnreader.ui.adapters.CommentAdapter
+import org.team4.hnreader.ui.adapters.StoryDetailsAdapter
 import org.team4.hnreader.ui.callbacks.ShowCommentMenu
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.min
 
-class CommentsRecyclerViewFragment : Fragment() {
+class StoryDetailsFragment : Fragment() {
     private var _binding: FragmentCommentsRecyclerViewBinding? = null
     private val binding get() = _binding!!
-    private lateinit var commentsAdapter: CommentAdapter
+    private lateinit var storyDetailsAdapter: StoryDetailsAdapter
 
     private lateinit var story: Story
 
@@ -44,7 +44,8 @@ class CommentsRecyclerViewFragment : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentCommentsRecyclerViewBinding.inflate(inflater, container, false)
@@ -57,11 +58,11 @@ class CommentsRecyclerViewFragment : Fragment() {
         parentCommentIdsList = story.kids
 
         itemsList.add(story)
-        commentsAdapter = CommentAdapter(itemsList) { comment ->
+        storyDetailsAdapter = StoryDetailsAdapter(itemsList) { comment ->
             if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED))
                 (requireActivity() as ShowCommentMenu).showCommentMenu(comment)
         }
-        binding.recyclerviewComments.adapter = commentsAdapter
+        binding.recyclerviewComments.adapter = storyDetailsAdapter
         val linearLayoutManager = LinearLayoutManager(context)
         binding.recyclerviewComments.layoutManager = linearLayoutManager
         binding.recyclerviewComments.setHasFixedSize(true)
@@ -78,7 +79,6 @@ class CommentsRecyclerViewFragment : Fragment() {
         binding.srComments.setOnRefreshListener { refreshPage(story.id) }
 
         loadComments()
-
     }
 
     private fun refreshPage(storyId: Int) {
@@ -87,11 +87,13 @@ class CommentsRecyclerViewFragment : Fragment() {
             storyId,
             fromCache,
             {
+                val oldSize = itemsList.size
                 itemsList.clear()
+                storyDetailsAdapter.notifyItemRangeRemoved(0, oldSize)
                 itemsList.add(it)
+                storyDetailsAdapter.notifyItemInserted(0)
                 parentCommentIdsList = it.kids
                 lastLoadedParentCommentIdx = 0
-                binding.recyclerviewComments.adapter = commentsAdapter
                 loadComments { binding.srComments.isRefreshing = false }
             },
             { displayError(it) },
@@ -113,10 +115,9 @@ class CommentsRecyclerViewFragment : Fragment() {
             0,
             fromCache,
             { fetchedCommentList ->
+                val oldSize = itemsList.size
                 itemsList.addAll(fetchedCommentList)
-                binding.recyclerviewComments.post {
-                    commentsAdapter.notifyDataSetChanged()
-                }
+                storyDetailsAdapter.notifyItemRangeInserted(oldSize, fetchedCommentList.size)
                 lastLoadedParentCommentIdx += numCommentsToAdd
                 isLoading.set(false)
                 finishedCallback()
@@ -140,9 +141,10 @@ class CommentsRecyclerViewFragment : Fragment() {
 
         private const val ARG_STORY = "story"
 
+        @Suppress("unused") // Used for navigation
         @JvmStatic
         fun newInstance(story: Story) =
-            CommentsRecyclerViewFragment().apply {
+            StoryDetailsFragment().apply {
                 arguments = Bundle().apply {
                     putSerializable(ARG_STORY, story)
                 }

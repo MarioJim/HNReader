@@ -6,5 +6,5 @@ import org.team4.hnreader.databinding.FragmentCommentBinding
 class CommentViewHolder(binding: FragmentCommentBinding) : RecyclerView.ViewHolder(binding.root) {
     val root = binding.root
     val tvCommentInfo = binding.tvCommentInfo
-    val tvContent = binding.tvContent
+    val tvCommentText = binding.tvCommentText
 }

@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.VolleyError
 import org.team4.hnreader.data.ItemFinder
-import org.team4.hnreader.data.model.FlattenedComment
+import org.team4.hnreader.data.model.Comment
 import org.team4.hnreader.data.remote.DeletedItemException
 import org.team4.hnreader.data.remote.FirestoreHelper
 import org.team4.hnreader.databinding.FragmentBookmarksCommentsBinding
@@ -27,13 +27,14 @@ class BookmarksCommentsFragment : Fragment() {
     private lateinit var commentAdapter: CommentAdapter
 
     private var commentsIds: ArrayList<Int> = ArrayList()
-    private var commentsList: ArrayList<FlattenedComment> = ArrayList()
+    private var commentsList: ArrayList<Comment> = ArrayList()
     private var lastLoadedComment: Int = 0
 
     private var isLoading: AtomicBoolean = AtomicBoolean(true)
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentBookmarksCommentsBinding.inflate(inflater, container, false)
@@ -67,7 +68,9 @@ class BookmarksCommentsFragment : Fragment() {
         FirestoreHelper.getInstance().getCommentsFromBookmarks {
             commentsIds.clear()
             commentsIds.plusAssign(it)
+            val oldSize = commentsList.size
             commentsList.clear()
+            commentAdapter.notifyItemRangeRemoved(0, oldSize)
             lastLoadedComment = 0
             loadComments { binding.srBookmarksComments.isRefreshing = false }
         }
@@ -87,13 +90,9 @@ class BookmarksCommentsFragment : Fragment() {
             commentIdsToFetch,
             true,
             { fetchedCommentList ->
-                val fetchedFlattenedCommentList = fetchedCommentList.map {
-                    FlattenedComment.fromComment(it, 0)
-                }
-                commentsList.addAll(fetchedFlattenedCommentList)
-                binding.rvBookmarksComments.post {
-                    commentAdapter.notifyDataSetChanged()
-                }
+                val oldSize = commentsList.size
+                commentsList.addAll(fetchedCommentList)
+                commentAdapter.notifyItemRangeInserted(oldSize, fetchedCommentList.size)
                 lastLoadedComment += numCommentsToAdd
                 isLoading.set(false)
                 finishedCallback()

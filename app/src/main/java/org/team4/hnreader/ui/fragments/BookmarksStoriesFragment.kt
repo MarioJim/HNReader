@@ -16,7 +16,8 @@ class BookmarksStoriesFragment : Fragment(), StoryIdsSourceAndClickHandler {
     private val binding get() = _binding!!
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentBookmarksStoriesBinding.inflate(inflater, container, false)
@@ -39,7 +40,7 @@ class BookmarksStoriesFragment : Fragment(), StoryIdsSourceAndClickHandler {
 
     override fun openComments(story: Story) {
         val directions = BookmarksStoriesFragmentDirections
-            .actionBookmarksStoriesFragmentToCommentsRecyclerViewFragment(story)
+            .actionBookmarksStoriesFragmentToStoryDetailsFragment(story)
         findNavController().navigate(directions)
     }
 }

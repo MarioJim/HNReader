@@ -109,11 +109,10 @@ class StoriesRecyclerViewFragment : Fragment() {
             storyIdsToFetch,
             fromCache,
             { fetchedStories ->
+                val oldSize = storiesList.size
                 storiesList.addAll(fetchedStories)
+                storyAdapter.notifyItemRangeInserted(oldSize, fetchedStories.size)
                 lastLoadedStory += numStoriesToAdd
-                binding.recyclerviewStories.post {
-                    storyAdapter.notifyDataSetChanged()
-                }
                 isLoading.set(false)
                 finishedCallback()
             },
