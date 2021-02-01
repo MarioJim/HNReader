@@ -45,7 +45,7 @@ class SettingsFragment : Fragment() {
                 builder.setSingleChoiceItems(styles, checkedTheme) { dialog, which ->
                     context?.setTheme(
                         if (which == 0) R.style.Theme_HackerNewsReader
-                        else R.style.Theme_HackerNewsReaderDark
+                        else R.style.Theme_HackerNewsReader
                     )
 
                     GlobalScope.launch(Dispatchers.Main) {

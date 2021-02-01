@@ -16,12 +16,12 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="2dp"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
             android:layout_marginStart="6dp"
             android:layout_marginTop="4dp"
             android:layout_marginEnd="4dp"
             android:layout_marginBottom="4dp"
-            android:background="@color/purple_500"
+            android:background="@color/orange_light"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

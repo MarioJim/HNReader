@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
+import org.team4.hnreader.R
 import org.team4.hnreader.databinding.ActivityLoginBinding
 
 class LoginActivity : AppCompatActivity() {
@@ -46,5 +47,12 @@ class LoginActivity : AppCompatActivity() {
             val intentToSignUp = Intent(this, SignUpActivity::class.java)
             startActivity(intentToSignUp)
         }
+
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 }

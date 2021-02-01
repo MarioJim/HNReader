@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
+import org.team4.hnreader.R
 import org.team4.hnreader.databinding.ActivitySignUpBinding
 
 class SignUpActivity : AppCompatActivity() {
@@ -40,6 +41,13 @@ class SignUpActivity : AppCompatActivity() {
         binding.btnCancelSignUp.setOnClickListener {
             finish()
         }
+
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
     private fun signUp(email: String, password: String) {
