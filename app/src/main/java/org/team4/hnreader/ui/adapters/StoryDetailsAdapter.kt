@@ -38,7 +38,7 @@ class StoryDetailsAdapter(
 
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
         when (viewHolder) {
-            is StoryViewHolder -> viewHolder.bindTo(getItem(position) as Story, true)
+            is StoryViewHolder -> viewHolder.detailsBindTo(getItem(position) as Story)
             is FlattenedCommentViewHolder -> viewHolder.bindTo(getItem(position) as FlattenedComment) {
                 showCommentMenuCallback(it)
             }

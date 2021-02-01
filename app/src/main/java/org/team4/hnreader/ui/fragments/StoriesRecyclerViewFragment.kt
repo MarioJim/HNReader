@@ -46,7 +46,7 @@ class StoriesRecyclerViewFragment : Fragment() {
         if (parentFragment is StoryRecyclerViewCallbacks) {
             callbacksProvider = parentFragment as StoryRecyclerViewCallbacks
         } else {
-            throw Exception("StoriesRecyclerViewFragment created in a fragment that doesn't extend StoryIdsSourceAndClickHandler")
+            throw Exception("StoriesRecyclerViewFragment created in a fragment that doesn't extend StoryRecyclerViewCallbacks")
         }
 
         storyAdapter = StoryAdapter { story ->

@@ -6,10 +6,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import org.team4.hnreader.data.model.Story
 import org.team4.hnreader.databinding.FragmentStoryBinding
+import org.team4.hnreader.ui.callbacks.OpenStoryDetails
 
-class StoryAdapter(
-    private val openCommentsRVCallback: (story: Story) -> Unit,
-) : ListAdapter<Story, StoryViewHolder>(DIFF_CALLBACK) {
+class StoryAdapter(private val openStoryDetails: OpenStoryDetails) :
+    ListAdapter<Story, StoryViewHolder>(DIFF_CALLBACK) {
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int) =
         StoryViewHolder(FragmentStoryBinding.inflate(
             LayoutInflater.from(viewGroup.context),
@@ -18,7 +18,7 @@ class StoryAdapter(
         ))
 
     override fun onBindViewHolder(viewHolder: StoryViewHolder, position: Int) =
-        viewHolder.bindTo(getItem(position), false, openCommentsRVCallback)
+        viewHolder.listBindTo(getItem(position), openStoryDetails)
 
     fun resetList(callback: Runnable) = submitList(emptyList(), callback)
 

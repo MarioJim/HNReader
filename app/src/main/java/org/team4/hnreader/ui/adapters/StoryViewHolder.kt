@@ -12,6 +12,7 @@ import org.team4.hnreader.data.model.StoryWithText
 import org.team4.hnreader.data.model.StoryWithURL
 import org.team4.hnreader.data.remote.FirestoreHelper
 import org.team4.hnreader.databinding.FragmentStoryBinding
+import org.team4.hnreader.ui.callbacks.OpenStoryDetails
 import org.team4.hnreader.utils.DateTimeUtils
 import org.team4.hnreader.utils.IntentUtils
 import org.team4.hnreader.utils.TextUtils
@@ -19,54 +20,76 @@ import org.team4.hnreader.utils.URLUtils
 
 class StoryViewHolder(private val binding: FragmentStoryBinding) :
     RecyclerView.ViewHolder(binding.root) {
-    fun bindTo(
-        item: Story,
-        shouldDisplayText: Boolean,
-        openStoryDetailsCallback: (story: Story) -> Unit = {},
-    ) {
-        binding.tvTitle.text = item.title
-        binding.tvUrl.text = when {
-            item is StoryWithURL -> URLUtils.getDomain(item.getUrl())
-            shouldDisplayText -> TextUtils.fromHTML((item as StoryWithText).text)
-            else -> {
-                binding.tvUrl.visibility = View.GONE
-                ""
-            }
+
+    fun listBindTo(story: Story, openStoryDetailsCallback: OpenStoryDetails) {
+        if (story is StoryWithURL) {
+            binding.tvUrl.text = URLUtils.getDomain(story.getUrl())
+        } else {
+            binding.tvUrl.visibility = View.GONE
         }
-        val timeAgo = DateTimeUtils.timeAgo(item.created_at)
-        binding.tvInfo.text = "by ${item.author}, $timeAgo"
-        binding.tvVotes.text = "${item.points} points, ${item.numComments} comments"
 
         binding.urlBtn.setOnClickListener {
-            if (item is StoryWithURL) {
+            if (story is StoryWithURL) {
                 IntentUtils.generateCustomTabsIntentBuilder(binding.root.context)
                     .build()
-                    .launchUrl(binding.root.context, Uri.parse(item.getUrl()))
+                    .launchUrl(binding.root.context, Uri.parse(story.getUrl()))
             } else {
-                openStoryDetailsCallback(item)
+                openStoryDetailsCallback(story)
             }
         }
 
         binding.commentsBtn.setOnClickListener {
-            openStoryDetailsCallback(item)
+            openStoryDetailsCallback(story)
         }
 
+        bindTo(story)
+    }
+
+    fun detailsBindTo(story: Story) {
+        val urlText = when (story) {
+            is StoryWithURL -> URLUtils.getDomain(story.getUrl())
+            is StoryWithText -> TextUtils.fromHTML(story.text)
+            else -> ""
+        }
+        if (urlText.isBlank()) {
+            binding.tvUrl.visibility = View.GONE
+        } else {
+            binding.tvUrl.text = urlText
+        }
+
+        if (story is StoryWithURL) {
+            binding.urlBtn.setOnClickListener {
+                IntentUtils.generateCustomTabsIntentBuilder(binding.root.context)
+                    .build()
+                    .launchUrl(binding.root.context, Uri.parse(story.getUrl()))
+            }
+        }
+
+        bindTo(story)
+    }
+
+    private fun bindTo(story: Story) {
+        binding.tvTitle.text = story.title
+        val timeAgo = DateTimeUtils.timeAgo(story.created_at)
+        binding.tvInfo.text = "by ${story.author}, $timeAgo"
+        binding.tvVotes.text = "${story.points} points, ${story.numComments} comments"
+
         binding.shareBtn.setOnClickListener {
-            val text = "Check this Hacker News post: ${item.getUrl()}"
+            val text = "Check this Hacker News post: ${story.getUrl()}"
             val shareIntent = IntentUtils.buildShareIntent(text)
             ContextCompat.startActivity(binding.root.context, shareIntent, null)
         }
 
         binding.saveBtn.setOnClickListener {
             val firestoreHelper = FirestoreHelper.getInstance()
-            firestoreHelper.checkIfStoryIsBookmark(item) { exist ->
+            firestoreHelper.checkIfStoryIsBookmark(story) { exist ->
                 if (exist) {
-                    firestoreHelper.removeStoryFromBookmarks(item) {
+                    firestoreHelper.removeStoryFromBookmarks(story) {
                         // TODO: Handle result
                     }
                     binding.saveBtn.icon = getStarOutline()
                 } else {
-                    firestoreHelper.addStoryToBookmarks(item) {
+                    firestoreHelper.addStoryToBookmarks(story) {
                         // TODO: Handle result
                     }
                     binding.saveBtn.icon = getStarFilled()
@@ -78,7 +101,7 @@ class StoryViewHolder(private val binding: FragmentStoryBinding) :
             binding.saveBtn.visibility = View.GONE
         }
 
-        FirestoreHelper.getInstance().checkIfStoryIsBookmark(item) {
+        FirestoreHelper.getInstance().checkIfStoryIsBookmark(story) {
             binding.saveBtn.icon = if (it) getStarFilled() else getStarOutline()
         }
     }
