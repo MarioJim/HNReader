@@ -24,4 +24,7 @@
     <string name="copy_text">Copy text</string>
     <string name="remove_bookmark">Remove from bookmarks</string>
     <string name="add_bookmark">Add to bookmarks</string>
+    <string name="change_theme">Choose Theme</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

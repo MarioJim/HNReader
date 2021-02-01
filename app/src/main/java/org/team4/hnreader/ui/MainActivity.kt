@@ -7,13 +7,19 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.first
 import org.team4.hnreader.R
+import org.team4.hnreader.data.local.DataStoreHelper
 import org.team4.hnreader.data.model.FlattenedComment
 import org.team4.hnreader.databinding.ActivityMainBinding
 import org.team4.hnreader.ui.callbacks.ShowCommentMenu
@@ -23,12 +29,18 @@ class MainActivity : AppCompatActivity(), ShowCommentMenu {
     private lateinit var binding: ActivityMainBinding
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var dataStoreHelper: DataStoreHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
+
+        dataStoreHelper = DataStoreHelper.getInstance(this)
+        lifecycleScope.launch {
+            dataStoreHelper.dataStore.data.first()
+        }
 
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.mainContent) as NavHostFragment
@@ -42,12 +54,12 @@ class MainActivity : AppCompatActivity(), ShowCommentMenu {
                 R.id.bestStoriesFragment,
                 R.id.askHNFragment,
                 R.id.showHNFragment,
+                R.id.settingsFragment
             ),
             binding.drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         binding.navDrawer.setupWithNavController(navController)
-
 
         firebaseAuth = FirebaseAuth.getInstance()
 
@@ -59,6 +71,8 @@ class MainActivity : AppCompatActivity(), ShowCommentMenu {
             firebaseAuth.signOut()
             recreate()
         }
+
+        checkTheme()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -71,6 +85,7 @@ class MainActivity : AppCompatActivity(), ShowCommentMenu {
 
     override fun onStart() {
         super.onStart()
+
         checkIfSignedIn()
     }
 
@@ -99,6 +114,21 @@ class MainActivity : AppCompatActivity(), ShowCommentMenu {
         val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         CommentOptionsBottomSheet(comment, clipboard)
             .show(supportFragmentManager, CommentOptionsBottomSheet.TAG)
+    }
+
+    private fun checkTheme() {
+        dataStoreHelper.currentTheme.asLiveData().observe(this) { result ->
+            runBlocking {
+                delay(500)
+                AppCompatDelegate.setDefaultNightMode(
+                    if (result == DataStoreHelper.LIGHT_THEME)
+                        AppCompatDelegate.MODE_NIGHT_NO
+                    else
+                        AppCompatDelegate.MODE_NIGHT_YES
+                )
+                delegate.applyDayNight()
+            }
+        }
     }
 
     companion object {

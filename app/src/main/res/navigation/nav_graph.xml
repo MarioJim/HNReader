@@ -80,4 +80,9 @@
         android:name="org.team4.hnreader.ui.destinations.BookmarksCommentsFragment"
         android:label="Bookmarked comments"
         tools:layout="@layout/fragment_bookmarks_comments" />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="org.team4.hnreader.ui.destinations.SettingsFragment"
+        android:label="Settings"
+        tools:layout="@layout/fragment_settings" />
 </navigation>
