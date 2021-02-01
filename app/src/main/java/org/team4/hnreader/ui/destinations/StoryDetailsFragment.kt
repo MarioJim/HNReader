@@ -14,14 +14,14 @@ import com.android.volley.VolleyError
 import org.team4.hnreader.data.ItemFinder
 import org.team4.hnreader.data.model.Story
 import org.team4.hnreader.data.remote.DeletedItemException
-import org.team4.hnreader.databinding.FragmentCommentsRecyclerViewBinding
+import org.team4.hnreader.databinding.FragmentStoryDetailsBinding
 import org.team4.hnreader.ui.adapters.StoryDetailsAdapter
 import org.team4.hnreader.ui.callbacks.ShowCommentMenu
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.min
 
 class StoryDetailsFragment : Fragment() {
-    private var _binding: FragmentCommentsRecyclerViewBinding? = null
+    private var _binding: FragmentStoryDetailsBinding? = null
     private val binding get() = _binding!!
     private lateinit var storyDetailsAdapter: StoryDetailsAdapter
 
@@ -44,7 +44,7 @@ class StoryDetailsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        _binding = FragmentCommentsRecyclerViewBinding.inflate(inflater, container, false)
+        _binding = FragmentStoryDetailsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -58,11 +58,11 @@ class StoryDetailsFragment : Fragment() {
                 (requireActivity() as ShowCommentMenu).showCommentMenu(comment)
         }
         storyDetailsAdapter.clearAndSetStory(story) {}
-        binding.recyclerviewComments.adapter = storyDetailsAdapter
+        binding.rvDetails.adapter = storyDetailsAdapter
         val linearLayoutManager = LinearLayoutManager(context)
-        binding.recyclerviewComments.layoutManager = linearLayoutManager
-        binding.recyclerviewComments.setHasFixedSize(true)
-        binding.recyclerviewComments.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        binding.rvDetails.layoutManager = linearLayoutManager
+        binding.rvDetails.setHasFixedSize(true)
+        binding.rvDetails.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val lastViewedItem = linearLayoutManager.findLastCompletelyVisibleItemPosition()
@@ -72,7 +72,7 @@ class StoryDetailsFragment : Fragment() {
                 }
             }
         })
-        binding.srComments.setOnRefreshListener { refreshPage(story.id) }
+        binding.srDetails.setOnRefreshListener { refreshPage(story.id) }
 
         loadComments()
     }
@@ -87,7 +87,7 @@ class StoryDetailsFragment : Fragment() {
                 parentCommentIdsList = fetchedStory.kids
                 storyDetailsAdapter.clearAndSetStory(fetchedStory) {
                     lastLoadedParentCommentIdx = 0
-                    loadComments { binding.srComments.isRefreshing = false }
+                    loadComments { binding.srDetails.isRefreshing = false }
                 }
             },
             { displayError(it) },

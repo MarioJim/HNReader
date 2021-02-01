@@ -6,12 +6,12 @@
     tools:context=".ui.destinations.StoryDetailsFragment">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/srComments"
+        android:id="@+id/srDetails"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerviewComments"
+            android:id="@+id/rvDetails"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clipToPadding="false"
