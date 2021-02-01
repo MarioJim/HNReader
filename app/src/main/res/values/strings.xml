@@ -22,4 +22,6 @@
     <string name="comments">Comments</string>
     <string name="stories">Stories</string>
     <string name="copy_text">Copy text</string>
+    <string name="remove_bookmark">Remove from bookmarks</string>
+    <string name="add_bookmark">Add to bookmarks</string>
 </resources>

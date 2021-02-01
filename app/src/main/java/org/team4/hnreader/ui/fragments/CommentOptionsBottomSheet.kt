@@ -14,6 +14,7 @@ import org.team4.hnreader.data.model.FlattenedComment
 import org.team4.hnreader.data.remote.FirestoreHelper
 import org.team4.hnreader.databinding.FragmentCommentOptionsBottomSheetBinding
 import org.team4.hnreader.utils.IntentUtils
+import org.team4.hnreader.utils.TextUtils
 
 class CommentOptionsBottomSheet(
     private val comment: FlattenedComment,
@@ -57,7 +58,8 @@ class CommentOptionsBottomSheet(
         }
 
         binding.btnCopyCommentText.setOnClickListener {
-            val clip = ClipData.newPlainText("Hacker News comment", comment.text)
+            val text = TextUtils.fromHTML(comment.text)
+            val clip = ClipData.newPlainText("Hacker News comment", text)
             clipboardManager.setPrimaryClip(clip)
             dismiss()
         }
@@ -73,7 +75,7 @@ class CommentOptionsBottomSheet(
     }
 
     private fun setBookmarkButtonToAdd() {
-        binding.btnBookmarkComment.text = "Add to bookmarks"
+        binding.btnBookmarkComment.text = getString(R.string.add_bookmark)
         binding.btnBookmarkComment.icon = ResourcesCompat.getDrawable(
             binding.root.context.resources,
             R.drawable.ic_star_outline,
@@ -82,7 +84,7 @@ class CommentOptionsBottomSheet(
     }
 
     private fun setBookmarkButtonToRemove() {
-        binding.btnBookmarkComment.text = "Remove from bookmarks"
+        binding.btnBookmarkComment.text = getString(R.string.remove_bookmark)
         binding.btnBookmarkComment.icon = ResourcesCompat.getDrawable(
             binding.root.context.resources,
             R.drawable.ic_star_filled,
