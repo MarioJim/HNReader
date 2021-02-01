@@ -16,8 +16,10 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.coroutines.*
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.team4.hnreader.R
 import org.team4.hnreader.data.local.DataStoreHelper
 import org.team4.hnreader.data.model.FlattenedComment
@@ -54,7 +56,7 @@ class MainActivity : AppCompatActivity(), ShowCommentMenu {
                 R.id.bestStoriesFragment,
                 R.id.askHNFragment,
                 R.id.showHNFragment,
-                R.id.settingsFragment
+                R.id.settingsFragment,
             ),
             binding.drawerLayout
         )
@@ -119,7 +121,7 @@ class MainActivity : AppCompatActivity(), ShowCommentMenu {
     private fun checkTheme() {
         dataStoreHelper.currentTheme.asLiveData().observe(this) { result ->
             runBlocking {
-                delay(500)
+                delay(1000)
                 AppCompatDelegate.setDefaultNightMode(
                     if (result == DataStoreHelper.LIGHT_THEME)
                         AppCompatDelegate.MODE_NIGHT_NO
