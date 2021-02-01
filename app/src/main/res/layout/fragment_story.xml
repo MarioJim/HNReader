@@ -26,7 +26,7 @@
             android:orientation="vertical">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/urlBtn"
+                android:id="@+id/btnOpenLink"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -58,7 +58,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/commentsBtn"
+                android:id="@+id/btnOpenComments"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -67,13 +67,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/saveBtn"
+                    app:layout_constraintEnd_toStartOf="@+id/btnBookmark"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/saveBtn"
+                    android:id="@+id/btnBookmark"
                     style="@style/Widget.HackerNewsReader.Button.OutlinedButton.IconOnly"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -81,11 +81,11 @@
                     app:icon="@drawable/ic_star_outline"
                     app:iconSize="30dp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/shareBtn"
+                    app:layout_constraintEnd_toStartOf="@+id/btnShare"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/shareBtn"
+                    android:id="@+id/btnShare"
                     style="@style/Widget.HackerNewsReader.Button.OutlinedButton.IconOnly"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

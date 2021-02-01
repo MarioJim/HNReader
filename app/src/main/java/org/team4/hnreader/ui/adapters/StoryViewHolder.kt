@@ -28,7 +28,7 @@ class StoryViewHolder(private val binding: FragmentStoryBinding) :
             binding.tvUrl.visibility = View.GONE
         }
 
-        binding.urlBtn.setOnClickListener {
+        binding.btnOpenLink.setOnClickListener {
             if (story is StoryWithURL) {
                 IntentUtils.generateCustomTabsIntentBuilder(binding.root.context)
                     .build()
@@ -38,7 +38,7 @@ class StoryViewHolder(private val binding: FragmentStoryBinding) :
             }
         }
 
-        binding.commentsBtn.setOnClickListener {
+        binding.btnOpenComments.setOnClickListener {
             openStoryDetailsCallback(story)
         }
 
@@ -58,7 +58,7 @@ class StoryViewHolder(private val binding: FragmentStoryBinding) :
         }
 
         if (story is StoryWithURL) {
-            binding.urlBtn.setOnClickListener {
+            binding.btnOpenLink.setOnClickListener {
                 IntentUtils.generateCustomTabsIntentBuilder(binding.root.context)
                     .build()
                     .launchUrl(binding.root.context, Uri.parse(story.getUrl()))
@@ -74,35 +74,35 @@ class StoryViewHolder(private val binding: FragmentStoryBinding) :
         binding.tvInfo.text = "by ${story.author}, $timeAgo"
         binding.tvVotes.text = "${story.points} points, ${story.numComments} comments"
 
-        binding.shareBtn.setOnClickListener {
+        binding.btnShare.setOnClickListener {
             val text = "Check this Hacker News post: ${story.getUrl()}"
             val shareIntent = IntentUtils.buildShareIntent(text)
             ContextCompat.startActivity(binding.root.context, shareIntent, null)
         }
 
-        binding.saveBtn.setOnClickListener {
+        binding.btnBookmark.setOnClickListener {
             val firestoreHelper = FirestoreHelper.getInstance()
             firestoreHelper.checkIfStoryIsBookmark(story) { exist ->
                 if (exist) {
                     firestoreHelper.removeStoryFromBookmarks(story) {
                         // TODO: Handle result
                     }
-                    binding.saveBtn.icon = getStarOutline()
+                    binding.btnBookmark.icon = getStarOutline()
                 } else {
                     firestoreHelper.addStoryToBookmarks(story) {
                         // TODO: Handle result
                     }
-                    binding.saveBtn.icon = getStarFilled()
+                    binding.btnBookmark.icon = getStarFilled()
                 }
             }
         }
 
         if (FirebaseAuth.getInstance().currentUser == null) {
-            binding.saveBtn.visibility = View.GONE
+            binding.btnBookmark.visibility = View.GONE
         }
 
         FirestoreHelper.getInstance().checkIfStoryIsBookmark(story) {
-            binding.saveBtn.icon = if (it) getStarFilled() else getStarOutline()
+            binding.btnBookmark.icon = if (it) getStarFilled() else getStarOutline()
         }
     }
 
