@@ -7,21 +7,13 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import org.team4.hnreader.R
-import org.team4.hnreader.data.local.DataStoreHelper
 import org.team4.hnreader.data.model.FlattenedComment
 import org.team4.hnreader.databinding.ActivityMainBinding
 import org.team4.hnreader.ui.callbacks.ShowCommentMenu
@@ -31,18 +23,12 @@ class MainActivity : AppCompatActivity(), ShowCommentMenu {
     private lateinit var binding: ActivityMainBinding
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var firebaseAuth: FirebaseAuth
-    private lateinit var dataStoreHelper: DataStoreHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
-
-        dataStoreHelper = DataStoreHelper.getInstance(this)
-        lifecycleScope.launch {
-            dataStoreHelper.dataStore.data.first()
-        }
 
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.mainContent) as NavHostFragment
@@ -77,8 +63,6 @@ class MainActivity : AppCompatActivity(), ShowCommentMenu {
         firebaseAuth.addAuthStateListener {
             binding.navDrawer.menu.setGroupVisible(R.id.bookmarksGroup, it.currentUser != null)
         }
-
-        checkTheme()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -108,10 +92,8 @@ class MainActivity : AppCompatActivity(), ShowCommentMenu {
 
         val user = firebaseAuth.currentUser
         if (user != null) {
-            Toast.makeText(this, "Current user: ${user.email}", Toast.LENGTH_SHORT).show()
             loginBtn.visibility = View.GONE
         } else {
-            Toast.makeText(this, "Login to save bookmarks!", Toast.LENGTH_SHORT).show()
             logoutBtn.visibility = View.GONE
         }
     }
@@ -120,21 +102,6 @@ class MainActivity : AppCompatActivity(), ShowCommentMenu {
         val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         CommentOptionsBottomSheet(comment, clipboard)
             .show(supportFragmentManager, CommentOptionsBottomSheet.TAG)
-    }
-
-    private fun checkTheme() {
-        dataStoreHelper.currentTheme.asLiveData().observe(this) { result ->
-            runBlocking {
-                delay(1000)
-                AppCompatDelegate.setDefaultNightMode(
-                    if (result == DataStoreHelper.LIGHT_THEME)
-                        AppCompatDelegate.MODE_NIGHT_NO
-                    else
-                        AppCompatDelegate.MODE_NIGHT_YES
-                )
-                delegate.applyDayNight()
-            }
-        }
     }
 
     companion object {

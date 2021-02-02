@@ -28,14 +28,13 @@ class LoginActivity : AppCompatActivity() {
                 firebaseAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
-                            Toast.makeText(this, "Login was successful!", Toast.LENGTH_SHORT).show()
                             finish()
                         } else {
-                            Toast.makeText(this, task.exception?.message, Toast.LENGTH_SHORT).show()
+                            displayToast(task.exception?.message.toString())
                         }
                     }
             } else {
-                Toast.makeText(this, "Fill in all the fields!", Toast.LENGTH_SHORT).show()
+                displayToast("Fill in all the fields!")
             }
         }
 
@@ -54,5 +53,9 @@ class LoginActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+    }
+
+    private fun displayToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }
