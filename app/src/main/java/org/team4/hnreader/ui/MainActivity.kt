@@ -74,6 +74,10 @@ class MainActivity : AppCompatActivity(), ShowCommentMenu {
             recreate()
         }
 
+        firebaseAuth.addAuthStateListener {
+            binding.navDrawer.menu.setGroupVisible(R.id.bookmarksGroup, it.currentUser != null)
+        }
+
         checkTheme()
     }
 
