@@ -62,7 +62,7 @@ class BookmarksCommentsFragment : Fragment() {
     }
 
     private fun refreshPage() {
-        FirestoreHelper.getInstance().getCommentsFromBookmarks {
+        FirestoreHelper.getInstance().getCommentsFromBookmarks ({
             commentsIds = it
             commentAdapter.clearList {
                 isLoading.set(true)
@@ -71,7 +71,9 @@ class BookmarksCommentsFragment : Fragment() {
                     binding.srBookmarksComments.isRefreshing = false
                 }
             }
-        }
+        }, {
+            Toast.makeText(binding.root.context, it.message, Toast.LENGTH_SHORT).show()
+        })
     }
 
     private fun loadComments(finishedCallback: () -> Unit = {}) {

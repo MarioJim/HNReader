@@ -33,11 +33,13 @@ class BookmarksStoriesFragment : Fragment(), StoryRecyclerViewCallbacks {
 
     override fun fetchStoryIds(
         responseCallback: (List<Int>) -> Unit,
-        errorCallback: (Exception) -> Unit,
+        errorCallback: (Exception) -> Unit
     ) {
-        FirestoreHelper.getInstance().getStoriesFromBookmarks {
+        FirestoreHelper.getInstance().getStoriesFromBookmarks ({
             responseCallback(it)
-        }
+        }, {
+            errorCallback(it)
+        })
     }
 
     override fun openStoryDetails(story: Story, binding: FragmentStoryBinding) {

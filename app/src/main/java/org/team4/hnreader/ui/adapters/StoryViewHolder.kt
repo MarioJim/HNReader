@@ -2,6 +2,7 @@ package org.team4.hnreader.ui.adapters
 
 import android.net.Uri
 import android.view.View
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
@@ -86,28 +87,34 @@ class StoryViewHolder(private val binding: FragmentStoryBinding) :
 
         binding.btnBookmark.setOnClickListener {
             val firestoreHelper = FirestoreHelper.getInstance()
-            firestoreHelper.checkIfStoryIsBookmark(story) { exist ->
-                if (exist) {
-                    firestoreHelper.removeStoryFromBookmarks(story) {
-                        // TODO: Handle result
-                    }
-                    binding.btnBookmark.icon = getStarOutline()
+            firestoreHelper.checkIfStoryIsBookmark(story, { check ->
+                if (check) {
+                    firestoreHelper.removeStoryFromBookmarks(story, {
+                        binding.btnBookmark.icon = getStarOutline()
+                    }, {
+                        toastMessage(it.message.toString())
+                    })
                 } else {
-                    firestoreHelper.addStoryToBookmarks(story) {
-                        // TODO: Handle result
-                    }
-                    binding.btnBookmark.icon = getStarFilled()
+                    firestoreHelper.addStoryToBookmarks(story, {
+                        binding.btnBookmark.icon = getStarFilled()
+                    }, {
+                        toastMessage(it.message.toString())
+                    })
                 }
-            }
+            }, {
+                toastMessage(it.message.toString())
+            })
         }
 
         if (FirebaseAuth.getInstance().currentUser == null) {
             binding.btnBookmark.visibility = View.GONE
         }
 
-        FirestoreHelper.getInstance().checkIfStoryIsBookmark(story) {
+        FirestoreHelper.getInstance().checkIfStoryIsBookmark(story, {
             binding.btnBookmark.icon = if (it) getStarFilled() else getStarOutline()
-        }
+        }, {
+            toastMessage(it.message.toString())
+        })
     }
 
     private fun getStarOutline() = ResourcesCompat.getDrawable(
@@ -121,4 +128,8 @@ class StoryViewHolder(private val binding: FragmentStoryBinding) :
         R.drawable.ic_star_filled,
         binding.root.context.theme,
     )
+
+    private fun toastMessage(message: String) {
+        Toast.makeText(binding.root.context, message, Toast.LENGTH_SHORT).show()
+    }
 }

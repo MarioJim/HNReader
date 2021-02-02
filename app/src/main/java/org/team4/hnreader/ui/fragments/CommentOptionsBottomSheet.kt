@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.auth.FirebaseAuth
@@ -31,30 +32,42 @@ class CommentOptionsBottomSheet(
         _binding = FragmentCommentOptionsBottomSheetBinding.inflate(inflater, container, false)
 
         val firestoreHelper = FirestoreHelper.getInstance()
-        firestoreHelper.checkIfCommentIsBookmark(comment) { exist ->
-            if (exist) setBookmarkButtonToRemove()
-            else setBookmarkButtonToAdd()
-        }
+        firestoreHelper.checkIfCommentIsBookmark(comment, {
+            if (it)
+                setBookmarkButtonToRemove()
+            else
+                setBookmarkButtonToAdd()
+        }, {
+            toastMessage(it.message.toString())
+        })
 
         if (FirebaseAuth.getInstance().currentUser == null) {
             binding.btnBookmarkComment.visibility = View.GONE
         }
 
         binding.btnBookmarkComment.setOnClickListener {
-            firestoreHelper.checkIfCommentIsBookmark(comment) { exist ->
-                if (exist) {
-                    firestoreHelper.removeCommentFromBookmarks(comment) {
-                        // TODO: Handle result
-                    }
-                    setBookmarkButtonToAdd()
+            firestoreHelper.checkIfCommentIsBookmark(comment, { check ->
+                if (check) {
+                    firestoreHelper.removeCommentFromBookmarks(comment, {
+                        setBookmarkButtonToAdd()
+                        dismiss()
+                    }, {
+                        toastMessage(it.message.toString())
+                        dismiss()
+                    })
                 } else {
-                    firestoreHelper.addCommentToBookmarks(comment) {
-                        // TODO: Handle result
-                    }
-                    setBookmarkButtonToRemove()
+                    firestoreHelper.addCommentToBookmarks(comment, {
+                        setBookmarkButtonToRemove()
+                        dismiss()
+                    }, {
+                        toastMessage(it.message.toString())
+                        dismiss()
+                    })
                 }
+            }, {
+                toastMessage(it.message.toString())
                 dismiss()
-            }
+            })
         }
 
         binding.btnCopyCommentText.setOnClickListener {
@@ -90,6 +103,10 @@ class CommentOptionsBottomSheet(
             R.drawable.ic_star_filled,
             binding.root.context.theme,
         )
+    }
+
+    private fun toastMessage(message: String) {
+        Toast.makeText(binding.root.context, message, Toast.LENGTH_SHORT).show()
     }
 
     companion object {
