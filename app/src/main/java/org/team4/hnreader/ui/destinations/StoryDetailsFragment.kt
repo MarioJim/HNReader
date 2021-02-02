@@ -8,15 +8,20 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.Transition
+import androidx.transition.TransitionInflater
 import com.android.volley.VolleyError
+import org.team4.hnreader.R
 import org.team4.hnreader.data.ItemFinder
 import org.team4.hnreader.data.model.Story
 import org.team4.hnreader.data.remote.DeletedItemException
 import org.team4.hnreader.databinding.FragmentStoryDetailsBinding
 import org.team4.hnreader.ui.adapters.StoryDetailsAdapter
 import org.team4.hnreader.ui.callbacks.ShowCommentMenu
+import java.util.concurrent.CompletableFuture
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.min
 
@@ -26,7 +31,9 @@ class StoryDetailsFragment : Fragment() {
     private lateinit var storyDetailsAdapter: StoryDetailsAdapter
 
     private lateinit var story: Story
+    private val args: StoryDetailsFragmentArgs by navArgs()
 
+    private var animationFinished: CompletableFuture<Unit> = CompletableFuture()
     private var fromCache: Boolean = true
     private var parentCommentIdsList: List<Int> = ArrayList()
     private var lastLoadedParentCommentIdx: Int = 0
@@ -34,9 +41,25 @@ class StoryDetailsFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            story = it.getSerializable(ARG_STORY) as Story
-        }
+
+        sharedElementEnterTransition = TransitionInflater
+            .from(context)
+            .inflateTransition(R.transition.open_story_details)
+            .addListener(object : Transition.TransitionListener {
+                override fun onTransitionStart(transition: Transition) {}
+                override fun onTransitionCancel(transition: Transition) {}
+                override fun onTransitionPause(transition: Transition) {}
+                override fun onTransitionResume(transition: Transition) {}
+                override fun onTransitionEnd(transition: Transition) {
+                    animationFinished.complete(Unit)
+                }
+            })
+
+        sharedElementReturnTransition = TransitionInflater
+            .from(context)
+            .inflateTransition(R.transition.open_story_details)
+
+        story = args.story
     }
 
     override fun onCreateView(
@@ -51,27 +74,34 @@ class StoryDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        postponeEnterTransition()
+
         parentCommentIdsList = story.kids
 
-        storyDetailsAdapter = StoryDetailsAdapter { comment ->
-            if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED))
-                (requireActivity() as ShowCommentMenu).showCommentMenu(comment)
-        }
+        storyDetailsAdapter = StoryDetailsAdapter(
+            { startPostponedEnterTransition() },
+            { comment ->
+                if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED))
+                    (requireActivity() as ShowCommentMenu).showCommentMenu(comment)
+            },
+        )
         storyDetailsAdapter.clearAndSetStory(story) {}
-        binding.rvDetails.adapter = storyDetailsAdapter
         val linearLayoutManager = LinearLayoutManager(context)
-        binding.rvDetails.layoutManager = linearLayoutManager
-        binding.rvDetails.setHasFixedSize(true)
-        binding.rvDetails.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                val lastViewedItem = linearLayoutManager.findLastCompletelyVisibleItemPosition()
-                val shouldLoadMoreComments = lastViewedItem + 7 >= storyDetailsAdapter.itemCount
-                if (shouldLoadMoreComments && isLoading.compareAndSet(false, true)) {
-                    loadComments()
+        binding.rvDetails.apply {
+            adapter = storyDetailsAdapter
+            layoutManager = linearLayoutManager
+            setHasFixedSize(true)
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    val lastViewedItem = linearLayoutManager.findLastCompletelyVisibleItemPosition()
+                    val shouldLoadMoreComments = lastViewedItem + 7 >= storyDetailsAdapter.itemCount
+                    if (shouldLoadMoreComments && isLoading.compareAndSet(false, true)) {
+                        loadComments()
+                    }
                 }
-            }
-        })
+            })
+        }
         binding.srDetails.setOnRefreshListener { refreshPage(story.id) }
 
         loadComments()
@@ -109,10 +139,12 @@ class StoryDetailsFragment : Fragment() {
             0,
             fromCache,
             { fetchedCommentList ->
-                storyDetailsAdapter.extendList(fetchedCommentList) {
-                    lastLoadedParentCommentIdx += numCommentsToAdd
-                    isLoading.set(false)
-                    finishedCallback()
+                animationFinished.thenRun {
+                    storyDetailsAdapter.extendList(fetchedCommentList) {
+                        lastLoadedParentCommentIdx += numCommentsToAdd
+                        isLoading.set(false)
+                        finishedCallback()
+                    }
                 }
             },
             { displayError(it) }
@@ -131,6 +163,5 @@ class StoryDetailsFragment : Fragment() {
 
     companion object {
         private const val NUM_COMMENTS_PER_LOAD_EVENT = 5
-        private const val ARG_STORY = "story"
     }
 }

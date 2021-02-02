@@ -4,6 +4,7 @@ import android.net.Uri
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import org.team4.hnreader.R
@@ -20,8 +21,9 @@ import org.team4.hnreader.utils.URLUtils
 
 class StoryViewHolder(private val binding: FragmentStoryBinding) :
     RecyclerView.ViewHolder(binding.root) {
-
     fun listBindTo(story: Story, openStoryDetailsCallback: OpenStoryDetails) {
+        ViewCompat.setTransitionName(binding.storyFragmentContainer, "container_${story.id}")
+
         if (story is StoryWithURL) {
             binding.tvUrl.text = URLUtils.getDomain(story.getUrl())
         } else {
@@ -34,18 +36,20 @@ class StoryViewHolder(private val binding: FragmentStoryBinding) :
                     .build()
                     .launchUrl(binding.root.context, Uri.parse(story.getUrl()))
             } else {
-                openStoryDetailsCallback(story)
+                openStoryDetailsCallback(story, binding)
             }
         }
 
         binding.btnOpenComments.setOnClickListener {
-            openStoryDetailsCallback(story)
+            openStoryDetailsCallback(story, binding)
         }
 
         bindTo(story)
     }
 
     fun detailsBindTo(story: Story) {
+        ViewCompat.setTransitionName(binding.storyFragmentContainer, "container_${story.id}")
+
         val urlText = when (story) {
             is StoryWithURL -> URLUtils.getDomain(story.getUrl())
             is StoryWithText -> TextUtils.fromHTML(story.text)

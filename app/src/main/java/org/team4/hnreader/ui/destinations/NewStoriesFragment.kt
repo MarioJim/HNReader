@@ -5,12 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import org.team4.hnreader.data.model.Story
 import org.team4.hnreader.data.remote.ApiRequestQueue
 import org.team4.hnreader.databinding.FragmentNewStoriesBinding
+import org.team4.hnreader.databinding.FragmentStoryBinding
 import org.team4.hnreader.ui.callbacks.StoryRecyclerViewCallbacks
-import org.team4.hnreader.ui.destinations.NewStoriesFragmentDirections
 
 class NewStoriesFragment : Fragment(), StoryRecyclerViewCallbacks {
     private var _binding: FragmentNewStoriesBinding? = null
@@ -37,9 +38,12 @@ class NewStoriesFragment : Fragment(), StoryRecyclerViewCallbacks {
         ApiRequestQueue.getInstance().fetchNewStoriesIds(responseCallback, errorCallback)
     }
 
-    override fun openStoryDetails(story: Story) {
+    override fun openStoryDetails(story: Story, binding: FragmentStoryBinding) {
         val directions = NewStoriesFragmentDirections
             .actionNewStoriesFragmentToStoryDetailsFragment(story)
-        findNavController().navigate(directions)
+        val extras = FragmentNavigatorExtras(
+            binding.storyFragmentContainer to "container_${story.id}",
+        )
+        findNavController().navigate(directions, extras)
     }
 }

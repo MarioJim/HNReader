@@ -12,6 +12,7 @@ import org.team4.hnreader.databinding.FragmentFlattenedCommentBinding
 import org.team4.hnreader.databinding.FragmentStoryBinding
 
 class StoryDetailsAdapter(
+    private val storyViewHolderLoadedCallback: () -> Unit,
     private val showCommentMenuCallback: (comment: FlattenedComment) -> Unit,
 ) : ListAdapter<DisplayedItem, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
     override fun getItemViewType(position: Int) = when (getItem(position)) {
@@ -38,7 +39,10 @@ class StoryDetailsAdapter(
 
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
         when (viewHolder) {
-            is StoryViewHolder -> viewHolder.detailsBindTo(getItem(position) as Story)
+            is StoryViewHolder -> {
+                viewHolder.detailsBindTo(getItem(position) as Story)
+                storyViewHolderLoadedCallback()
+            }
             is FlattenedCommentViewHolder -> viewHolder.bindTo(getItem(position) as FlattenedComment) {
                 showCommentMenuCallback(it)
             }

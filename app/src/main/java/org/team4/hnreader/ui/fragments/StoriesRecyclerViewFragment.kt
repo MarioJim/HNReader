@@ -49,24 +49,25 @@ class StoriesRecyclerViewFragment : Fragment() {
             throw Exception("StoriesRecyclerViewFragment created in a fragment that doesn't extend StoryRecyclerViewCallbacks")
         }
 
-        storyAdapter = StoryAdapter { story ->
-            callbacksProvider.openStoryDetails(story)
+        storyAdapter = StoryAdapter { story, binding ->
+            callbacksProvider.openStoryDetails(story, binding)
         }
-        binding.recyclerviewStories.adapter = storyAdapter
         val linearLayoutManager = LinearLayoutManager(context)
-        binding.recyclerviewStories.layoutManager = linearLayoutManager
-        binding.recyclerviewStories.setHasFixedSize(true)
-        binding.recyclerviewStories.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                val lastViewedItem = linearLayoutManager.findLastCompletelyVisibleItemPosition()
-                val shouldLoadMoreStories = lastViewedItem + 7 >= storyAdapter.itemCount
-                if (shouldLoadMoreStories && isLoading.compareAndSet(false, true)) {
-                    loadStories()
+        binding.rvStories.apply {
+            adapter = storyAdapter
+            layoutManager = linearLayoutManager
+            setHasFixedSize(true)
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    val lastViewedItem = linearLayoutManager.findLastCompletelyVisibleItemPosition()
+                    val shouldLoadMoreStories = lastViewedItem + 7 >= storyAdapter.itemCount
+                    if (shouldLoadMoreStories && isLoading.compareAndSet(false, true)) {
+                        loadStories()
+                    }
                 }
-            }
-        })
-
+            })
+        }
         binding.srStories.setOnRefreshListener { refreshPage() }
 
         callbacksProvider.fetchStoryIds(
