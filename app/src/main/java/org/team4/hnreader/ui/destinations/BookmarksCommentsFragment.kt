@@ -62,7 +62,7 @@ class BookmarksCommentsFragment : Fragment() {
     }
 
     private fun refreshPage() {
-        FirestoreHelper.getInstance().getCommentsFromBookmarks ({
+        FirestoreHelper.getInstance().getCommentsFromBookmarks({
             commentsIds = it
             commentAdapter.clearList {
                 isLoading.set(true)

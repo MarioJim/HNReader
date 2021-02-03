@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.asLiveData
 import kotlinx.coroutines.Dispatchers
@@ -43,10 +45,13 @@ class SettingsFragment : Fragment() {
                 val checkedTheme = if (result == DataStoreHelper.LIGHT_THEME) 0 else 1
 
                 builder.setSingleChoiceItems(styles, checkedTheme) { dialog, which ->
-                    context?.setTheme(
-                        if (which == 0) R.style.Theme_HackerNewsReader
-                        else R.style.Theme_HackerNewsReader
+                    AppCompatDelegate.setDefaultNightMode(
+                        if (which == 0)
+                            AppCompatDelegate.MODE_NIGHT_NO
+                        else
+                            AppCompatDelegate.MODE_NIGHT_YES
                     )
+                    (activity as AppCompatActivity).delegate.applyDayNight()
 
                     GlobalScope.launch(Dispatchers.Main) {
                         dataStoreHelper.saveThemeConfig(

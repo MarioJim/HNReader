@@ -5,7 +5,6 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import org.team4.hnreader.data.model.FlattenedComment
 import org.team4.hnreader.data.model.Story
-import java.lang.Exception
 import java.util.*
 
 class FirestoreHelper {
@@ -24,37 +23,43 @@ class FirestoreHelper {
     private var db = Firebase.firestore
     private var firebaseAuth = FirebaseAuth.getInstance()
 
-    fun addStoryToBookmarks(story: Story,
-                            responseCallback: () -> Unit,
-                            errorCallback: (Exception) -> Unit) {
+    fun addStoryToBookmarks(
+        story: Story,
+        responseCallback: () -> Unit,
+        errorCallback: (Exception) -> Unit,
+    ) {
         val storyMap = mapOf("save-date" to Calendar.getInstance().time, "id" to story.id)
         db.collection(getBookmarkedStoriesPath(firebaseAuth.currentUser?.uid))
             .document(story.id.toString()).set(storyMap)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     responseCallback()
-                } else if (task.exception != null)  {
+                } else if (task.exception != null) {
                     errorCallback(task.exception!!)
                 }
             }
     }
 
-    fun removeStoryFromBookmarks(story: Story,
-                                 responseCallback: () -> Unit,
-                                 errorCallback: (Exception) -> Unit) {
+    fun removeStoryFromBookmarks(
+        story: Story,
+        responseCallback: () -> Unit,
+        errorCallback: (Exception) -> Unit,
+    ) {
         db.collection(getBookmarkedStoriesPath(firebaseAuth.currentUser?.uid))
             .document(story.id.toString()).delete()
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     responseCallback()
-                } else if (task.exception != null)  {
+                } else if (task.exception != null) {
                     errorCallback(task.exception!!)
                 }
             }
     }
 
-    fun getStoriesFromBookmarks(responseCallback: (List<Int>) -> Unit,
-                                errorCallback: (Exception) -> Unit) {
+    fun getStoriesFromBookmarks(
+        responseCallback: (List<Int>) -> Unit,
+        errorCallback: (Exception) -> Unit,
+    ) {
         db.collection(getBookmarkedStoriesPath(firebaseAuth.currentUser?.uid))
             .get()
             .addOnCompleteListener { task ->
@@ -71,9 +76,11 @@ class FirestoreHelper {
             }
     }
 
-    fun checkIfStoryIsBookmark(story: Story,
-                               responseCallback: (Boolean) -> Unit,
-                               errorCallback: (Exception) -> Unit) {
+    fun checkIfStoryIsBookmark(
+        story: Story,
+        responseCallback: (Boolean) -> Unit,
+        errorCallback: (Exception) -> Unit,
+    ) {
         db.collection(getBookmarkedStoriesPath(firebaseAuth.currentUser?.uid))
             .document(story.id.toString()).get()
             .addOnSuccessListener { docSnap ->
@@ -87,7 +94,7 @@ class FirestoreHelper {
     fun addCommentToBookmarks(
         comment: FlattenedComment,
         responseCallback: () -> Unit,
-        errorCallback: (Exception) -> Unit
+        errorCallback: (Exception) -> Unit,
     ) {
         val commentMap = mapOf("save-date" to Calendar.getInstance().time, "id" to comment.id)
         db.collection(getBookmarkedCommentsPath(firebaseAuth.currentUser?.uid))
@@ -95,7 +102,7 @@ class FirestoreHelper {
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     responseCallback()
-                } else if (task.exception != null)  {
+                } else if (task.exception != null) {
                     errorCallback(task.exception!!)
                 }
             }
@@ -104,21 +111,23 @@ class FirestoreHelper {
     fun removeCommentFromBookmarks(
         comment: FlattenedComment,
         responseCallback: () -> Unit,
-        errorCallback: (Exception) -> Unit
+        errorCallback: (Exception) -> Unit,
     ) {
         db.collection(getBookmarkedCommentsPath(firebaseAuth.currentUser?.uid))
             .document(comment.id.toString()).delete()
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     responseCallback()
-                } else if (task.exception != null)  {
+                } else if (task.exception != null) {
                     errorCallback(task.exception!!)
                 }
             }
     }
 
-    fun getCommentsFromBookmarks(responseCallback: (List<Int>) -> Unit,
-                                 errorCallback: (Exception) -> Unit) {
+    fun getCommentsFromBookmarks(
+        responseCallback: (List<Int>) -> Unit,
+        errorCallback: (Exception) -> Unit,
+    ) {
         db.collection(getBookmarkedCommentsPath(firebaseAuth.currentUser?.uid))
             .get()
             .addOnCompleteListener { task ->
@@ -135,9 +144,11 @@ class FirestoreHelper {
             }
     }
 
-    fun checkIfCommentIsBookmark(comment: FlattenedComment,
-                                 responseCallback: (Boolean) -> Unit,
-                                 errorCallback: (Exception) -> Unit) {
+    fun checkIfCommentIsBookmark(
+        comment: FlattenedComment,
+        responseCallback: (Boolean) -> Unit,
+        errorCallback: (Exception) -> Unit,
+    ) {
         db.collection(getBookmarkedCommentsPath(firebaseAuth.currentUser?.uid))
             .document(comment.id.toString()).get()
             .addOnSuccessListener { docSnap ->

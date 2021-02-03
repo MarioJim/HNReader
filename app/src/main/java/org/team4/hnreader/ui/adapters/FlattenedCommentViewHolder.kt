@@ -15,7 +15,8 @@ class FlattenedCommentViewHolder(private val binding: FragmentFlattenedCommentBi
     fun bindTo(comment: FlattenedComment, longClickListener: (FlattenedComment) -> Unit) {
         binding.line.visibility = if (comment.depth == 0) View.GONE else View.VISIBLE
         if (comment.depth > 0) {
-            val newStartMargin = 15 * (comment.depth - 1) * Resources.getSystem().displayMetrics.density
+            val newStartMargin =
+                15 * (comment.depth - 1) * Resources.getSystem().displayMetrics.density
             val params = binding.line.layoutParams as ConstraintLayout.LayoutParams
             params.updateMargins(left = newStartMargin.toInt())
         }

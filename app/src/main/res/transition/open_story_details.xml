@@ -3,7 +3,7 @@
     android:duration="300"
     android:interpolator="@android:interpolator/fast_out_slow_in"
     android:transitionOrdering="together">
-    <changeBounds/>
-    <changeTransform/>
-    <changeClipBounds/>
+    <changeBounds />
+    <changeTransform />
+    <changeClipBounds />
 </transitionSet>

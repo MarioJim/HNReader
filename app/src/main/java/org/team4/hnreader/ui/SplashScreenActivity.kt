@@ -1,10 +1,10 @@
 package org.team4.hnreader.ui
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
@@ -32,10 +32,10 @@ class SplashScreenActivity : AppCompatActivity() {
 
         Handler(Looper.getMainLooper()).postDelayed({
             val intentToMainActivity = Intent(this, MainActivity::class.java)
-            intentToMainActivity.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP;
+            intentToMainActivity.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
             startActivity(intentToMainActivity)
             finish()
-        }, 6000)
+        }, 2000)
     }
 
     private fun checkTheme() {

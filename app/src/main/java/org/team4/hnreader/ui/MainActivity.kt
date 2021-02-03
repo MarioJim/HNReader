@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -62,6 +62,14 @@ class MainActivity : AppCompatActivity(), ShowCommentMenu {
 
         firebaseAuth.addAuthStateListener {
             binding.navDrawer.menu.setGroupVisible(R.id.bookmarksGroup, it.currentUser != null)
+            val tvUserDrawer =
+                binding.navDrawer.getHeaderView(0).findViewById<TextView>(R.id.tvUserDrawer)
+            if (it.currentUser == null) {
+                tvUserDrawer.visibility = View.GONE
+            } else {
+                tvUserDrawer.visibility = View.VISIBLE
+                tvUserDrawer.text = it.currentUser?.email ?: "Logged in"
+            }
         }
     }
 
