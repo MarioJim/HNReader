@@ -3,12 +3,14 @@ package org.team4.hnreader.utils
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.util.TypedValue
+import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.graphics.drawable.toBitmap
 import org.team4.hnreader.R
 import org.team4.hnreader.ShareBroadcastReceiver
+
 
 object IntentUtils {
     fun buildShareIntent(text: String): Intent = Intent.createChooser(
@@ -32,10 +34,8 @@ object IntentUtils {
                 shareIntent,
                 0,
             )
-            val shareIcon = BitmapFactory.decodeResource(
-                context.resources,
-                android.R.drawable.ic_menu_share,
-            )
+
+            val shareIcon = getDrawable(context, R.drawable.ic_share)!!.toBitmap()
             setActionButton(shareIcon, "Share via...", pendingIntent)
 
             val primaryColorValue = TypedValue()
