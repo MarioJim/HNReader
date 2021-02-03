@@ -115,7 +115,10 @@ class StoriesRecyclerViewFragment : Fragment() {
 
     private fun loadStories(finishedCallback: () -> Unit = {}) {
         val numStoriesToAdd = min(NUM_STORIES_PER_LOADING_EVENT, storiesIds.size - lastLoadedStory)
-        if (numStoriesToAdd == 0) return
+        if (numStoriesToAdd == 0) {
+            finishedCallback()
+            return
+        }
         val storyIdsToFetch = storiesIds.subList(
             lastLoadedStory,
             lastLoadedStory + numStoriesToAdd

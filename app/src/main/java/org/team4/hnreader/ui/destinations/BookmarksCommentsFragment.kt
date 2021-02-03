@@ -81,7 +81,10 @@ class BookmarksCommentsFragment : Fragment() {
             NUM_COMMENTS_PER_LOAD_EVENT,
             commentsIds.size - lastLoadedComment,
         )
-        if (numCommentsToAdd == 0) return
+        if (numCommentsToAdd == 0) {
+            finishedCallback()
+            return
+        }
         val commentIdsToFetch = commentsIds.subList(
             lastLoadedComment,
             lastLoadedComment + numCommentsToAdd
