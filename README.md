@@ -1,3 +1,5 @@
+<img src=".github/images/logo.svg" alt="HNReader logo" height="120" />
+
 # HNReader
 
 Hacker News client for Android written in Kotlin
@@ -9,6 +11,8 @@ Our app is a client for news' website and forum [Hacker News](https://news.ycomb
 ## Who is the user?
 
 Our app is accessible for any type of user interested in reading software or tech-related news.
+
+![Screenshots](./.github/images/previews.png)
 
 ### Team 4
 
